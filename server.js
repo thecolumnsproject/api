@@ -91,7 +91,7 @@ router.route('/columns')
 			};
 
 			// Check whether the column exists as a table
-			var sql = "SELECT * FROM information_schema.tables WHERE table_schema = 'columns' AND table_name = ? LIMIT 1";
+			var sql = "SELECT * FROM information_schema.tables WHERE table_schema = '" + config.database.name + "' AND table_name = ? LIMIT 1";
 			connection.query(sql, [name], function(err, rows, fields) {
 				if (err) throw (err);
 
