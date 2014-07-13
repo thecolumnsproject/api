@@ -1,12 +1,14 @@
 var express    = require('express'); 		// call express
 var app        = express(); 				// define our app using express
 var bodyParser = require('body-parser');
+var common = require('./common')
+var config = common.config();
 var mysql 	   = require('mysql');
 var connection = mysql.createConnection({
-	host		: 'localhost',
-	user		: 'root',
-	password	: '',
-	database	: 'columns'
+	host		: config.database.host,
+	user		: config.database.user,
+	password	: config.database.password,
+	database	: config.database.name
 });
 
 // configure app to use bodyParser()
