@@ -154,6 +154,7 @@ router.route('/columns')
 
 			// Extract the matching entities
 			// and get the columns for each
+			console.log(rows);
 			var numEntities = rows.length;
 			rows.forEach(function(entity, index) {
 				var entityId = entity.id;
