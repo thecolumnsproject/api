@@ -11,6 +11,16 @@ var connection = mysql.createConnection({
 	database	: config.database.name
 });
 
+// Configure CORS headers
+app.use('/api', function(req, res, next) {
+	console.log('Setting headers');
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+	res.header('Access-Control-Allow-Headers', 'Content-Type');
+	console.log('Headers set');
+	next();
+});
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser());
@@ -119,15 +129,98 @@ router.route('/columns')
 				res.json({
 					rows: rows
 				});
+				connection.end(function(err) {
+					if (err) console.log(err);
+				});
+				res.end();
 			});
 		}
 
 		// Update the entity's data
-	});
+	})
+
+	// Perform a search given a query
+	.get(function(req, res) {
+		var query = req.query.query;
+		console.log(query);
+
+		var entities = [];
+		var columns = [];
+
+		// Find the entity in the database
+		var sql = "SELECT * FROM entities WHERE name = ?";
+		connection.query(sql, [query], function(err, rows, fields) {
+			if (err) console.log(err);
+
+			// Extract the matching entities
+			// and get the columns for each
+			var numEntities = rows.length;
+			rows.forEach(function(entity, index) {
+				var entityId = entity.id;
+				var name = entity.name;
+
+				var entityJson = {
+					name: entity.name,
+					columns: {}
+				};
+
+				// Find every table with data
+				sql = "SELECT TABLE_NAME " +
+				"FROM INFORMATION_SCHEMA.COLUMNS " +
+				"WHERE COLUMN_NAME='entityId' " +
+				"AND TABLE_SCHEMA='" + config.database.name + "'";
+				connection.query(sql, function(err, rows, fields) {
+
+					// Get the entity's data from each table
+					var numColumns = rows.length;
+					rows.forEach(function(row, index) {
+						var tableName = row['TABLE_NAME'];
+						sql = "SELECT value, timestamp FROM ?? WHERE entityId=?";
+						connection.query(sql, [tableName, entityId], function(err, rows, fields) {
+							var columnName = fields[0].table;
+							entityJson.columns[columnName] = rows;
+							columns.push(columnName);
+							if (Object.keys(entityJson.columns).length == numColumns) {
+								entities.push(entityJson);
+								if (entities.length == numEntities) {
+									res.json({
+										columns: columns.filter(function(elem, pos, self) {
+											return self.indexOf(elem) == pos;
+										}),
+										entities: entities
+									});
+									res.end();
+								}
+							}
+						});
+					});
+
+				});
+
+			});
+
+			// console.log(res.header('Access-Control-Allow-Origin'));
+			// res.json({
+			// 	rows: rows
+			// });
+			// console.log(res);
+			// res.end();
+		});
+});
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
+
+// allow cross origin domain requests
+// var allowCrossDomain = function(req, res, next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     console.log('here');
+//     next();
+// }
+// app.use(allowCrossDomain);
 
 // START THE SERVER
 // =============================================================================
