@@ -1,3 +1,4 @@
+var crypto 		= require('crypto');
 var common 	   	= require('../common')
 var config 	   	= common.config();
 var mysql 	   	= require('mysql');
@@ -20,14 +21,16 @@ function Table() {
  * and parse for storage
  * in the database
  * --  
- * 1) Create a table for [type] 			- done
- * 2) For each 'entity'						- done
- * 3) 	Add to [entities] table 			- done
- * 4) 	Add to [type] table 				- done
- * 5) 	Loop through 'columns'
- * 6)		Create a table for [name]
- * 7)		Loop through 'rows'
- * 8)			Add (value, timestamp, identifier_columns, identifier_values) to [name] table
+ * 1) Create a table for [type]
+ * 2) For each 'entity'
+ * 3) 	Add to [entities] table
+ * 4) 	Add to [type] table
+ * 5)	Associate the entity and type
+ * 6) 	Loop through 'columns'
+ * 7)		Create a table for [name]
+ * 8)		Associate the column and entity
+ * 9)		Loop through 'rows'
+ * 10)			Add (value, timestamp, identifier_columns, identifier_values) to [name] table
  * --
  * @api public
 */
@@ -142,6 +145,12 @@ Table.prototype.addRowForColumnAndEntityId = function(row, column, entityId, cal
 	data['identifier_columns'] = id_columns.join();
 	data['identifier_values'] = id_values.join();
 
+	var hashString = Object.keys(data).map(function(key) {
+		return data[key];
+	}).join('  ');
+	var hash = crypto.createHash('md5').update(hashString).digest('hex');
+	data['hash'] = hash;
+
 	this.addRowWithDataToColumn(data, column, function(err) {
 		if (err) { callback(err); return; }
 		callback(null);
@@ -210,6 +219,9 @@ Table.prototype.addEntity = function(entity, callback) {
  * And create a table for the column
  * if one doesn't already exist
  * 
+ * Add an index on the hash
+ * of the table's values
+ *
  * Return the column's id
  * @api private
 */
@@ -228,11 +240,20 @@ Table.prototype.addColumn = function(column, callback) {
 				" timestamp DATETIME," +
 				" identifier_columns TEXT," +
 				" identifier_values TEXT," +
-				" entityId MEDIUMINT)";
-		connection.query(sql, [config.database.name, column], function(err, rows, fields) {
+				" entityId MEDIUMINT," +
+				" hash VARCHAR(128), " +
+				"UNIQUE KEY hash_index (hash))";
+		var query = connection.query(sql, [config.database.name, column], function(err, rows, fields) {
 			if (err) { callback(err, null); return; }
 			console.log('Added table for column ' + column);
 			callback(null, columnId);
+
+			// sql = "CREATE INDEX hash_index ON ?? (entityId)";
+			// connection.query(sql, [column], function(err, rows, fields) {
+			// 	if (err) { callback(err); return; }
+			// 	console.log('Created index on ' + column + ' table')
+			// 	callback(null, columnId);
+			// });
 		});
 	});	
 }
@@ -247,7 +268,7 @@ Table.prototype.addColumn = function(column, callback) {
 */
 Table.prototype.addRowWithDataToColumn = function(data, column, callback) {
 	column  = 	this.formatColumnHeader(column);
-	var sql = "INSERT INTO ?? SET ?";
+	var sql = "INSERT INTO ?? SET ? ON DUPLICATE KEY UPDATE value=value";
 	var query = connection.query(sql,
 					[
 						column,
@@ -267,20 +288,13 @@ Table.prototype.addRowWithDataToColumn = function(data, column, callback) {
  * @api private
 */
 Table.prototype.associateEntityAndType = function(entityId, typeId, callback) {
-	var sql = "SELECT entityId, typeId FROM entities_to_types WHERE entityId=? AND typeId=?";
+	var sql =	"INSERT INTO entities_to_types (entityId, typeId) VALUES (?, ?) " +
+				"ON DUPLICATE KEY UPDATE entityId=entityId";
+
 	connection.query(sql, [entityId, typeId], function(err, rows, fields) {
-		if (err) { callback(err, null); return; }
-		if (rows.length > 0) {
-			console.log('These items are already associated');
-			callback(null);
-		} else {
-			var sql = "INSERT INTO entities_to_types (entityId, typeId) VALUES (?, ?)";
-			connection.query(sql, [entityId, typeId], function(err, rows, fields) {
-				if (err) { callback(err, null); return; }
-				console.log('Associated entityId ' + entityId + ' and typeId ' + typeId);
-				callback(null);
-			});
-		}
+		if (err) { callback(err); return; }
+		console.log('Associated entityId ' + entityId + ' and typeId ' + typeId);
+		callback(null);
 	});
 }
 
@@ -301,61 +315,6 @@ Table.prototype.associateColumnIdAndEntity = function(columnId, entityId, callba
 		callback(null);
 	});
 }
-
-
-// table.addColumn = function(column) {
-// 	type 		= 	formatColumnHeader(type);
-// 	var sql 	=	"SELECT * FROM information_schema.tables " +
-// 					"WHERE table_schema = ? " +
-// 					"AND table_name = ?? LIMIT 1";
-
-// 	connection.query(sql, [config.database.name, type], function(err, rows, fields) {
-// 		if (err) { callback (err, null); return; }		 Something went wrong 
-// 		if (rows.length > 0) { 							/* The table exists! */
-// 			callback(null, rows, fields);
-// 		} else { 										/* No it doesn't :-( */
-// 			sql ='CREATE TABLE ?? (entityId MEDIUMINT)';
-// 			connection.query(sql, [type], function(err, rows, fields) {
-// 				if (err) throw(err);
-// 				insertColumnIntoTable(data, name);
-// 			});
-// 		}
-// 	});
-// }	
-
-/**
- * Accept an entity
- * and add it to a table for its type
- * or create a new table for the type
- * if one doesn't exist
- * 
- * @api private
-*/
-// table.updateType = function(entity, callback) {
-// 	var _this = this;
-
-// 	var sql =	"SELECT * FROM information_schema.tables " +
-// 				"WHERE table_schema = ? " +
-// 				"AND table_name = ?? LIMIT 1";
-
-// 		connection.query(sql, [config.database.name, this.type], function(err, rows, fields) {
-// 			if (err) { callback (err, null); return; }
-
-// 			if (rows.length > 0) {  The table exists! 
-
-// 				// insertColumnIntoTable(data, name);
-// 				_this.createType();
-
-// 			} else { /* No it doesn't :-( */
-
-// 				var sql = 'CREATE TABLE ?? (value TEXT, timestamp DATETIME, entityId MEDIUMINT)';
-// 				connection.query(sql, [name], function(err, rows, fields) {
-// 					if (err) throw(err);
-// 					insertColumnIntoTable(data, name);
-// 				});
-// 			}
-// 		});
-// }
 
 Table.prototype.formatColumnHeader = function(name) {
 	return connection.escape(name).toLowerCase().replace(' ', '_');
