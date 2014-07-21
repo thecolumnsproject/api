@@ -47,14 +47,18 @@
         "rows": [{
           "value": "1976",
           "timestamp": "1976",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, California"
+          "identifiers": {
+            "country": "United States",
+            "state": "California"
+          }
         },
         {
           "value": "1976",
           "timestamp": "1976",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, Delaware"
+          "identifiers": {
+            "country": "United States",
+            "state": "Delaware"
+          }
         }]
       },
       {
@@ -62,14 +66,18 @@
         "rows": [{
           "value": "10000",
           "timestamp": "2014",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, California"
+          "identifiers": {
+            "country": "United States",
+            "state": "California"
+          }
         },
         {
           "value": "20000",
           "timestamp": "2014",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, Delaware"
+          "identifiers": {
+            "country": "United States",
+            "state": "Delaware"
+          }
         }]
       }]
     },
@@ -80,14 +88,18 @@
         "rows": [{
           "value": "1999",
           "timestamp": "1999",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, California"
+          "identifiers": {
+            "country": "United States",
+            "state": "California"
+          }
         },
         {
           "value": "1999",
           "timestamp": "1999",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, Delaware"
+          "identifiers": {
+            "country": "United States",
+            "state": "Delaware"
+          }
         }]
       },
       {
@@ -95,14 +107,18 @@
         "rows": [{
           "value": "60000",
           "timestamp": "2014",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, California"
+          "identifiers": {
+            "country": "United States",
+            "state": "California"
+          }
         },
         {
           "value": "70000",
           "timestamp": "2014",
-          "identifier_columns": "country, state",
-          "identifier_values": "United States, Delaware"
+          "identifiers": {
+            "country": "United States",
+            "state": "Delaware"
+          }
         }]
       }]
     }]

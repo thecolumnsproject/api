@@ -16,8 +16,13 @@ router.route('/columns')
 		var table = new Table();
 		console.log(req.body.data.type);
 		table.add(req.body.data.type, req.body.data.entities, function(err) {
-			if (err) throw err;
-			res.send("Success!");
+			if (err) {
+				console.log(err);
+				res.write('Something went wrong: ' + err);
+			} else {
+				res.write('Success!');
+			}
+			res.end();
 		});
 
 		// var sql;

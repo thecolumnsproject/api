@@ -38,30 +38,113 @@ Table.prototype.add = function(type, entities, callback) {
 	var _this = this;
 
 	// Create a table for the type
+	// and process the entities
 	this.addType(type, function(err, typeId) {
 		if (err) { callback(err, null); return; }
+		_this.addEntitiesForTypeId(entities, typeId, callback);
+	});
+}
 
-		// Add each entity to the type table
-		// as well as the entities table
-		// and process its data
-		entities.forEach(function(entity, index) {
-			console.log(entity.name);
-			_this.addEntity(entity.name, function(err, entity, entityId) {
-				if (err) { callback(err, null); return; }
-				
-				// Associate the entity with the type
-				_this.associate(entityId, typeId, function(err) {
-					if (err) callback(err);
-					
-					// 
-					entity.columns.forEach(function(column, index) {
+/**
+ * Accept an array of entities
+ * and a type id for which to
+ * categorize the entities
+ * 
+ * @api private
+*/
+Table.prototype.addEntitiesForTypeId = function(entities, typeId, callback) {
+	var _this = this;
+	entities.forEach(function(entity, index) {		
+		_this.addEntityForTypeId(entity, typeId, callback);
+	});
+}
 
-					});
-				});
+/**
+ * Accept an entity
+ * and a type id for which to
+ * categorize it
+ * 
+ * @api private
+*/
+Table.prototype.addEntityForTypeId = function(entity, typeId, callback) {
+	var _this = this;
+	this.addEntity(entity.name, function(err, entityId) {
+		if (err) { callback(err, null); return; }
+		_this.associateEntityAndType(entityId, typeId, callback);
+		_this.addColumnsForEntityId(entity.columns, entityId, callback);
+	});
+}
 
-				// 
-			});
-		});
+/**
+ * Accept a list of columns
+ * and an entity id with which
+ * to categorize them
+ * 
+ * @api private
+*/
+Table.prototype.addColumnsForEntityId = function(columns, entityId, callback) {
+	var _this = this;
+	columns.forEach(function(column, index) {
+		_this.addColumnForEntityId(column, entityId, callback);
+	});
+}
+
+/**
+ * Accept a column
+ * and an entity id for which
+ * to categorize it
+ * 
+ * @api private
+*/
+Table.prototype.addColumnForEntityId = function(column, entityId, callback) {
+	var _this = this;
+	this.addColumn(column.name, function(err, columnId) {
+		if (err) { callback(err, null); return; }
+		_this.associateColumnIdAndEntity(columnId, entityId, callback);
+		_this.addRowsForColumnAndEntityId(column.rows, column.name, entityId, callback);
+	});
+}
+
+/**
+ * Accept a list of rows
+ * and a column name for which
+ * to categorize them
+ * 
+ * @api private
+*/
+Table.prototype.addRowsForColumnAndEntityId = function(rows, column, entityId, callback) {
+	var _this = this;
+	rows.forEach(function(row, index) {
+		_this.addRowForColumnAndEntityId(row, column, entityId, callback);
+	});
+}
+
+/**
+ * Accept a row of data
+ * and a column name indicating
+ * the table into which to categorize it
+ * 
+ * @api private
+*/
+Table.prototype.addRowForColumnAndEntityId = function(row, column, entityId, callback) {
+	var data = {
+		value: row.value,
+		timestamp: new Date(row.timestamp),
+		entityId: entityId
+	};
+
+	var id_columns = [];
+	var id_values = [];
+	for(identifier in row.identifiers) {
+		id_columns.push(identifier);
+		id_values.push(row.identifiers[identifier]);
+	}
+	data['identifier_columns'] = id_columns.join();
+	data['identifier_values'] = id_values.join();
+
+	this.addRowWithDataToColumn(data, column, function(err) {
+		if (err) { callback(err); return; }
+		callback(null);
 	});
 }
 
@@ -107,15 +190,72 @@ Table.prototype.addEntity = function(entity, callback) {
 		if (err) { callback(err, null); return; }
 		if (rows.length > 0) {
 			console.log(entity + ' already exists with id ' + rows[0].id);
-			callback(null, entity, rows[0].id)
+			callback(null, rows[0].id)
 		} else {
 			var sql = "INSERT INTO entities (name) VALUES (" + entity + ")";
 			connection.query(sql, function(err, rows, fields) {
 				if (err) { callback(err, null); return; }
 				console.log(entity + ' added to entities table with id ' + rows['insertId']);
-				callback(null, entity, rows['insertId'])
+				callback(null, rows['insertId'])
 			});	
 		}
+	});
+}
+
+/**
+ * Accept a column
+ * and add it to the columns table
+ * if it isn't already there
+ *
+ * And create a table for the column
+ * if one doesn't already exist
+ * 
+ * Return the column's id
+ * @api private
+*/
+Table.prototype.addColumn = function(column, callback) {
+	column  = 	this.formatColumnHeader(column);
+	var sql =	"INSERT INTO columns (name) VALUES (" + column + ") " +
+				"ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)";
+
+	connection.query(sql, function(err, rows, fields) {
+		if (err) { callback(err, null); return; }
+		var columnId = rows['insertId'];
+		console.log(column + ' added to columns table with id ' + columnId);
+
+		sql =	"CREATE TABLE IF NOT EXISTS ??.?? " +
+				"(value TEXT," +
+				" timestamp DATETIME," +
+				" identifier_columns TEXT," +
+				" identifier_values TEXT," +
+				" entityId MEDIUMINT)";
+		connection.query(sql, [config.database.name, column], function(err, rows, fields) {
+			if (err) { callback(err, null); return; }
+			console.log('Added table for column ' + column);
+			callback(null, columnId);
+		});
+	});	
+}
+
+/**
+ * Accept a set of data
+ * and add it as a row
+ * to the given column's table
+ * 
+ * Return the column's id
+ * @api private
+*/
+Table.prototype.addRowWithDataToColumn = function(data, column, callback) {
+	column  = 	this.formatColumnHeader(column);
+	var sql = "INSERT INTO ?? SET ?";
+	var query = connection.query(sql,
+					[
+						column,
+						data
+					],
+					function(err, rows, fields) {
+		if (err) { callback(err); return; }
+		callback(null);
 	});
 }
 
@@ -126,9 +266,8 @@ Table.prototype.addEntity = function(entity, callback) {
  * 
  * @api private
 */
-Table.prototype.associate = function(entityId, typeId, callback) {
+Table.prototype.associateEntityAndType = function(entityId, typeId, callback) {
 	var sql = "SELECT entityId, typeId FROM entities_to_types WHERE entityId=? AND typeId=?";
-	console.log(sql);
 	connection.query(sql, [entityId, typeId], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		if (rows.length > 0) {
@@ -136,13 +275,30 @@ Table.prototype.associate = function(entityId, typeId, callback) {
 			callback(null);
 		} else {
 			var sql = "INSERT INTO entities_to_types (entityId, typeId) VALUES (?, ?)";
-			console.log(sql);
 			connection.query(sql, [entityId, typeId], function(err, rows, fields) {
 				if (err) { callback(err, null); return; }
 				console.log('Associated entityId ' + entityId + ' and typeId ' + typeId);
 				callback(null);
 			});
 		}
+	});
+}
+
+/**
+ * Accept an entityId and a columnId
+ * and associate them in the dababase
+ * establishing a many-to-many relationship
+ * 
+ * @api private
+*/
+Table.prototype.associateColumnIdAndEntity = function(columnId, entityId, callback) {
+	var sql =	"INSERT INTO columns_to_entities (columnId, entityId) VALUES (?, ?) " +
+				"ON DUPLICATE KEY UPDATE columnId=columnId";
+
+	connection.query(sql, [columnId, entityId], function(err, rows, fields) {
+		if (err) { callback(err); return; }
+		console.log('Associated columnId ' + columnId + ' and entityId ' + entityId);
+		callback(null);
 	});
 }
 
