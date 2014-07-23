@@ -1,20 +1,6 @@
 var crypto 		= require('crypto');
-var common 	   	= require('../common')
-var config 	   	= common.config();
-var mysql 	   	= require('mysql');
-var connection 	= mysql.createConnection({
-	host		: config.database.host,
-	user		: config.database.user,
-	password	: config.database.password,
-	database	: config.database.name
-});
 
-module.exports = Table;
-
-function Table() {
-	this.type = '';
-	this.entities = [];
-}
+var Table = module.exports;
 
 /**
  * Accept api input data
@@ -35,7 +21,7 @@ function Table() {
  * @api public
 */
 
-Table.prototype.add = function(type, entities, callback) {
+Table.add = function(type, entities, callback) {
 	// this.type = type;
 	// this.entities = data;
 	var _this = this;
@@ -55,7 +41,7 @@ Table.prototype.add = function(type, entities, callback) {
  * 
  * @api private
 */
-Table.prototype.addEntitiesForTypeId = function(entities, typeId, callback) {
+Table.addEntitiesForTypeId = function(entities, typeId, callback) {
 	var _this = this;
 	entities.forEach(function(entity, index) {		
 		_this.addEntityForTypeId(entity, typeId, callback);
@@ -69,7 +55,7 @@ Table.prototype.addEntitiesForTypeId = function(entities, typeId, callback) {
  * 
  * @api private
 */
-Table.prototype.addEntityForTypeId = function(entity, typeId, callback) {
+Table.addEntityForTypeId = function(entity, typeId, callback) {
 	var _this = this;
 	this.addEntity(entity.name, function(err, entityId) {
 		if (err) { callback(err, null); return; }
@@ -85,7 +71,7 @@ Table.prototype.addEntityForTypeId = function(entity, typeId, callback) {
  * 
  * @api private
 */
-Table.prototype.addColumnsForEntityId = function(columns, entityId, callback) {
+Table.addColumnsForEntityId = function(columns, entityId, callback) {
 	var _this = this;
 	columns.forEach(function(column, index) {
 		_this.addColumnForEntityId(column, entityId, callback);
@@ -99,7 +85,7 @@ Table.prototype.addColumnsForEntityId = function(columns, entityId, callback) {
  * 
  * @api private
 */
-Table.prototype.addColumnForEntityId = function(column, entityId, callback) {
+Table.addColumnForEntityId = function(column, entityId, callback) {
 	var _this = this;
 	this.addColumn(column.name, function(err, columnId) {
 		if (err) { callback(err, null); return; }
@@ -115,7 +101,7 @@ Table.prototype.addColumnForEntityId = function(column, entityId, callback) {
  * 
  * @api private
 */
-Table.prototype.addRowsForColumnAndEntityId = function(rows, column, entityId, callback) {
+Table.addRowsForColumnAndEntityId = function(rows, column, entityId, callback) {
 	var _this = this;
 	rows.forEach(function(row, index) {
 		_this.addRowForColumnAndEntityId(row, column, entityId, callback);
@@ -129,7 +115,7 @@ Table.prototype.addRowsForColumnAndEntityId = function(rows, column, entityId, c
  * 
  * @api private
 */
-Table.prototype.addRowForColumnAndEntityId = function(row, column, entityId, callback) {
+Table.addRowForColumnAndEntityId = function(row, column, entityId, callback) {
 	var data = {
 		value: row.value,
 		timestamp: new Date(row.timestamp),
@@ -165,17 +151,18 @@ Table.prototype.addRowForColumnAndEntityId = function(row, column, entityId, cal
  * Return the type's id
  * @api private
 */
-Table.prototype.addType = function(type, callback) {
+Table.addType = function(type, callback) {
+	var _this = this;
 	type = this.formatColumnHeader(type);
 	var sql = "SELECT id FROM types WHERE name=" + type;
-	connection.query(sql, function(err, rows, fields) {
+	this.connection.query(sql, function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		if (rows.length > 0) {
 			console.log(type + ' already exists with id ' + rows[0].id);
 			callback(null, rows[0].id)
 		} else {
 			var sql = "INSERT INTO types (name) VALUES (" + type + ")";
-			connection.query(sql, function(err, rows, fields) {
+			_this.connection.query(sql, function(err, rows, fields) {
 				if (err) { callback(err, null); return; }
 				console.log(type + ' added to types table with id ' + rows['insertId']);
 				callback(null, rows['insertId'])
@@ -192,17 +179,18 @@ Table.prototype.addType = function(type, callback) {
  * Return the entity's id
  * @api private
 */
-Table.prototype.addEntity = function(entity, callback) {
+Table.addEntity = function(entity, callback) {
+	var _this = this;
 	entity = this.formatColumnHeader(entity);
 	var sql = "SELECT id FROM entities WHERE name=" + entity;
-	connection.query(sql, function(err, rows, fields) {
+	this.connection.query(sql, function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		if (rows.length > 0) {
 			console.log(entity + ' already exists with id ' + rows[0].id);
 			callback(null, rows[0].id)
 		} else {
 			var sql = "INSERT INTO entities (name) VALUES (" + entity + ")";
-			connection.query(sql, function(err, rows, fields) {
+			_this.connection.query(sql, function(err, rows, fields) {
 				if (err) { callback(err, null); return; }
 				console.log(entity + ' added to entities table with id ' + rows['insertId']);
 				callback(null, rows['insertId'])
@@ -225,12 +213,13 @@ Table.prototype.addEntity = function(entity, callback) {
  * Return the column's id
  * @api private
 */
-Table.prototype.addColumn = function(column, callback) {
+Table.addColumn = function(column, callback) {
+	var _this = this;
 	column  = 	this.formatColumnHeader(column);
 	var sql =	"INSERT INTO columns (name) VALUES (" + column + ") " +
 				"ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)";
 
-	connection.query(sql, function(err, rows, fields) {
+	this.connection.query(sql, function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		var columnId = rows['insertId'];
 		console.log(column + ' added to columns table with id ' + columnId);
@@ -243,13 +232,13 @@ Table.prototype.addColumn = function(column, callback) {
 				" entityId MEDIUMINT," +
 				" hash VARCHAR(128), " +
 				"UNIQUE KEY hash_index (hash))";
-		var query = connection.query(sql, [config.database.name, column], function(err, rows, fields) {
+		var query = _this.connection.query(sql, [_this.connection.config.database, column], function(err, rows, fields) {
 			if (err) { callback(err, null); return; }
 			console.log('Added table for column ' + column);
 			callback(null, columnId);
 
 			// sql = "CREATE INDEX hash_index ON ?? (entityId)";
-			// connection.query(sql, [column], function(err, rows, fields) {
+			// this.connection.query(sql, [column], function(err, rows, fields) {
 			// 	if (err) { callback(err); return; }
 			// 	console.log('Created index on ' + column + ' table')
 			// 	callback(null, columnId);
@@ -266,10 +255,10 @@ Table.prototype.addColumn = function(column, callback) {
  * Return the column's id
  * @api private
 */
-Table.prototype.addRowWithDataToColumn = function(data, column, callback) {
+Table.addRowWithDataToColumn = function(data, column, callback) {
 	column  = 	this.formatColumnHeader(column);
 	var sql = "INSERT INTO ?? SET ? ON DUPLICATE KEY UPDATE value=value";
-	var query = connection.query(sql,
+	var query = this.connection.query(sql,
 					[
 						column,
 						data
@@ -287,11 +276,11 @@ Table.prototype.addRowWithDataToColumn = function(data, column, callback) {
  * 
  * @api private
 */
-Table.prototype.associateEntityAndType = function(entityId, typeId, callback) {
+Table.associateEntityAndType = function(entityId, typeId, callback) {
 	var sql =	"INSERT INTO entities_to_types (entityId, typeId) VALUES (?, ?) " +
 				"ON DUPLICATE KEY UPDATE entityId=entityId";
 
-	connection.query(sql, [entityId, typeId], function(err, rows, fields) {
+	this.connection.query(sql, [entityId, typeId], function(err, rows, fields) {
 		if (err) { callback(err); return; }
 		console.log('Associated entityId ' + entityId + ' and typeId ' + typeId);
 		callback(null);
@@ -305,18 +294,13 @@ Table.prototype.associateEntityAndType = function(entityId, typeId, callback) {
  * 
  * @api private
 */
-Table.prototype.associateColumnIdAndEntity = function(columnId, entityId, callback) {
+Table.associateColumnIdAndEntity = function(columnId, entityId, callback) {
 	var sql =	"INSERT INTO columns_to_entities (columnId, entityId) VALUES (?, ?) " +
 				"ON DUPLICATE KEY UPDATE columnId=columnId";
 
-	connection.query(sql, [columnId, entityId], function(err, rows, fields) {
+	this.connection.query(sql, [columnId, entityId], function(err, rows, fields) {
 		if (err) { callback(err); return; }
 		console.log('Associated columnId ' + columnId + ' and entityId ' + entityId);
 		callback(null);
 	});
 }
-
-Table.prototype.formatColumnHeader = function(name) {
-	return connection.escape(name).toLowerCase().replace(' ', '_');
-}
-
