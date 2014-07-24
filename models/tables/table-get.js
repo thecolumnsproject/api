@@ -235,7 +235,10 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 	columns.forEach(function(column, index) {
 		_this.findDataForEntityAndColumn(entity, column, function(err, data) {
 			if (err) { callback(err, null); return; }
-			allData.push(data);
+			allData.push({
+				name: column.name,
+				rows: data
+			});
 			count++;
 
 			if (count == columns.length) {

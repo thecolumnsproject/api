@@ -34,9 +34,7 @@ router.route('/columns')
 				console.log(err);
 				res.write('Something went wrong: ' + err);
 			} else {
-				res.write('You searched for: ' + req.query.query);
-				res.write('Found ' + data.entities.length + ' entities');
-				console.log(data);
+				res.json(data);
 			}
 			res.end();
 		});
