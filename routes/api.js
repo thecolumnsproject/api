@@ -29,14 +29,14 @@ router.route('/columns')
 	.get(function(req, res) {
 		
 		var table = new Table();
-		table.search(req.query.query, function(err, types, columns) {
+		table.search(req.query.query, function(err, data) {
 			if (err) {
 				console.log(err);
 				res.write('Something went wrong: ' + err);
 			} else {
 				res.write('You searched for: ' + req.query.query);
-				res.write('Found ' + types.length + ' types');
-				res.write('Found ' + columns.length + ' columns');
+				res.write('Found ' + data.entities.length + ' entities');
+				console.log(data);
 			}
 			res.end();
 		});
