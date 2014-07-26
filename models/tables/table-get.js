@@ -22,7 +22,7 @@ Table.search = function(query, callback) {
 	terms = this.pluralizeTerms(terms);
 	var _this = this;
 
-	var allTypes, allColumns;
+	var allTypes, allColumns, allColumnNames;
 	var areWeDone = function() {
 		if (allTypes != undefined && allColumns != undefined) {
 			_this.findEntitiesForType(allTypes[0].id, function(err, entityIds) {
@@ -33,6 +33,7 @@ Table.search = function(query, callback) {
 						if (err) { callback(err, null); return; }
 						callback(null, {
 							type: allTypes[0].name,
+							columns: allColumnNames,
 							entities: data
 						});
 					});
@@ -50,7 +51,21 @@ Table.search = function(query, callback) {
 
 	this.findColumnsForTerms(terms, function(err, columns) {
 		if (err) { callback(err, null, null); return; }
-		allColumns = columns;
+
+		// Make sure columns are unique
+		var columnIds = [];
+		allColumnNames = [];
+		allColumns = [];
+		for(index in columns) {
+			if (columnIds.indexOf(columns[index].id) == -1) {
+				columnIds.push(columns[index].id);
+				allColumnNames.push(columns[index].name);
+				allColumns.push(columns[index]);
+			}
+		}
+
+		// allColumns = columns;
+		console.log(allColumns);
 		areWeDone();
 	});
 
@@ -230,21 +245,27 @@ Table.findDataForEntitesAndColumns = function(entities, columns, callback) {
 */
 Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 	var _this = this;
-	var allData = []
+	var allData = [];
+
+	// Parse out the 
+	var uniqueColumns = [];
 	var count = 0;
 	columns.forEach(function(column, index) {
-		_this.findDataForEntityAndColumn(entity, column, function(err, data) {
-			if (err) { callback(err, null); return; }
-			allData.push({
-				name: column.name,
-				rows: data
-			});
-			count++;
+		if (uniqueColumns.indexOf(column.name) == -1) {
+			uniqueColumns.push(column.name);
+			_this.findDataForEntityAndColumn(entity, column, function(err, data) {
+				if (err) { callback(err, null); return; }
+				allData.push({
+					name: column.name,
+					rows: data
+				});
+				count++;
 
-			if (count == columns.length) {
-				callback(null, allData);
-			}
-		});
+				if (count == columns.length) {
+					callback(null, allData);
+				}
+			});
+		}
 	});
 }
 
