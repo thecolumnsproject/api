@@ -31,8 +31,7 @@ Table.add = function(type, entities, callback) {
 	this.addType(type, function(err, typeId) {
 		if (err) { callback(err, null); return; }
 		_this.addEntitiesForTypeId(entities, typeId, function(err) {
-			callback(err);
-			_this.connection.end();
+			callback(err);			
 		});		
 	});
 }

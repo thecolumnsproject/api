@@ -22,6 +22,7 @@ router.route('/columns')
 				res.write('Success!');
 			}
 			res.end();
+			table.connection.end();
 		});
 	})
 
