@@ -36,6 +36,8 @@ Table.search = function(query, callback) {
 							columns: allColumnNames,
 							entities: data
 						});
+
+						_this.connection.end();
 					});
 				});
 			})

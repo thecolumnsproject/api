@@ -30,7 +30,10 @@ Table.add = function(type, entities, callback) {
 	// and process the entities
 	this.addType(type, function(err, typeId) {
 		if (err) { callback(err, null); return; }
-		_this.addEntitiesForTypeId(entities, typeId, callback);
+		_this.addEntitiesForTypeId(entities, typeId, function(err) {
+			callback(err);
+			_this.connection.end();
+		});		
 	});
 }
 
