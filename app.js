@@ -14,7 +14,7 @@ app.use('/api', function(req, res, next) {
 });
 
 // Set up global middleware
-app.use(bodyParser());
+app.use(bodyParser({limit: '50mb'}));
 
 // all of our routes will be prefixed with /api
 app.use('/api', api);
