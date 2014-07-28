@@ -17,9 +17,15 @@ router.route('/columns')
 		table.add(req.body.data.type, req.body.data.entities, function(err) {
 			if (err) {
 				console.log(err);
-				res.write('Something went wrong: ' + err);
+				res.json({
+					status: 'fail',
+					message: err
+				});
 			} else {
-				res.write('Success!');
+				res.json({
+					status: 'success',
+					data: null
+				});
 			}
 			res.end();
 		});
@@ -32,7 +38,6 @@ router.route('/columns')
 		table.search(req.query.query, function(err, data) {
 			if (err) {
 				console.log(err);
-				res.write('Something went wrong: ' + err);
 				res.json({
 					status: 'fail',
 					message: err
