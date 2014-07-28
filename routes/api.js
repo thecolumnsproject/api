@@ -33,8 +33,15 @@ router.route('/columns')
 			if (err) {
 				console.log(err);
 				res.write('Something went wrong: ' + err);
+				res.json({
+					status: 'fail',
+					message: err
+				});
 			} else {
-				res.json(data);
+				res.json({
+					status: 'success',
+					data: data
+				});
 			}
 			res.end();
 		});

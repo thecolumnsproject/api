@@ -25,22 +25,27 @@ Table.search = function(query, callback) {
 	var allTypes, allColumns, allColumnNames;
 	var areWeDone = function() {
 		if (allTypes != undefined && allColumns != undefined) {
-			_this.findEntitiesForType(allTypes[0].id, function(err, entityIds) {
-				if (err) { callback(err, null); return; }
-				_this.findNamesForEntityIds(entityIds, function(err, entities) {
-					if (err) { callback(err, null); return; }
-					_this.findDataForEntitesAndColumns(entities, allColumns, function(err, data) {
-						if (err) { callback(err, null); return; }
-						callback(null, {
-							type: allTypes[0].name,
-							columns: allColumnNames,
-							entities: data
-						});
 
-						_this.connection.end();
+			if (allTypes.length == 0) {
+				callback(null, null);
+			} else {
+				_this.findEntitiesForType(allTypes[0].id, function(err, entityIds) {
+				if (err) { callback(err, null); return; }
+					_this.findNamesForEntityIds(entityIds, function(err, entities) {
+						if (err) { callback(err, null); return; }
+						_this.findDataForEntitesAndColumns(entities, allColumns, function(err, data) {
+							if (err) { callback(err, null); return; }
+							callback(null, {
+								type: allTypes[0].name,
+								columns: allColumnNames,
+								entities: data
+							});
+
+							_this.connection.end();
+						});
 					});
 				});
-			})
+			}
 		}
 	}
 
@@ -252,23 +257,28 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 	// Parse out the 
 	var uniqueColumns = [];
 	var count = 0;
-	columns.forEach(function(column, index) {
-		if (uniqueColumns.indexOf(column.name) == -1) {
-			uniqueColumns.push(column.name);
-			_this.findDataForEntityAndColumn(entity, column, function(err, data) {
-				if (err) { callback(err, null); return; }
-				allData.push({
-					name: column.name,
-					rows: data
-				});
-				count++;
 
-				if (count == columns.length) {
-					callback(null, allData);
-				}
-			});
-		}
-	});
+	if (columns.length == 0) {
+		callback(null, allData);
+	} else {
+		columns.forEach(function(column, index) {
+			if (uniqueColumns.indexOf(column.name) == -1) {
+				uniqueColumns.push(column.name);
+				_this.findDataForEntityAndColumn(entity, column, function(err, data) {
+					if (err) { callback(err, null); return; }
+					allData.push({
+						name: column.name,
+						rows: data
+					});
+					count++;
+
+					if (count == columns.length) {
+						callback(null, allData);
+					}
+				});
+			}
+		});
+	}
 }
 
 /**
