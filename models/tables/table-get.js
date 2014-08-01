@@ -142,12 +142,12 @@ Table.findColumnsForTerms = function(terms, callback) {
 Table.findTypesForTerm = function(term, callback) {
 	var sql =	"SELECT * FROM types " +
 					"WHERE " +
-					// "MATCH (name) AGAINST (? WITH QUERY EXPANSION)";
-					"(strcmp(soundex(name), soundex(?)) = 0 OR" +
-					" name LIKE '%$" + term + "%' OR" +
+					"(MATCH (name) AGAINST (? WITH QUERY EXPANSION) OR" +
+					" strcmp(soundex(name), soundex(?)) = 0 OR" +
+					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	var query = this.connection.query(sql, [term, term], function(err, rows, fields) {
-		console.log(query.sql);
+	var query = this.connection.query(sql, [term, term, term], function(err, rows, fields) {
+		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		console.log(rows);
 		callback(null, rows);
@@ -165,7 +165,6 @@ Table.findColumnsForTerm = function(term, callback) {
 					"WHERE " +
 					"(MATCH (name) AGAINST (? WITH QUERY EXPANSION) OR " +
 					" strcmp(soundex(name), soundex(?)) = 0 OR" +
-					" name LIKE '%$" + term + "%' OR" +
 					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
 	this.connection.query(sql, [term, term, term], function(err, rows, fields) {
@@ -296,7 +295,7 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 Table.findDataForEntityAndColumn = function(entity, column, callback) {
 	var sql =	"SELECT * FROM ?? WHERE entityId = ?";
 	var query = this.connection.query(sql, ["'" + column.name + "'", entity.id], function(err, rows, fields) {
-		console.log(query.sql);
+		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		console.log(rows);
 		callback(null, rows);

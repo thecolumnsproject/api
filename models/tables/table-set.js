@@ -34,7 +34,7 @@ Table.add = function(type, entities, callback) {
 			callback(err);			
 		});		
 	});
-} 
+}  
 
 /**
  * Accept an array of entities
@@ -235,7 +235,7 @@ Table.addColumn = function(column, callback) {
 				" entityId MEDIUMINT," +
 				" hash VARCHAR(128), " +
 				"UNIQUE KEY hash_index (hash))";
-		var query = _this.connection.query(sql, [_this.connection.config.database, column], function(err, rows, fields) {
+		var query = _this.connection.query(sql, [_this.connection.config.connectionConfig.database, column], function(err, rows, fields) {
 			if (err) { callback(err, null); return; }
 			console.log('Added table for column ' + column);
 			callback(null, columnId);
@@ -248,7 +248,7 @@ Table.addColumn = function(column, callback) {
 			// });
 		});
 	});	
-}
+} 
 
 /**
  * Accept a set of data
