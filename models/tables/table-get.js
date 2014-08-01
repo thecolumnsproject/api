@@ -17,10 +17,11 @@ var Table = module.exports;
  * @api public
 */
 
-Table.search = function(query, callback) {
+Table.search = function(query, page, callback) { 
 	var terms = query.split(' ');
 	terms = this.pluralizeTerms(terms);
 	var _this = this;
+	console.log(page);
 
 	var allTypes, allColumns, allColumnNames;
 	var areWeDone = function() {
@@ -29,7 +30,9 @@ Table.search = function(query, callback) {
 			if (allTypes.length == 0) {
 				callback(null, null);
 			} else {
-				_this.findEntitiesForType(allTypes[0].id, function(err, entityIds) {
+				var startingPoint = _this.pagingLimit * page;
+
+				_this.findEntitiesForType(allTypes[0].id, startingPoint, _this.pagingLimit, function(err, entityIds) {
 				if (err) { callback(err, null); return; }
 					_this.findNamesForEntityIds(entityIds, function(err, entities) {
 						if (err) { callback(err, null); return; }
@@ -143,8 +146,10 @@ Table.findTypesForTerm = function(term, callback) {
 					"(strcmp(soundex(name), soundex(?)) = 0 OR" +
 					" name LIKE '%$" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	this.connection.query(sql, [term, term], function(err, rows, fields) {
+	var query = this.connection.query(sql, [term, term], function(err, rows, fields) {
+		console.log(query.sql);
 		if (err) { callback(err, null); return; }
+		console.log(rows);
 		callback(null, rows);
 	});
 }
@@ -175,10 +180,10 @@ Table.findColumnsForTerm = function(term, callback) {
  *
  * @api private
 */
-Table.findEntitiesForType = function(typeId, callback) {
+Table.findEntitiesForType = function(typeId, startingPoint, pagingLimit, callback) {
 	var sql =	"SELECT entityId FROM entities_to_types " +
-				"WHERE typeId = ?";
-	this.connection.query(sql, [typeId], function(err, rows, fields) {
+				"WHERE typeId = ? LIMIT ?,?";
+	this.connection.query(sql, [typeId, startingPoint, pagingLimit], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -229,6 +234,7 @@ Table.findDataForEntitesAndColumns = function(entities, columns, callback) {
 	var allEntities = [];
 	var count = 0;
 	entities.forEach(function(entity, index) {
+		if (index > _this.pagingLimit) return;
 		_this.findDataForEntityAndColumns(entity, columns, function(err, data) {
 			if (err) { callback(err, null); return; }
 			allEntities.push({
@@ -237,7 +243,7 @@ Table.findDataForEntitesAndColumns = function(entities, columns, callback) {
 			});
 			count ++;
 
-			if (count == entities.length) {
+			if (count == _this.pagingLimit) {
 				callback(null, allEntities);
 			}
 		});

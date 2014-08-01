@@ -34,7 +34,7 @@ Table.add = function(type, entities, callback) {
 			callback(err);			
 		});		
 	});
-}
+} 
 
 /**
  * Accept an array of entities
@@ -45,6 +45,7 @@ Table.add = function(type, entities, callback) {
 */
 Table.addEntitiesForTypeId = function(entities, typeId, callback) {
 	var _this = this;
+	var entitiesAdded = [];
 	entities.forEach(function(entity, index) {		
 		_this.addEntityForTypeId(entity, typeId, callback);
 	});

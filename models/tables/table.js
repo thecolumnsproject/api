@@ -10,6 +10,7 @@ var mysql 	   	= require('mysql');
 function Table() {
 	this.type = '';
 	this.entities = [];
+	this.pagingLimit = 100;
 	this.connection = mysql.createConnection({
 		host		: config.database.host,
 		user		: config.database.user,

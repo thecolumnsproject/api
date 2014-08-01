@@ -35,7 +35,7 @@ router.route('/columns')
 	.get(function(req, res) {
 		
 		var table = new Table();
-		table.search(req.query.query, function(err, data) {
+		table.search(req.query.query, req.query.page || 0, function(err, data) {
 			if (err) {
 				console.log(err);
 				res.json({
