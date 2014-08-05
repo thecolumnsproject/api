@@ -34,6 +34,7 @@ Table.search = function(query, page, callback) {
 
 				_this.findEntitiesForType(allTypes[0].id, startingPoint, _this.pagingLimit, function(err, entityIds) {
 				if (err) { callback(err, null); return; }
+				if (entityIds.length == 0 ) { callback(null, null); return; }
 					_this.findNamesForEntityIds(entityIds, function(err, entities) {
 						if (err) { callback(err, null); return; }
 						_this.findDataForEntitesAndColumns(entities, allColumns, function(err, data) {
@@ -242,7 +243,7 @@ Table.findDataForEntitesAndColumns = function(entities, columns, callback) {
 			});
 			count ++;
 
-			if (count == _this.pagingLimit) {
+			if (count == _this.pagingLimit || count == entities.length || count == 0) {
 				callback(null, allEntities);
 			}
 		});
