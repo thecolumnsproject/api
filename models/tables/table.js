@@ -11,13 +11,14 @@ function Table() {
 	this.type = '';
 	this.entities = [];
 	this.pagingLimit = 100;
-	this.connection = mysql.createPool({
+	this.pool = mysql.createPool({
 		connectionLimit : 100,
 		host			: config.database.host,
 		user			: config.database.user,
 		password		: config.database.password,
 		database		: config.database.name
 	});
+	this.connection;
 }
 
 conflate(Table.prototype, tableSet);

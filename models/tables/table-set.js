@@ -25,15 +25,40 @@ Table.add = function(type, entities, callback) {
 	// this.type = type;
 	// this.entities = data;
 	var _this = this;
+	this.pool.getConnection(function(err, connection) {
+		_this.connection = connection;
+		if (err) { callback(err, null); return; }
+		connection.beginTransaction(function(err) {
+			if (err) { callback(err, null); return; }
+
+			// Create a table for the type
+			// and process the entities
+			_this.addType(type, function(err, typeId) {
+				if (err) { callback(err, null); return; }
+				_this.addEntitiesForTypeId(entities, typeId, function(err) {
+					if (err) {
+						connection.rollback(function() {
+							callback(err);
+						});
+					}
+					connection.commit(function(err) {
+						connection.rollback(function() {
+							callback(err);
+						});
+					});
+				});		
+			});
+		});
+	});
 
 	// Create a table for the type
 	// and process the entities
-	this.addType(type, function(err, typeId) {
-		if (err) { callback(err, null); return; }
-		_this.addEntitiesForTypeId(entities, typeId, function(err) {
-			callback(err);			
-		});		
-	});
+	// this.addType(type, function(err, typeId) {
+	// 	if (err) { callback(err, null); return; }
+	// 	_this.addEntitiesForTypeId(entities, typeId, function(err) {
+	// 		callback(err);			
+	// 	});		
+	// });
 }  
 
 /**
@@ -125,12 +150,9 @@ Table.addRowForColumnAndEntityId = function(row, column, entityId, callback) {
 		entityId: entityId
 	};
 
-	var id_columns = [];
-	var id_values = [];
-	for(identifier in row.identifiers) {
-		id_columns.push(identifier);
-		id_values.push(row.identifiers[identifier]);
-	}
+	var id_columns = Object.keys(row.identifiers).sort();
+	var id_values = id_columns.map(function(column) { return row.identifiers[column]; });
+
 	data['identifier_columns'] = id_columns.join();
 	data['identifier_values'] = id_values.join();
 
@@ -235,7 +257,7 @@ Table.addColumn = function(column, callback) {
 				" entityId MEDIUMINT," +
 				" hash VARCHAR(128), " +
 				"UNIQUE KEY hash_index (hash))";
-		var query = _this.connection.query(sql, [_this.connection.config.connectionConfig.database, column], function(err, rows, fields) {
+		var query = _this.connection.query(sql, [_this.pool.config.connectionConfig.database, column], function(err, rows, fields) {
 			if (err) { callback(err, null); return; }
 			console.log('Added table for column ' + column);
 			callback(null, columnId);

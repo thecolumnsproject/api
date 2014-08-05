@@ -44,7 +44,7 @@ Table.search = function(query, page, callback) {
 								entities: data
 							});
 
-							_this.connection.end();
+							_this.pool.end();
 						});
 					});
 				});
@@ -146,7 +146,7 @@ Table.findTypesForTerm = function(term, callback) {
 					" strcmp(soundex(name), soundex(?)) = 0 OR" +
 					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	var query = this.connection.query(sql, [term, term, term], function(err, rows, fields) {
+	var query = this.pool.query(sql, [term, term, term], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		console.log(rows);
@@ -167,7 +167,7 @@ Table.findColumnsForTerm = function(term, callback) {
 					" strcmp(soundex(name), soundex(?)) = 0 OR" +
 					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	this.connection.query(sql, [term, term, term], function(err, rows, fields) {
+	this.pool.query(sql, [term, term, term], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -182,7 +182,7 @@ Table.findColumnsForTerm = function(term, callback) {
 Table.findEntitiesForType = function(typeId, startingPoint, pagingLimit, callback) {
 	var sql =	"SELECT entityId FROM entities_to_types " +
 				"WHERE typeId = ? LIMIT ?,?";
-	this.connection.query(sql, [typeId, startingPoint, pagingLimit], function(err, rows, fields) {
+	this.pool.query(sql, [typeId, startingPoint, pagingLimit], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -216,7 +216,7 @@ Table.findNamesForEntityIds = function(entityIds, callback) {
 */
 Table.findNameForEntityId = function(entityId, callback) {
 	var sql =	"SELECT * FROM entities WHERE id = ?";
-	this.connection.query(sql, [entityId], function(err, rows, fields) {
+	this.pool.query(sql, [entityId], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -294,7 +294,7 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 */
 Table.findDataForEntityAndColumn = function(entity, column, callback) {
 	var sql =	"SELECT * FROM ?? WHERE entityId = ?";
-	var query = this.connection.query(sql, ["'" + column.name + "'", entity.id], function(err, rows, fields) {
+	var query = this.pool.query(sql, ["'" + column.name + "'", entity.id], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		console.log(rows);
