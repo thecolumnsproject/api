@@ -54,36 +54,39 @@ Table.search = function(query, page, callback) {
 		}
 	}
 
+	this.pool.getConnection(function(err, connection) {
+		if (err) { callback(err, null); return; }
+		_this.connection = connection;
 
-	this.findTypesForTerms(terms, function(err, types) {
-		if (err) { callback(err, null, null); return; }
-		allTypes = types;
-		console.log("Types:");
-		console.log(types);
-		areWeDone();
-	});
+		_this.findTypesForTerms(terms, function(err, types) {
+			if (err) { callback(err, null, null); return; }
+			allTypes = types;
+			console.log("Types:");
+			console.log(types);
+			areWeDone();
+		});
 
-	this.findColumnsForTerms(terms, function(err, columns) {
-		if (err) { callback(err, null, null); return; }
+		_this.findColumnsForTerms(terms, function(err, columns) {
+			if (err) { callback(err, null, null); return; }
 
-		// Make sure columns are unique
-		var columnIds = [];
-		allColumnNames = [];
-		allColumns = [];
-		for(index in columns) {
-			if (columnIds.indexOf(columns[index].id) == -1) {
-				columnIds.push(columns[index].id);
-				allColumnNames.push(columns[index].name);
-				allColumns.push(columns[index]);
+			// Make sure columns are unique
+			var columnIds = [];
+			allColumnNames = [];
+			allColumns = [];
+			for(index in columns) {
+				if (columnIds.indexOf(columns[index].id) == -1) {
+					columnIds.push(columns[index].id);
+					allColumnNames.push(columns[index].name);
+					allColumns.push(columns[index]);
+				}
 			}
-		}
 
-		// allColumns = columns;
-		console.log("Columns:");
-		console.log(allColumns);
-		areWeDone();
+			// allColumns = columns;
+			console.log("Columns:");
+			console.log(allColumns);
+			areWeDone();
+		});
 	});
-
 }
 
 /**
@@ -151,7 +154,7 @@ Table.findTypesForTerm = function(term, callback) {
 					" strcmp(soundex(name), soundex(?)) = 0 OR" +
 					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	var query = this.pool.query(sql, [term, term, term], function(err, rows, fields) {
+	var query = this.connection.query(sql, [term, term, term], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
@@ -171,7 +174,7 @@ Table.findColumnsForTerm = function(term, callback) {
 					" strcmp(soundex(name), soundex(?)) = 0 OR" +
 					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	this.pool.query(sql, [term, term, term], function(err, rows, fields) {
+	this.connection.query(sql, [term, term, term], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -186,7 +189,7 @@ Table.findColumnsForTerm = function(term, callback) {
 Table.findEntitiesForType = function(typeId, startingPoint, pagingLimit, callback) {
 	var sql =	"SELECT entityId FROM entities_to_types " +
 				"WHERE typeId = ? LIMIT ?,?";
-	this.pool.query(sql, [typeId, startingPoint, pagingLimit], function(err, rows, fields) {
+	this.connection.query(sql, [typeId, startingPoint, pagingLimit], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -220,7 +223,7 @@ Table.findNamesForEntityIds = function(entityIds, callback) {
 */
 Table.findNameForEntityId = function(entityId, callback) {
 	var sql =	"SELECT * FROM entities WHERE id = ?";
-	this.pool.query(sql, [entityId], function(err, rows, fields) {
+	this.connection.query(sql, [entityId], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
 	});
@@ -298,7 +301,7 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 */
 Table.findDataForEntityAndColumn = function(entity, column, callback) {
 	var sql =	"SELECT * FROM ?? WHERE entityId = ?";
-	var query = this.pool.query(sql, [column.name, entity.id], function(err, rows, fields) {
+	var query = this.connection.query(sql, [column.name, entity.id], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		console.log("Data for " + column + ":");

@@ -39,7 +39,7 @@ Table.add = function(type, columns, entities, callback) {
     csvStream.pipe(writableStream);
 	for (i in entities) {
 		var entity = entities[i];
-		console.log(_this.cleanEntity(entity.name));
+		// console.log(_this.cleanEntity(entity.name));
 		// console.log(entity.name);
 		csvStream.write({entity: _this.cleanEntity(entity.name)});
 	}
@@ -89,6 +89,7 @@ Table.add = function(type, columns, entities, callback) {
 
 	var columnStreams = {};
 	function prepareColumns(callback) {
+		var columnCount = 0;
 		for (c in columns) {
 			var name = columns[c];
 			_this.addColumn(name, function(err, columnId, columnName) {
@@ -130,7 +131,13 @@ Table.add = function(type, columns, entities, callback) {
 										});
 										return;
 									}
-									callback(null);
+
+									columnCount++;
+									console.log("Finished writing column " + columnCount);
+									if (columnCount == columns.length) {
+										console.log("Done writing columns!");
+										callback(null);
+									}
 								});
 							});
 						});
@@ -184,7 +191,7 @@ Table.add = function(type, columns, entities, callback) {
 						var id_values = id_columns.map(function(column) { return row.identifiers[column]; });
 						var data = {
 							value: row.value,
-							timestamp: new Date(row.timestamp),
+							timestamp: row.timestamp,
 							identifier_columns: id_columns.join(),
 							identifier_values: id_values.join(),
 							entityId: entitiesHash[_this.cleanEntity(entity.name)]
@@ -197,11 +204,11 @@ Table.add = function(type, columns, entities, callback) {
 						data['hash'] = hash;
 
 						columnStreams[_this.formatColumnHeader(tempColumn.name)].write(data);
-
-						if (e == entities.length -1) {
-							columnStreams[_this.formatColumnHeader(tempColumn.name)].write(null);
-						} 
 					}
+
+					if (e == entities.length -1) {
+						columnStreams[_this.formatColumnHeader(tempColumn.name)].write(null);
+					} 
 				}
 			}
 
@@ -237,6 +244,7 @@ Table.add = function(type, columns, entities, callback) {
 								});
 								return;
 							}
+							console.log("Done associating entities and type!");
 							// callback(null);
 						});
 					});
@@ -273,6 +281,7 @@ Table.add = function(type, columns, entities, callback) {
 								});
 								return;
 							}
+							console.log("Done associating columns and entities!");
 							// callback(null);
 						});
 					});
