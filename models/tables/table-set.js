@@ -1,6 +1,7 @@
 var crypto 		= require('crypto');
 var fs 			= require('fs');
 var csv 		= require("fast-csv");
+var cluster 	= require('cluster');
 
 var Table = module.exports;
 
@@ -33,8 +34,10 @@ Table.add = function(type, columns, entities, callback) {
 	var entities_to_types = [];
 	var columns_to_entities = [];
 
+	var date = new Date();
+	var entitiesFileName = "data/entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
 	var csvStream = csv.createWriteStream({headers: true}),
-    	writableStream = fs.createWriteStream("data/entities.csv");
+    	writableStream = fs.createWriteStream(entitiesFileName);
 
     csvStream.pipe(writableStream);
 	for (i in entities) {
@@ -59,13 +62,14 @@ Table.add = function(type, columns, entities, callback) {
 					if (err) { callback(err, null); return; }
 					typeId = id;
 
-					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE 'data/entities.csv'" +
+					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
 								" IGNORE" +
 								" INTO TABLE entities" +
 								" FIELDS TERMINATED BY ','" +
 								" IGNORE 1 LINES" +
 								" (name)";
-					_this.connection.query(sql, function(err, rows, fields) {
+					var query = _this.connection.query(sql, [entitiesFileName], function(err, rows, fields) {
+						console.log(query.sql);
 						if (err) {
 							connection.rollback(function() { 
 								// callback(err);
@@ -78,6 +82,10 @@ Table.add = function(type, columns, entities, callback) {
 								});
 								return;
 							}
+
+							fs.unlink(entitiesFileName, function(err) {
+								if (err) {console.log(err);}
+							});
 							// callback(null);
 							prepareColumns(callback);
 						});
@@ -96,7 +104,8 @@ Table.add = function(type, columns, entities, callback) {
 				if (err) { callback(err, null); return; }
 				columnIds[columnName] = columnId;
 
-				var csvName = "data/" + columnName + '.csv';
+				date = new Date();
+				var csvName = "data/" + columnName + '__' + date.toISOString() + '__' + cluster.worker.id + '.csv';
 				var ws = fs.createWriteStream(csvName);
 				var cs = csv.createWriteStream({headers: true});
 				cs.pipe(ws);
@@ -119,6 +128,7 @@ Table.add = function(type, columns, entities, callback) {
 										" IGNORE 1 LINES" +
 										" (value, timestamp, identifier_columns, identifier_values, entityId, hash)";
 							var query = _this.connection.query(sql, [csvName, columnName], function(err, rows, fields) {
+								console.log(query.sql);
 								if (err) {
 									connection.rollback(function() {
 										callback(err);
@@ -136,6 +146,9 @@ Table.add = function(type, columns, entities, callback) {
 									console.log("Finished writing column " + columnCount);
 									if (columnCount == columns.length) {
 										console.log("Done writing columns!");
+										fs.unlink(csvName, function(err) {
+											if (err) {console.log(err);}
+										});
 										callback(null);
 									}
 								});
@@ -160,6 +173,7 @@ Table.add = function(type, columns, entities, callback) {
 				sql += " OR ";
 			}
 		}
+		console.log(sql);
 		_this.pool.query(sql, function(err, rows, fields) {
 			if (err) { callback(err); return; }	
 			// console.log(rows);
@@ -192,8 +206,8 @@ Table.add = function(type, columns, entities, callback) {
 						var data = {
 							value: row.value,
 							timestamp: row.timestamp,
-							identifier_columns: id_columns.join(),
-							identifier_values: id_values.join(),
+							identifier_columns: id_columns.join('__'),
+							identifier_values: id_values.join('__'),
 							entityId: entitiesHash[_this.cleanEntity(entity.name)]
 						};
 
@@ -202,7 +216,6 @@ Table.add = function(type, columns, entities, callback) {
 						}).join('  ');
 						var hash = crypto.createHash('md5').update(hashString).digest('hex');
 						data['hash'] = hash;
-
 						columnStreams[_this.formatColumnHeader(tempColumn.name)].write(data);
 					}
 
@@ -217,7 +230,9 @@ Table.add = function(type, columns, entities, callback) {
 	}
 
 	function associateEntitiesAndType() {
-		csv.writeToPath("data/entities_to_types.csv", entities_to_types, {headers: true}).on("finish", function() {
+		date = new Date();
+		var path = "data/entities_to_types__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
+		csv.writeToPath(path, entities_to_types, {headers: true}).on("finish", function() {
 			_this.pool.getConnection(function(err, connection) {
 				if (err) { callback(err, null); return; }
 
@@ -225,13 +240,13 @@ Table.add = function(type, columns, entities, callback) {
 				connection.beginTransaction(function(err) {
 					if (err) { callback(err, null); return; }
 
-					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE 'data/entities_to_types.csv'" +
+					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
 								" IGNORE" +
 								" INTO TABLE entities_to_types" +
 								" FIELDS TERMINATED BY ','" +
 								" IGNORE 1 LINES" +
 								" (entityId, typeId)";
-					_this.connection.query(sql, function(err, rows, fields) {
+					_this.connection.query(sql, [path], function(err, rows, fields) {
 						if (err) {
 							connection.rollback(function() { 
 								callback(err);
@@ -245,6 +260,9 @@ Table.add = function(type, columns, entities, callback) {
 								return;
 							}
 							console.log("Done associating entities and type!");
+							fs.unlink(path, function(err) {
+								if (err) {console.log(err);}
+							});
 							// callback(null);
 						});
 					});
@@ -254,7 +272,9 @@ Table.add = function(type, columns, entities, callback) {
 	}
 
 	function associateColumnsAndEntities() {
-		csv.writeToPath("data/columns_to_entities.csv", columns_to_entities, {headers: true}).on("finish", function() {
+		date = new Date();
+		var path = "data/columns_to_entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
+		csv.writeToPath(path, columns_to_entities, {headers: true}).on("finish", function() {
 			_this.pool.getConnection(function(err, connection) {
 				if (err) { callback(err, null); return; }
 
@@ -262,13 +282,13 @@ Table.add = function(type, columns, entities, callback) {
 				connection.beginTransaction(function(err) {
 					if (err) { callback(err, null); return; }
 
-					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE 'data/columns_to_entities.csv'" +
+					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
 								" IGNORE" +
 								" INTO TABLE columns_to_entities" +
 								" FIELDS TERMINATED BY ','" +
 								" IGNORE 1 LINES" +
 								" (columnId, entityId)";
-					_this.connection.query(sql, function(err, rows, fields) {
+					_this.connection.query(sql, [path], function(err, rows, fields) {
 						if (err) {
 							connection.rollback(function() { 
 								callback(err);
@@ -281,6 +301,10 @@ Table.add = function(type, columns, entities, callback) {
 								});
 								return;
 							}
+							fs.unlink(path, function(err) {
+								if (err) {console.log(err);}
+							});
+
 							console.log("Done associating columns and entities!");
 							// callback(null);
 						});
