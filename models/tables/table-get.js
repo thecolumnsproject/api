@@ -21,18 +21,19 @@ Table.search = function(query, page, callback) {
 	var terms = query.split(' ');
 	terms = this.pluralizeTerms(terms);
 	var _this = this;
-	console.log(page);
+	console.log("Page: " + page);
 
 	var allTypes, allColumns, allColumnNames;
 	var areWeDone = function() {
 		if (allTypes != undefined && allColumns != undefined) {
 
-			if (allTypes.length == 0) {
+			if (allTypes.length == 0) { 
 				callback(null, null);
 			} else {
 				var startingPoint = _this.pagingLimit * page;
 
 				_this.findEntitiesForType(allTypes[0].id, startingPoint, _this.pagingLimit, function(err, entityIds) {
+					console.log("here");
 				if (err) { callback(err, null); return; }
 				if (entityIds.length == 0 ) { callback(null, null); return; }
 					_this.findNamesForEntityIds(entityIds, function(err, entities) {
@@ -57,6 +58,8 @@ Table.search = function(query, page, callback) {
 	this.findTypesForTerms(terms, function(err, types) {
 		if (err) { callback(err, null, null); return; }
 		allTypes = types;
+		console.log("Types:");
+		console.log(types);
 		areWeDone();
 	});
 
@@ -76,6 +79,7 @@ Table.search = function(query, page, callback) {
 		}
 
 		// allColumns = columns;
+		console.log("Columns:");
 		console.log(allColumns);
 		areWeDone();
 	});
@@ -150,7 +154,6 @@ Table.findTypesForTerm = function(term, callback) {
 	var query = this.pool.query(sql, [term, term, term], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
-		console.log(rows);
 		callback(null, rows);
 	});
 }
@@ -295,9 +298,10 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 */
 Table.findDataForEntityAndColumn = function(entity, column, callback) {
 	var sql =	"SELECT * FROM ?? WHERE entityId = ?";
-	var query = this.pool.query(sql, ["'" + column.name + "'", entity.id], function(err, rows, fields) {
+	var query = this.pool.query(sql, [column.name, entity.id], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
+		console.log("Data for " + column + ":");
 		console.log(rows);
 		callback(null, rows);
 	}); 

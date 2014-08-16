@@ -14,7 +14,7 @@ router.route('/columns')
 	.post(function(req, res) {
 
 		var table = new Table();
-		table.add(req.body.data.type, req.body.data.entities, function(err) {
+		table.add(req.body.data.type, req.body.data.columns, req.body.data.entities, function(err) {
 			if (err) {
 				console.log(err);
 				res.json({

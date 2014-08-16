@@ -11,6 +11,7 @@
     "grunt-develop": "~0.4.0",
     "grunt-contrib-watch": "~0.6.1",
     "cookie-session": "~1.0.2",
-    "parted": "~0.1.1"
+    "parted": "~0.1.1",
+    "fast-csv": "~0.4.2"
   }
 }

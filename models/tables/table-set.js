@@ -1,4 +1,6 @@
 var crypto 		= require('crypto');
+var fs 			= require('fs');
+var csv 		= require("fast-csv");
 
 var Table = module.exports;
 
@@ -21,35 +23,291 @@ var Table = module.exports;
  * @api public
 */
 
-Table.add = function(type, entities, callback) {
+Table.add = function(type, columns, entities, callback) {
 	// this.type = type;
 	// this.entities = data;
+
 	var _this = this;
-	this.pool.getConnection(function(err, connection) {
-		_this.connection = connection;
-		if (err) { callback(err, null); return; }
-		connection.beginTransaction(function(err) {
+	var typeId;
+	var columnIds = {};
+	var entities_to_types = [];
+	var columns_to_entities = [];
+
+	var csvStream = csv.createWriteStream({headers: true}),
+    	writableStream = fs.createWriteStream("data/entities.csv");
+
+    csvStream.pipe(writableStream);
+	for (i in entities) {
+		var entity = entities[i];
+		console.log(_this.cleanEntity(entity.name));
+		// console.log(entity.name);
+		csvStream.write({entity: _this.cleanEntity(entity.name)});
+	}
+	csvStream.write(null);
+
+	writableStream.on('finish', function() {
+		console.log('done!'); 
+		
+		_this.pool.getConnection(function(err, connection) {
 			if (err) { callback(err, null); return; }
 
-			// Create a table for the type
-			// and process the entities
-			_this.addType(type, function(err, typeId) {
+			_this.connection = connection;
+			connection.beginTransaction(function(err) {
 				if (err) { callback(err, null); return; }
-				_this.addEntitiesForTypeId(entities, typeId, function(err) {
-					if (err) {
-						connection.rollback(function() {
-							callback(err);
-						});
-					}
-					connection.commit(function(err) {
-						connection.rollback(function() {
-							callback(err);
+
+				_this.addType(type, function(err, id) {
+					if (err) { callback(err, null); return; }
+					typeId = id;
+
+					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE 'data/entities.csv'" +
+								" IGNORE" +
+								" INTO TABLE entities" +
+								" FIELDS TERMINATED BY ','" +
+								" IGNORE 1 LINES" +
+								" (name)";
+					_this.connection.query(sql, function(err, rows, fields) {
+						if (err) {
+							connection.rollback(function() { 
+								// callback(err);
+							});
+						}
+						connection.commit(function(err) {
+							if (err) {
+								connection.rollback(function() {
+									callback(err);
+								});
+								return;
+							}
+							// callback(null);
+							prepareColumns(callback);
 						});
 					});
-				});		
+				});
 			});
 		});
 	});
+
+	var columnStreams = {};
+	function prepareColumns(callback) {
+		for (c in columns) {
+			var name = columns[c];
+			_this.addColumn(name, function(err, columnId, columnName) {
+				if (err) { callback(err, null); return; }
+				columnIds[columnName] = columnId;
+
+				var csvName = "data/" + columnName + '.csv';
+				var ws = fs.createWriteStream(csvName);
+				var cs = csv.createWriteStream({headers: true});
+				cs.pipe(ws);
+				columnStreams[columnName] = cs;
+ 
+				ws.on('finish', function() {
+					console.log(columnName + ' done!'); 
+					
+					_this.pool.getConnection(function(err, connection) {
+						if (err) { callback(err, null); return; } 
+
+						_this.connection = connection;
+						connection.beginTransaction(function(err) {
+							if (err) { callback(err, null); return; }
+
+							var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
+										" IGNORE" +
+										" INTO TABLE ??" +
+										" FIELDS TERMINATED BY ','" +
+										" IGNORE 1 LINES" +
+										" (value, timestamp, identifier_columns, identifier_values, entityId, hash)";
+							var query = _this.connection.query(sql, [csvName, columnName], function(err, rows, fields) {
+								if (err) {
+									connection.rollback(function() {
+										callback(err);
+									});
+								}
+								connection.commit(function(err) {
+									if (err) {
+										connection.rollback(function() {
+											callback(err);
+										});
+										return;
+									}
+									callback(null);
+								});
+							});
+						});
+					});
+				});
+
+				if (Object.keys(columnStreams).length == columns.length) {
+					writeColumnData();
+				} 
+			});
+		}
+	}
+
+	function writeColumnData() {
+		var sql = "SELECT id, name FROM entities WHERE "; 
+		for (i in entities) {
+			var entity = entities[i];
+			sql += "name='" + _this.cleanEntity(entity.name) + "'";
+			if (i < entities.length-1) {
+				sql += " OR ";
+			}
+		}
+		_this.pool.query(sql, function(err, rows, fields) {
+			if (err) { callback(err); return; }	
+			// console.log(rows);
+
+			var entitiesHash = {};
+			for (r in rows) {
+				entitiesHash[rows[r].name] = rows[r].id;
+				entities_to_types.push({
+					entityId: rows[r].id,
+					typeId: typeId
+				});
+			}
+
+			associateEntitiesAndType();
+			
+			for (e in entities) {
+				var entity = entities[e];
+				for (c in entity.columns) {
+					var tempColumn = entity.columns[c];
+
+					columns_to_entities.push({
+						columnId: columnIds[_this.formatColumnHeader(tempColumn.name)],
+						entityId: entitiesHash[_this.cleanEntity(entity.name)]
+					});
+
+					for (r in tempColumn.rows) {
+						var row = tempColumn.rows[r];
+						var id_columns = Object.keys(row.identifiers).sort();
+						var id_values = id_columns.map(function(column) { return row.identifiers[column]; });
+						var data = {
+							value: row.value,
+							timestamp: new Date(row.timestamp),
+							identifier_columns: id_columns.join(),
+							identifier_values: id_values.join(),
+							entityId: entitiesHash[_this.cleanEntity(entity.name)]
+						};
+
+						var hashString = Object.keys(data).map(function(key) {
+							return data[key]; 
+						}).join('  ');
+						var hash = crypto.createHash('md5').update(hashString).digest('hex');
+						data['hash'] = hash;
+
+						columnStreams[_this.formatColumnHeader(tempColumn.name)].write(data);
+
+						if (e == entities.length -1) {
+							columnStreams[_this.formatColumnHeader(tempColumn.name)].write(null);
+						} 
+					}
+				}
+			}
+
+			associateColumnsAndEntities();
+		});
+	}
+
+	function associateEntitiesAndType() {
+		csv.writeToPath("data/entities_to_types.csv", entities_to_types, {headers: true}).on("finish", function() {
+			_this.pool.getConnection(function(err, connection) {
+				if (err) { callback(err, null); return; }
+
+				_this.connection = connection;
+				connection.beginTransaction(function(err) {
+					if (err) { callback(err, null); return; }
+
+					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE 'data/entities_to_types.csv'" +
+								" IGNORE" +
+								" INTO TABLE entities_to_types" +
+								" FIELDS TERMINATED BY ','" +
+								" IGNORE 1 LINES" +
+								" (entityId, typeId)";
+					_this.connection.query(sql, function(err, rows, fields) {
+						if (err) {
+							connection.rollback(function() { 
+								callback(err);
+							});
+						}
+						connection.commit(function(err) {
+							if (err) {
+								connection.rollback(function() {
+									callback(err);
+								});
+								return;
+							}
+							// callback(null);
+						});
+					});
+				});
+			});
+		});
+	}
+
+	function associateColumnsAndEntities() {
+		csv.writeToPath("data/columns_to_entities.csv", columns_to_entities, {headers: true}).on("finish", function() {
+			_this.pool.getConnection(function(err, connection) {
+				if (err) { callback(err, null); return; }
+
+				_this.connection = connection;
+				connection.beginTransaction(function(err) {
+					if (err) { callback(err, null); return; }
+
+					var sql =	"LOAD DATA CONCURRENT LOCAL INFILE 'data/columns_to_entities.csv'" +
+								" IGNORE" +
+								" INTO TABLE columns_to_entities" +
+								" FIELDS TERMINATED BY ','" +
+								" IGNORE 1 LINES" +
+								" (columnId, entityId)";
+					_this.connection.query(sql, function(err, rows, fields) {
+						if (err) {
+							connection.rollback(function() { 
+								callback(err);
+							});
+						}
+						connection.commit(function(err) {
+							if (err) {
+								connection.rollback(function() {
+									callback(err);
+								});
+								return;
+							}
+							// callback(null);
+						});
+					});
+				});
+			});
+		});
+	}
+
+
+	// var _this = this;
+	// this.pool.getConnection(function(err, connection) {
+	// 	_this.connection = connection;
+	// 	if (err) { callback(err, null); return; }
+	// 	connection.beginTransaction(function(err) {
+	// 		if (err) { callback(err, null); return; }
+
+	// 		// Create a table for the type
+	// 		// and process the entities
+	// 		_this.addType(type, function(err, typeId) {
+	// 			if (err) { callback(err, null); return; }
+	// 			_this.addEntitiesForTypeId(entities, typeId, function(err) {
+	// 				if (err) {
+	// 					connection.rollback(function() {
+	// 						callback(err);
+	// 					});
+	// 				}
+	// 				connection.commit(function(err) {
+	// 					connection.rollback(function() {
+	// 						callback(err);
+	// 					});
+	// 				});
+	// 			});		
+	// 		});
+	// 	});
+	// });
 
 	// Create a table for the type
 	// and process the entities
@@ -178,16 +436,17 @@ Table.addRowForColumnAndEntityId = function(row, column, entityId, callback) {
 */
 Table.addType = function(type, callback) {
 	var _this = this;
-	type = this.formatColumnHeader(type);
-	var sql = "SELECT id FROM types WHERE name=" + type;
-	this.connection.query(sql, function(err, rows, fields) {
+	type = this.formatType(type);
+	var sql = "SELECT id FROM types WHERE name=?";
+	this.connection.query(sql, [type], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		if (rows.length > 0) {
 			console.log(type + ' already exists with id ' + rows[0].id);
 			callback(null, rows[0].id)
 		} else {
-			var sql = "INSERT INTO types (name) VALUES (" + type + ")";
-			_this.connection.query(sql, function(err, rows, fields) {
+			var sql = "INSERT INTO types (name) VALUES (?)";
+			var query = _this.connection.query(sql, [type], function(err, rows, fields) {
+				console.log(query.sql);
 				if (err) { callback(err, null); return; }
 				console.log(type + ' added to types table with id ' + rows['insertId']);
 				callback(null, rows['insertId'])
@@ -241,13 +500,14 @@ Table.addEntity = function(entity, callback) {
 Table.addColumn = function(column, callback) {
 	var _this = this;
 	column  = 	this.formatColumnHeader(column);
-	var sql =	"INSERT INTO columns (name) VALUES (" + column + ") " +
+	var sql =	"INSERT INTO columns (name) VALUES (?) " +
 				"ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)";
 
-	this.connection.query(sql, function(err, rows, fields) {
+	var query = this.connection.query(sql, [column], function(err, rows, fields) {
+		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
 		var columnId = rows['insertId'];
-		console.log(column + ' added to columns table with id ' + columnId);
+		// console.log(column + ' added to columns table with id ' + columnId);
 
 		sql =	"CREATE TABLE IF NOT EXISTS ??.?? " +
 				"(value TEXT," +
@@ -257,10 +517,10 @@ Table.addColumn = function(column, callback) {
 				" entityId MEDIUMINT," +
 				" hash VARCHAR(128), " +
 				"UNIQUE KEY hash_index (hash))";
-		var query = _this.connection.query(sql, [_this.pool.config.connectionConfig.database, column], function(err, rows, fields) {
+		_this.connection.query(sql, [_this.pool.config.connectionConfig.database, column], function(err, rows, fields) {
 			if (err) { callback(err, null); return; }
-			console.log('Added table for column ' + column);
-			callback(null, columnId);
+			// console.log('Added table for column ' + column);
+			callback(null, columnId, column);
 
 			// sql = "CREATE INDEX hash_index ON ?? (entityId)";
 			// this.connection.query(sql, [column], function(err, rows, fields) {
