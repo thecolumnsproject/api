@@ -116,10 +116,11 @@ Table.add = function(type, columns, entities, callback) {
 				ws.on('finish', function() {
 					console.log(columnName + ' done!'); 
 					
-					_this.pool.getConnection(function(err, connection) {
-						if (err) { callback(err, null); return; } 
+					// _this.pool.getConnection(function(err, connection) {
+					// 	if (err) { callback(err, null); return; } 
 
-						_this.connection = connection;
+					// 	_this.connection = connection;
+						var connection = _this.connection;
 						connection.beginTransaction(function(err) {
 							if (err) { callback(err, null); return; }
 
@@ -129,7 +130,7 @@ Table.add = function(type, columns, entities, callback) {
 										" FIELDS TERMINATED BY ','" +
 										" IGNORE 1 LINES" +
 										" (value, timestamp, identifier_columns, identifier_values, entityId, hash)";
-							var query = _this.connection.query(sql, [csvName, columnName], function(err, rows, fields) {
+							var query = connection.query(sql, [csvName, columnName], function(err, rows, fields) {
 								if (err) {
 									connection.rollback(function() {
 										callback(err);
@@ -157,7 +158,7 @@ Table.add = function(type, columns, entities, callback) {
 								});
 							});
 						});
-					});
+					// });
 				});
 
 				if (Object.keys(columnStreams).length == columns.length) {
@@ -177,7 +178,7 @@ Table.add = function(type, columns, entities, callback) {
 			}
 		}
 		console.log(sql);
-		_this.pool.query(sql, function(err, rows, fields) {
+		_this.connection.query(sql, function(err, rows, fields) {
 			if (err) { callback(err); return; }	
 			// console.log(rows);
 
@@ -237,10 +238,11 @@ Table.add = function(type, columns, entities, callback) {
 		date = new Date();
 		var path = "data/entities_to_types__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
 		csv.writeToPath(path, entities_to_types, {headers: true}).on("finish", function() {
-			_this.pool.getConnection(function(err, connection) {
-				if (err) { callback(err, null); return; }
+			// _this.pool.getConnection(function(err, connection) {
+			// 	if (err) { callback(err, null); return; }
 
-				_this.connection = connection;
+			// 	_this.connection = connection;
+				var connection = _this.connection;
 				connection.beginTransaction(function(err) {
 					if (err) { callback(err, null); return; }
 
@@ -271,7 +273,7 @@ Table.add = function(type, columns, entities, callback) {
 						});
 					});
 				});
-			});
+			// });
 		});
 	}
 
@@ -279,10 +281,11 @@ Table.add = function(type, columns, entities, callback) {
 		date = new Date();
 		var path = "data/columns_to_entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
 		csv.writeToPath(path, columns_to_entities, {headers: true}).on("finish", function() {
-			_this.pool.getConnection(function(err, connection) {
-				if (err) { callback(err, null); return; }
+			// _this.pool.getConnection(function(err, connection) {
+			// 	if (err) { callback(err, null); return; }
 
-				_this.connection = connection;
+			// 	_this.connection = connection;
+				var connection = _this.connection;
 				connection.beginTransaction(function(err) {
 					if (err) { callback(err, null); return; }
 
@@ -314,7 +317,7 @@ Table.add = function(type, columns, entities, callback) {
 						});
 					});
 				});
-			});
+			// });
 		});
 	}
 
