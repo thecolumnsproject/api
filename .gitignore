@@ -49,4 +49,4 @@ node_modules
 .lock-wscript
 
 # Generated data files
-data
+tmp

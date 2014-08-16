@@ -35,7 +35,7 @@ Table.add = function(type, columns, entities, callback) {
 	var columns_to_entities = [];
 
 	var date = new Date();
-	var entitiesFileName = "data/entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
+	var entitiesFileName = "./tmp/entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
 	var csvStream = csv.createWriteStream({headers: true}),
     	writableStream = fs.createWriteStream(entitiesFileName);
 
@@ -96,6 +96,7 @@ Table.add = function(type, columns, entities, callback) {
 	});
 
 	var columnStreams = {};
+	var csvNames = [];
 	function prepareColumns(callback) {
 		var columnCount = 0;
 		for (c in columns) {
@@ -105,11 +106,12 @@ Table.add = function(type, columns, entities, callback) {
 				columnIds[columnName] = columnId;
 
 				date = new Date();
-				var csvName = "data/" + columnName + '__' + date.toISOString() + '__' + cluster.worker.id + '.csv';
+				var csvName = "./tmp/" + columnName + '__' + date.toISOString() + '__' + cluster.worker.id + '.csv';
 				var ws = fs.createWriteStream(csvName);
 				var cs = csv.createWriteStream({headers: true});
 				cs.pipe(ws);
 				columnStreams[columnName] = cs;
+				csvNames.push(csvName);
  
 				ws.on('finish', function() {
 					console.log(columnName + ' done!'); 
@@ -128,7 +130,6 @@ Table.add = function(type, columns, entities, callback) {
 										" IGNORE 1 LINES" +
 										" (value, timestamp, identifier_columns, identifier_values, entityId, hash)";
 							var query = _this.connection.query(sql, [csvName, columnName], function(err, rows, fields) {
-								console.log(query.sql);
 								if (err) {
 									connection.rollback(function() {
 										callback(err);
@@ -146,9 +147,11 @@ Table.add = function(type, columns, entities, callback) {
 									console.log("Finished writing column " + columnCount);
 									if (columnCount == columns.length) {
 										console.log("Done writing columns!");
-										fs.unlink(csvName, function(err) {
-											if (err) {console.log(err);}
-										});
+										for (n in csvNames) {
+											fs.unlink(csvNames[n], function(err) {
+												if (err) {console.log(err);}
+											});
+										}
 										callback(null);
 									}
 								});
@@ -201,9 +204,10 @@ Table.add = function(type, columns, entities, callback) {
 
 					for (r in tempColumn.rows) {
 						var row = tempColumn.rows[r];
+						var valueDate = row.timestamp == null ? null : row.timestamp;
 						var id_columns = Object.keys(row.identifiers).sort();
 						var id_values = id_columns.map(function(column) { return row.identifiers[column]; });
-						var data = {
+						var data = { 
 							value: row.value,
 							timestamp: row.timestamp,
 							identifier_columns: id_columns.join('__'),
@@ -231,7 +235,7 @@ Table.add = function(type, columns, entities, callback) {
 
 	function associateEntitiesAndType() {
 		date = new Date();
-		var path = "data/entities_to_types__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
+		var path = "./tmp/entities_to_types__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
 		csv.writeToPath(path, entities_to_types, {headers: true}).on("finish", function() {
 			_this.pool.getConnection(function(err, connection) {
 				if (err) { callback(err, null); return; }
@@ -273,7 +277,7 @@ Table.add = function(type, columns, entities, callback) {
 
 	function associateColumnsAndEntities() {
 		date = new Date();
-		var path = "data/columns_to_entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
+		var path = "./tmp/columns_to_entities__" + date.toISOString() + "__" + cluster.worker.id + ".csv";
 		csv.writeToPath(path, columns_to_entities, {headers: true}).on("finish", function() {
 			_this.pool.getConnection(function(err, connection) {
 				if (err) { callback(err, null); return; }
