@@ -83,9 +83,9 @@ Table.add = function(type, columns, entities, callback) {
 								return;
 							}
 
-							fs.unlink(entitiesFileName, function(err) {
-								if (err) {console.log(err);}
-							});
+							// fs.unlink(entitiesFileName, function(err) {
+							// 	if (err) {console.log(err);}
+							// });
 							// callback(null);
 							prepareColumns(callback);
 						});
@@ -147,11 +147,11 @@ Table.add = function(type, columns, entities, callback) {
 									console.log("Finished writing column " + columnCount);
 									if (columnCount == columns.length) {
 										console.log("Done writing columns!");
-										for (n in csvNames) {
-											fs.unlink(csvNames[n], function(err) {
-												if (err) {console.log(err);}
-											});
-										}
+										// for (n in csvNames) {
+										// 	fs.unlink(csvNames[n], function(err) {
+										// 		if (err) {console.log(err);}
+										// 	});
+										// }
 										callback(null);
 									}
 								});
@@ -264,9 +264,9 @@ Table.add = function(type, columns, entities, callback) {
 								return;
 							}
 							console.log("Done associating entities and type!");
-							fs.unlink(path, function(err) {
-								if (err) {console.log(err);}
-							});
+							// fs.unlink(path, function(err) {
+							// 	if (err) {console.log(err);}
+							// });
 							// callback(null);
 						});
 					});
@@ -305,9 +305,9 @@ Table.add = function(type, columns, entities, callback) {
 								});
 								return;
 							}
-							fs.unlink(path, function(err) {
-								if (err) {console.log(err);}
-							});
+							// fs.unlink(path, function(err) {
+							// 	if (err) {console.log(err);}
+							// });
 
 							console.log("Done associating columns and entities!");
 							// callback(null);
