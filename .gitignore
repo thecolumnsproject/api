@@ -50,3 +50,8 @@ node_modules
 
 # Generated data files
 data/*.csv
+.elasticbeanstalk/
+
+# AWS info
+clmzkeypair.pem
+rootkey.csv
