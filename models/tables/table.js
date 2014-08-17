@@ -12,7 +12,7 @@ function Table() {
 	this.entities = [];
 	this.pagingLimit = 100;
 	this.pool = mysql.createPool({
-		connectionLimit : 1000000,
+		connectionLimit 	: 1000000,
 		host				: config.database.host,
 		user				: config.database.user,
 		password			: config.database.password,
@@ -20,6 +20,8 @@ function Table() {
 		multipleStatements	: true
 	});
 	this.connection;
+	console.log(config.database.host);
+	console.log(config.database.user);
 }
 
 conflate(Table.prototype, tableSet);
