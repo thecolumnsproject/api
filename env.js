@@ -26,7 +26,7 @@ module.exports = {
 			"host": process.env.RDS_HOSTNAME,
 			"user": process.env.RDS_USERNAME,
 			"password": process.env.RDS_PASSWORD,
-			"name": process.env.RDS_PORT
+			"name": 'columns'
 		}
 	}
 };
