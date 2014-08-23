@@ -1,15 +1,8 @@
-var common 	   	= require('../common')
-var config 	   	= common.config();
 var mysql 	   	= require('mysql');
-var connection 	= mysql.createConnection({
-	host		: config.database.host,
-	user		: config.database.user,
-	password	: config.database.password,
-	database	: config.database.name
-});
+var fs 			= require('fs');
 
-var Table 		= require('../models/table.js');
-var fixtures 	= require('./fixtures');
+var Table 		= require('../models/tables/table.js');
+var fixtures 	= require('./fixtures.json');
 
 describe('Tables', function() {
 	describe('Initiating a table', function() {
@@ -30,22 +23,33 @@ describe('Tables', function() {
 
 			beforeEach(function() {
 				// Add dummy data to test database
-				connection.query('INSERT INTO types (name) VALUES (startup)', function(err, rows, fields) {
+				// connection.query('INSERT INTO types (name) VALUES (startup)', function(err, rows, fields) {
+				// 	if (err) throw err;
+				// });
+
+				// Rebuild the database
+				fs.readFile('spec/test_db_setup.sql', 'utf8', function(err, sql) {
 					if (err) throw err;
+					console.log(table.pool);
+					var query = table.pool.query(sql, function(err, rows, fields) {
+						console.log(query.sql);
+						if (err) throw err;
+						console.log(rows);
+					});
 				});
 			});
 
 			afterEach(function() {
 				// Clear test database
-				connection.query('TRUNCATE TABLE types', function(err, rows, fields) {
-					if (err) throw err;
-				});
+				// connection.query('TRUNCATE TABLE types', function(err, rows, fields) {
+				// 	if (err) throw err;
+				// });
 			});
 
 			it('should add new types to the table', function() {
-				runs(function() {
-					table.add(data);
-				});
+				// runs(function() {
+				// 	table.add(data);
+				// });
 
 				// waitsFor()
 

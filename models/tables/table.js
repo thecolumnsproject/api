@@ -20,8 +20,6 @@ function Table() {
 		multipleStatements	: true
 	});
 	this.connection;
-	console.log(config.database.host);
-	console.log(config.database.user);
 }
 
 conflate(Table.prototype, tableSet);

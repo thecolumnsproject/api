@@ -38,11 +38,11 @@ Table.search = function(query, page, callback) {
 				if (entityIds.length == 0 ) { callback(null, null); return; }
 					_this.findNamesForEntityIds(entityIds, function(err, entities) {
 						if (err) { callback(err, null); return; }
-						_this.findDataForEntitesAndColumns(entities, allColumns, function(err, data) {
+						_this.findDataForEntitesAndColumns(entities, allColumns, function(err, data, columnNames) {
 							if (err) { callback(err, null); return; }
 							callback(null, {
 								type: allTypes[0].name,
-								columns: allColumnNames,
+								columns: columnNames,
 								entities: data
 							});
 
@@ -238,19 +238,25 @@ Table.findNameForEntityId = function(entityId, callback) {
 Table.findDataForEntitesAndColumns = function(entities, columns, callback) {
 	var _this = this;
 	var allEntities = [];
+	var columnsWithData = [];
 	var count = 0;
 	entities.forEach(function(entity, index) {
 		if (index > _this.pagingLimit) return;
-		_this.findDataForEntityAndColumns(entity, columns, function(err, data) {
+		_this.findDataForEntityAndColumns(entity, columns, function(err, data, columnNames) {
 			if (err) { callback(err, null); return; }
 			allEntities.push({
 				name: entity.name,
 				columns: data
 			});
+			for (n in columnNames) {
+				if (columnsWithData.indexOf(columnNames[n]) == -1) {
+					columnsWithData.push(columnNames[n]);
+				}
+			}
 			count ++;
 
 			if (count == _this.pagingLimit || count == entities.length || count == 0) {
-				callback(null, allEntities);
+				callback(null, allEntities, columnsWithData);
 			}
 		});
 	});
@@ -268,6 +274,7 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 
 	// Parse out the 
 	var uniqueColumns = [];
+	var columnsWithData = [];
 	var count = 0;
 
 	if (columns.length == 0) {
@@ -278,14 +285,19 @@ Table.findDataForEntityAndColumns = function(entity, columns, callback) {
 				uniqueColumns.push(column.name);
 				_this.findDataForEntityAndColumn(entity, column, function(err, data) {
 					if (err) { callback(err, null); return; }
-					allData.push({
-						name: column.name,
-						rows: data
-					});
+					if (data.length > 0) {
+						allData.push({
+							name: column.name,
+							rows: data
+						});
+						if (columnsWithData.indexOf(column.name) == -1) {
+							columnsWithData.push(column.name);
+						}
+					}
 					count++;
 
 					if (count == columns.length) {
-						callback(null, allData);
+						callback(null, allData, columnsWithData);
 					}
 				});
 			}
@@ -304,7 +316,6 @@ Table.findDataForEntityAndColumn = function(entity, column, callback) {
 	var query = this.connection.query(sql, [column.name, entity.id], function(err, rows, fields) {
 		// console.log(query.sql);
 		if (err) { callback(err, null); return; }
-		console.log("Data for " + column + ":");
 		console.log(rows);
 		callback(null, rows);
 	}); 
