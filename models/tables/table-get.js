@@ -148,18 +148,19 @@ Table.findColumnsForTerms = function(terms, callback) {
  * @api private
 */
 Table.findTypesForTerm = function(term, callback) {
-	// var sql =	"SELECT * FROM types " +
-	// 				"WHERE " +
-	// 				"(MATCH (name) AGAINST (? WITH QUERY EXPANSION) OR" +
-	// 				" strcmp(soundex(name), soundex(?)) = 0 OR" +
-	// 				" name LIKE '%" + term + "%' OR" +
-	// 				" name SOUNDS LIKE ?)";
 	var sql =	"SELECT * FROM types " +
-				"WHERE " +
-				"MATCH (name) AGAINST (? WITH QUERY EXPANSION)";
+					"WHERE " +
+					"(MATCH (name) AGAINST (? WITH QUERY EXPANSION) OR" +
+					" strcmp(soundex(name), soundex(?)) = 0 OR" +
+					" name LIKE '%" + term + "%' OR" +
+					" name SOUNDS LIKE ?)";
+	// var sql =	"SELECT * FROM types " +
+	// 			"WHERE " +
+	// 			"name SOUNDS LIKE ?";
 	var query = this.connection.query(sql, [term, term, term], function(err, rows, fields) {
-		// console.log(query.sql);
+		console.log(query.sql);
 		if (err) { callback(err, null); return; }
+		console.log(rows);
 		callback(null, rows);
 	});
 }
@@ -177,9 +178,9 @@ Table.findColumnsForTerm = function(term, callback) {
 					" strcmp(soundex(name), soundex(?)) = 0 OR" +
 					" name LIKE '%" + term + "%' OR" +
 					" name SOUNDS LIKE ?)";
-	var sql =	"SELECT * FROM columns " +
-					"WHERE " +
-					"MATCH (name) AGAINST (? WITH QUERY EXPANSION);"
+	// var sql =	"SELECT * FROM columns " +
+	// 				"WHERE " +
+	// 				"MATCH (name) AGAINST (? WITH QUERY EXPANSION);"
 	this.connection.query(sql, [term, term, term], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
