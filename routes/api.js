@@ -68,6 +68,23 @@ router.route('/columns/table/:id')
 				});
 			}
 		});
+	})
+
+	.get(function(req, res) {
+		var table = new Table();
+		table.find(req.params.id, function(err, data) {
+			if (err) {
+				res.json({
+					status: 'fail',
+					message: err
+				});
+			} else {
+				res.json({
+					status: 'success',
+					data: data
+				});
+			}
+		});
 	});
 
 router.route('/columns/table')

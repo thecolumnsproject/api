@@ -1,6 +1,6 @@
 var crypto 		= require('crypto');
 var fs 			= require('fs');
-var csv 		= require("fast-csv");
+// var csv 		= require("fast-csv"); 
 var cluster 	= require('cluster');
 
 var Table = module.exports;

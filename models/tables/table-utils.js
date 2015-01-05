@@ -26,3 +26,19 @@ Table.pluralizeTerms = function(terms) {
 	}
 	return pluralTerms;
 }
+
+Table.sanitizeMetaData = function(meta) {
+	var cleanMeta = {};
+
+	// Remove any 'null' strings
+	cleanMeta['title'] = meta.title == 'null' ? '' : meta.title;
+	cleanMeta['source'] = meta.source == 'null' ? '' : meta.source;
+	cleanMeta['source_url'] = meta.source_url == 'null' ? '' : meta.source_url;
+
+	// Convert columns to an array
+	cleanMeta['columns'] = meta.columns.split(",");
+
+	cleanMeta['layout'] = meta.layout;
+
+	return cleanMeta;
+}

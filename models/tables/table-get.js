@@ -1,6 +1,73 @@
 var Table = module.exports;
 
 /**
+ * Accept a table id
+ * and return the table's meta-data and actual data
+ * 
+ * --  
+ * 1) Break the query into plural and singular search terms
+ * 2) Find the types associated with the search terms
+ * 3) Find all the column names that match query terms
+ * 4) 	Find all the entities associated with the types
+ * 5) 		Filter for the column names that match an entity
+ * 7)		
+ * --
+ *
+ * @return column data object
+ * @api public
+*/
+
+
+Table.find = function(id, callback) {
+	var _this = this;
+
+	// Convert headers to array
+	// meta.columns = meta.columns.split(",");
+
+	// Set up our db connection
+	this.pool.getConnection(function(err, connection) {
+		if (err) { callback(err, null); return; }
+
+		_this.connection = connection;
+
+		// Find the meta data for this table
+		var all_data = {};
+		_this.findMetaData(id, function(err, meta) {
+			if (err) { callback(err, null); return; }
+
+			// Add the meta data to a data hash
+			all_data = _this.sanitizeMetaData(meta);
+
+			// Now get the actual data
+			_this.findData(id, function(err, data) {
+				if (err) { callback(err, null); return; }
+
+				// Add the real data to the data object
+				all_data['data'] = data;
+				callback(null, all_data);
+			});
+		});
+	});
+}
+
+Table.findMetaData = function(id, callback) {
+	var sql = "SELECT * FROM tables WHERE id=?";
+	this.connection.query(sql, [id], function(err, rows, fields) {
+		if (err) { callback(err, null); return; }
+		callback(null, rows[0]);
+	});
+}
+
+Table.findData = function(id, callback) {
+	var sql = "SELECT * FROM ??";
+	var query = this.connection.query(sql, [id], function(err, rows, fields) {
+		console.log(query.sql);
+		if (err) { callback(err, null); return; }
+		callback(null, rows);
+	});
+}
+
+/**
  * Accept a query from string
  * and parse for type and columns
  * 
