@@ -2,16 +2,20 @@
   "name": "columns-api",
   "main": "server.js",
   "dependencies": {
-    "express": "~4.0.0",
-    "mysql": ">=1.0",
     "body-parser": "~1.0.1",
     "conflate": "~1.1.0",
-    "pluralize": "0.0.10",
-    "grunt": "~0.4.5",
-    "grunt-develop": "~0.4.0",
-    "grunt-contrib-watch": "~0.6.1",
+    "connect-busboy": "0.0.2",
     "cookie-session": "~1.0.2",
+    "express": "~4.0.0",
+    "fast-csv": "~0.4.2",
+    "grunt": "~0.4.5",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-develop": "~0.4.0",
+    "mongodb": "*",
+    "monk": "*",
+    "multer": "^0.1.6",
+    "mysql": ">=1.0",
     "parted": "~0.1.1",
-    "fast-csv": "~0.4.2"
+    "pluralize": "0.0.10"
   }
 }

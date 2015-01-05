@@ -5,7 +5,8 @@ module.exports = {
 			"user": "root",
 			"password": "",
 			"name": "columns"
-		}
+		},
+		"data_path": "./uploaded-data/"
 	},
 	"test": {
 		"database": {
@@ -13,7 +14,8 @@ module.exports = {
 			"user": "root",
 			"password": "",
 			"name": "columns-test"
-		}
+		},
+		"data_path": "./uploaded-data/"
 	},
 	"production": {
 		// "database": {
@@ -27,6 +29,7 @@ module.exports = {
 			"user": process.env.RDS_USERNAME,
 			"password": process.env.RDS_PASSWORD,
 			"name": 'columns'
-		}
+		},
+		"data_path": "./uploaded-data/"
 	}
 };

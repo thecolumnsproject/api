@@ -49,7 +49,9 @@ node_modules
 .lock-wscript
 
 # Generated data files
+data/
 data/*.csv
+uploaded-data/*.csv
 .elasticbeanstalk/
 
 # AWS info

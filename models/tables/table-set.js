@@ -6,6 +6,155 @@ var cluster 	= require('cluster');
 var Table = module.exports;
 
 /**
+ * Accept a .csv file uploaded from the web
+ * that contains a data table.
+ * Add the .csv to the database as a table
+ * and add a reference to that table to a master table
+*/
+
+
+/**
+ * Accept meta-data for a new table
+ * including all of the column names, title and source info
+ * as well as the data itself as a file path.
+**/
+Table.create = function(meta, data_path, callback) {
+	var _this = this;
+
+	// Convert headers to array
+	// meta.columns = meta.columns.split(",");
+
+	// Set up our db connection
+	this.pool.getConnection(function(err, connection) {
+		if (err) { callback(err, null); return; }
+
+		_this.connection = connection;
+
+		// Add our meta-data to the db
+		_this.addMetaData(meta, function(err, id) {
+			if (err) { callback(err, null); return; }
+
+			// With the id of the entry in the tables table
+			// for our data, create a new table for the data itself
+			_this.createDataTable(id, meta.columns, function(err, tableName) {
+				if (err) { callback(err, null); return; }
+
+				// And insert that data into the table
+				_this.addDataToTable(tableName, data_path, function(err) {
+					if (err) { callback(err, null); return; }
+					callback(null, tableName);
+				});
+			});
+		});
+	});
+}
+
+Table.update = function(id, meta, callback) {
+	var _this = this;
+
+	// Convert headers to array
+	// meta.columns = meta.columns.split(",");
+
+	// Set up our db connection
+	this.pool.getConnection(function(err, connection) {
+		if (err) { callback(err, null); return; }
+
+		_this.connection = connection;
+
+		// Add our meta-data to the db
+		_this.updateMetaDataForId(id, meta, function(err) {
+			if (err) { callback(err); return; }
+			callback(null);
+		});
+	});
+}
+
+/**
+ * Accept a table's meta-data
+ * and add it to the tables table
+ *
+ * Return the table's id
+ * @api private
+*/
+Table.addMetaData = function(meta, callback) {
+	var sql =	"INSERT INTO tables (title, source, source_url, columns, layout) VALUES (?, ?, ?, ?, ?)";
+	this.connection.query(sql, [meta.title, meta.source, meta.source_url, meta.columns, meta.layout], function(err, rows, fields) {
+		if (err) { callback(err); return; }
+		console.log(rows['insertId']);
+		callback(null, rows['insertId']);
+	});
+}
+
+Table.updateMetaDataForId = function(id, meta, callback) {
+	var sql =	"UPDATE tables SET" +
+				" title=?," +
+				" source=?," +
+				" source_url=?," +
+				" columns=?," +
+				" layout=? " +
+				"WHERE id=?";
+	var query = this.connection.query(sql, [meta.title, meta.source, meta.source_url, meta.columns, meta.layout, id], function(err, rows, fields) {
+		console.log(query.sql);
+		console.log(err);
+		if (err) { callback(err); return; }
+		console.log(rows['insertId']);
+		callback(null);
+	});
+}
+
+Table.createDataTable = function(id, columns, callback) {
+	var columnsArray = columns.split(",");
+	var sql =	"CREATE TABLE ??.`?` (";
+	columnsArray.forEach(function(column, i) {
+		sql += "?? TEXT";
+		if (i < columnsArray.length - 1) {
+			sql += ","
+		}
+	});
+	sql += ")";
+	this.connection.query(sql, [this.pool.config.connectionConfig.database, id].concat(columnsArray), function(err, rows, fields) {
+		if (err) { callback(err, null); console.log(err); return; }
+		callback(null, id);
+	});
+}
+
+Table.addDataToTable = function(tableName, data_path, callback) {
+	var _this = this;
+	this.connection.beginTransaction(function(err) {
+		if (err) { callback(err, null); return; }
+
+		var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
+					" IGNORE" +
+					" INTO TABLE `?`" +
+					" FIELDS TERMINATED BY ','" +
+					" IGNORE 1 LINES";
+		var query = _this.connection.query(sql, [data_path, tableName], function(err, rows, fields) {
+			// console.log(query.sql);
+			if (err) {
+				_this.connection.rollback(function() { 
+					callback(err);
+					return;
+				});
+			}
+			_this.connection.commit(function(err) {
+				if (err) {
+					_this.connection.rollback(function() {
+						callback(err);
+					});
+					return;
+				}
+
+				fs.unlink(data_path, function(err) {
+					if (err) {console.log(err); return;}
+					callback(null)
+				});
+			});
+		});
+	});
+}
+
+
+/**
  * Accept api input data
  * and parse for storage
  * in the database
