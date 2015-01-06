@@ -44,6 +44,7 @@ Table.create = function(meta, data_path, callback) {
 					if (err) { callback(err, null); _this.connection.release(); return; }
 					callback(null, tableName);
 					_this.connection.release();
+					_this.pool.end();
 				});
 			});
 		});
@@ -67,6 +68,7 @@ Table.update = function(id, meta, callback) {
 			if (err) { callback(err); return; }
 			callback(null);
 			_this.connection.release();
+			_this.pool.end();
 		});
 	});
 }

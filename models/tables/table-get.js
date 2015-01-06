@@ -51,6 +51,7 @@ Table.find = function(id, page, callback) {
 					all_data['num_rows'] = count;
 					callback(null, all_data);
 					_this.connection.release();
+					_this.pool.end();
 				});
 			});
 		});
