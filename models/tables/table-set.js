@@ -103,7 +103,7 @@ Table.updateMetaDataForId = function(id, meta, callback) {
 }
 
 Table.createDataTable = function(id, columns, callback) {
-	var columnsArray = columns.split(",");
+	var columnsArray = columns.split(",").map(this.formatColumn);
 	var sql =	"CREATE TABLE ??.`?` (";
 	columnsArray.forEach(function(column, i) {
 		sql += "?? TEXT";

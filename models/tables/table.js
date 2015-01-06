@@ -10,7 +10,7 @@ var mysql 	   	= require('mysql');
 function Table() {
 	this.type = '';
 	this.entities = [];
-	this.pagingLimit = 100;
+	this.pagingLimit = 20;
 	this.pool = mysql.createPool({
 		connectionLimit 	: 1000000,
 		host				: config.database.host,

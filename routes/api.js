@@ -72,7 +72,7 @@ router.route('/columns/table/:id')
 
 	.get(function(req, res) {
 		var table = new Table();
-		table.find(req.params.id, function(err, data) {
+		table.find(req.params.id, req.query.page || 0, function(err, data) {
 			if (err) {
 				res.json({
 					status: 'fail',
@@ -110,133 +110,6 @@ router.route('/columns/table')
 
 	// Return a table for a given id
 	.get(function(req, res) {
-
-		res.json({
-			status: 'success',
-			data: {
-				source: 'Lubin Truth Institute',
-				title: 'Friends of Mine',
-				sort_by_column: 'age',
-				layout: {
-					style: [{
-						property: 'padding',
-						value: '12px'
-					}],
-					values: [{
-						type: 'group',
-						layout: [{
-							property: 'flex-direction',
-							value: 'column'
-						}, {
-							property: 'align-items',
-							value: 'flex-start'
-						}],
-						values: [{
-							type: 'single',
-							style: [{
-								property: 'color',
-								value: '#3a3a3a'
-							}],
-							data: 'first_name'
-						},{
-							type: 'single',
-							data: 'hometown',
-							style: [{
-								property: 'color',
-								value: '#888'
-							},{
-								property: 'font-size',
-								value: '14px'
-							}, {
-								property: 'margin-top',
-								value: '4px'
-							}]
-						}]
-					},
-					{
-						type: 'single',
-						data: 'age',
-						style: [{
-							property: 'color',
-							value: '#3a3a3a'
-						},{
-							property: 'font-size',
-							value: '24px'
-						}]
-					}]
-				},
-				data: [{
-					first_name: 'Jermy',
-					last_name: 'Lubin',
-					hometown: 'Princeton',
-					age: 27,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Jess',
-					last_name: 'Schwartz',
-					hometown: 'Mechanicsburg',
-					age: 28,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Amir',
-					last_name: 'Kanpurwala',
-					hometown: 'Princeton',
-					age: 27,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Jeff',
-					last_name: 'LaFlam',
-					hometown: 'Raliegh',
-					age: 28,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Phil',
-					last_name: 'Chacko',
-					hometown: 'Princeton',
-					age: 28,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Albert',
-					last_name: 'Choi',
-					hometown: 'Raliegh',
-					age: 13,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Kelly',
-					last_name: 'Fee',
-					hometown: 'Chicago',
-					age: 27,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Elaine',
-					last_name: 'Zelby',
-					hometown: 'Chicago',
-					age: 27,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Kousha',
-					last_name: 'Navidar',
-					hometown: 'Albany',
-					age: 26,
-					unit: 'Years'
-				},
-				{
-					first_name: 'Craig',
-					last_name: 'Hosang',
-					hometown: 'Alameda',
-					age: 28,
-					unit: 'Years'
-				}]
-			}
-		});
 		res.end();
 	});
 

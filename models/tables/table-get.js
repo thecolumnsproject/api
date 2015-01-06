@@ -18,7 +18,7 @@ var Table = module.exports;
 */
 
 
-Table.find = function(id, callback) {
+Table.find = function(id, page, callback) {
 	var _this = this;
 
 	// Convert headers to array
@@ -39,12 +39,18 @@ Table.find = function(id, callback) {
 			all_data = _this.sanitizeMetaData(meta);
 
 			// Now get the actual data
-			_this.findData(id, function(err, data) {
+			_this.findData(id, page * _this.pagingLimit, function(err, data) {
 				if (err) { callback(err, null); return; }
 
 				// Add the real data to the data object
 				all_data['data'] = data;
-				callback(null, all_data);
+
+				// Find the total number of rows
+				_this.findRowCountForTableId(id, function(err, count) {
+					if (err) { callback(err, null); return; }
+					all_data['num_rows'] = count;
+					callback(null, all_data);
+				});
 			});
 		});
 	});
@@ -58,12 +64,20 @@ Table.findMetaData = function(id, callback) {
 	});
 }
 
-Table.findData = function(id, callback) {
-	var sql = "SELECT * FROM ??";
-	var query = this.connection.query(sql, [id], function(err, rows, fields) {
-		console.log(query.sql);
+Table.findData = function(id, startingPoint, callback) {
+	var sql = "SELECT * FROM ?? LIMIT ?,?";
+	var query = this.connection.query(sql, [id, startingPoint, this.pagingLimit], function(err, rows, fields) {
 		if (err) { callback(err, null); return; }
 		callback(null, rows);
+	});
+}
+
+Table.findRowCountForTableId = function(id, callback) {
+	var sql = "SELECT COUNT(*) FROM ??";
+	var query = this.connection.query(sql, [id], function(err, rows, fields) {
+		if (err) { callback(err, null); return; }
+		console.log(rows);
+		callback(null, rows[0]['COUNT(*)']);
 	});
 }
 

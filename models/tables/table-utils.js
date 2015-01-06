@@ -14,6 +14,10 @@ Table.unformatColumnHeader = function(name) {
 	return name.replace('__', '');
 }
 
+Table.formatColumn = function(name) {
+	return name.toLowerCase().replace(/ /g, '_').replace(/'/g, '');
+}
+
 Table.cleanEntity = function(name) {
 	return name.replace(/'/g, '').replace(/,/g, ' -');
 }
