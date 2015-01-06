@@ -66,6 +66,7 @@ Table.update = function(id, meta, callback) {
 		_this.updateMetaDataForId(id, meta, function(err) {
 			if (err) { callback(err); return; }
 			callback(null);
+			_this.connection.release();
 		});
 	});
 }
