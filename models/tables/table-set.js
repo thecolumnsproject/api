@@ -78,8 +78,10 @@ Table.update = function(id, meta, callback) {
 */
 Table.addMetaData = function(meta, callback) {
 	var sql =	"INSERT INTO tables (title, source, source_url, columns, layout) VALUES (?, ?, ?, ?, ?)";
-	this.connection.query(sql, [meta.title, meta.source, meta.source_url, meta.columns, meta.layout], function(err, rows, fields) {
-		if (err) { callback(err); return; }
+	var query = this.connection.query(sql, [meta.title, meta.source, meta.source_url, meta.columns, meta.layout], function(err, rows, fields) {
+		console.log(query.sql);
+		if (err) { callback(err); console.log(err); return; }
+		console.log("Inserted Tables Row:");
 		console.log(rows['insertId']);
 		callback(null, rows['insertId']);
 	});
@@ -95,8 +97,8 @@ Table.updateMetaDataForId = function(id, meta, callback) {
 				"WHERE id=?";
 	var query = this.connection.query(sql, [meta.title, meta.source, meta.source_url, meta.columns, meta.layout, id], function(err, rows, fields) {
 		console.log(query.sql);
-		console.log(err);
-		if (err) { callback(err); return; }
+		if (err) { callback(err); console.log(err); return; }
+		console.log("Updated Tables Row:");
 		console.log(rows['insertId']);
 		callback(null);
 	});
@@ -112,8 +114,11 @@ Table.createDataTable = function(id, columns, callback) {
 		}
 	});
 	sql += ")";
-	this.connection.query(sql, [this.pool.config.connectionConfig.database, id].concat(columnsArray), function(err, rows, fields) {
+	var query = this.connection.query(sql, [this.pool.config.connectionConfig.database, id].concat(columnsArray), function(err, rows, fields) {
+		console.log(query.sql);
 		if (err) { callback(err, null); console.log(err); return; }
+		console.log("Created Data Table:");
+		console.log(rows['insertId']);
 		callback(null, id);
 	});
 }
@@ -121,7 +126,7 @@ Table.createDataTable = function(id, columns, callback) {
 Table.addDataToTable = function(tableName, data_path, callback) {
 	var _this = this;
 	this.connection.beginTransaction(function(err) {
-		if (err) { callback(err, null); return; }
+		if (err) { callback(err, null); console.log(err); return; }
 
 		var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
 					" IGNORE" +
@@ -129,16 +134,18 @@ Table.addDataToTable = function(tableName, data_path, callback) {
 					" FIELDS TERMINATED BY ','" +
 					" IGNORE 1 LINES";
 		var query = _this.connection.query(sql, [data_path, tableName], function(err, rows, fields) {
-			// console.log(query.sql);
+			console.log(query.sql);
 			if (err) {
 				_this.connection.rollback(function() { 
 					callback(err);
+					console.log(err);
 					return;
 				});
 			}
 			_this.connection.commit(function(err) {
 				if (err) {
 					_this.connection.rollback(function() {
+						console.log(err);
 						callback(err);
 					});
 					return;

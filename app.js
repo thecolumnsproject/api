@@ -23,11 +23,9 @@ if (cluster.isMaster) {
 	// Configure the API route settings
 	var api = require('./routes/api');
 	app.use('/api', function(req, res, next) {
-		console.log('Setting headers');
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 		res.header('Access-Control-Allow-Headers', '*');
-		console.log('Headers set');
 		next();
 	});
 

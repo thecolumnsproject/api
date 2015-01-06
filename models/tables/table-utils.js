@@ -44,5 +44,5 @@ Table.sanitizeMetaData = function(meta) {
 
 	cleanMeta['layout'] = meta.layout;
 
-	return cleanMeta;
+	return cleanMeta; 
 }
