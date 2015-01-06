@@ -32,17 +32,18 @@ Table.create = function(meta, data_path, callback) {
 
 		// Add our meta-data to the db
 		_this.addMetaData(meta, function(err, id) {
-			if (err) { callback(err, null); return; }
+			if (err) { callback(err, null); _this.connection.release(); return; }
 
 			// With the id of the entry in the tables table
 			// for our data, create a new table for the data itself
 			_this.createDataTable(id, meta.columns, function(err, tableName) {
-				if (err) { callback(err, null); return; }
+				if (err) { callback(err, null); _this.connection.release(); return; }
 
 				// And insert that data into the table
 				_this.addDataToTable(tableName, data_path, function(err) {
-					if (err) { callback(err, null); return; }
+					if (err) { callback(err, null); _this.connection.release(); return; }
 					callback(null, tableName);
+					_this.connection.release();
 				});
 			});
 		});
