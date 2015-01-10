@@ -22,7 +22,7 @@ if (cluster.isMaster) {
 
 	// Configure the API route settings
 	var api = require('./routes/api');
-	app.use('/api', function(req, res, next) {
+	app.use('/', function(req, res, next) {
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 		res.header('Access-Control-Allow-Headers', '*');
@@ -60,8 +60,7 @@ if (cluster.isMaster) {
 	  // secureProxy: true // if you do SSL outside of node
 	}));
 
-	// all of our routes will be prefixed with /api
-	app.use('/api', api);
+	app.use('/', api);
 
 	// Start the server
 	var port = process.env.PORT || 8080;
