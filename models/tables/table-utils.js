@@ -15,7 +15,7 @@ Table.unformatColumnHeader = function(name) {
 }
 
 Table.formatColumn = function(name) {
-	return name.toLowerCase().replace(/ /g, '_').replace(/'/g, '');
+	return name ? name.toLowerCase().replace(/ /g, '_').replace(/'/g, '') : "_";
 }
 
 Table.cleanEntity = function(name) {
@@ -41,6 +41,7 @@ Table.sanitizeMetaData = function(meta) {
 
 	// Convert columns to an array
 	cleanMeta['columns'] = meta.columns.split(",");
+	console.log(cleanMeta['columns']);
 
 	cleanMeta['layout'] = meta.layout;
 
