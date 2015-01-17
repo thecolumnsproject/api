@@ -17,5 +17,8 @@
     "mysql": ">=1.0",
     "parted": "~0.1.1",
     "pluralize": "0.0.10"
+  },
+  "scripts": {
+    "test": "jasmine-node spec/"
   }
 }
