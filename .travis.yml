@@ -1,14 +1,14 @@
 language:
-  - node_js
+- node_js
 node_js:
-  - '0.10'
+- '0.10'
 env:
-  - NODE_ENV='production'
+- NODE_ENV='production'
 deploy:
   provider: elasticbeanstalk
   access_key_id: AKIAJ7BART2KY7QI45GA
   secret_access_key:
-    secure: AarATxkp5lXPeVtZTbsihCyxtWcbmGs4U5aMqKNZpq1nQCKrCj6bJm/iOe+2kzhrAcI0TdUqc58m1mv3+H/Mw2yVfXgmEF+dfZwvvCerDKIincq1QAb/rb7k36Y+OQVDYKz+oyW90PNoUQ+4X7OROLAlSC1IbDVzMmhmu2niIww=
+    secure: GzVdPHy8dYXOnwA6zhVIru6Dd4qbz/JQfq6S1PYOk5TlEYxWo/IjoZe6CfOotl55KpwPCLXls7mkstB1lzDlsl0XAXUq0ow87U2k6W0eT12+Vuxsil5eMFBmJE64ohG5EBPtanEle29kIqVLHxkqP/ivqiB+xMGS0rQz/ScGaPM=
   app: api
   env: api-env
   bucket_name: elasticbeanstalk-us-west-2-931267450346
