@@ -2,7 +2,7 @@ var crypto 		= require('crypto');
 var fs 			= require('fs');
 // var csv 		= require("fast-csv"); 
 var cluster 	= require('cluster');
-var cleaner		= require('../table-cleaner.js');
+var Cleaner		= require('../table-cleaner.js');
 // var Transform	= require('stream').Transform;
 // var util 		= require('util');
 
@@ -187,8 +187,8 @@ Table.cleanData = function(data_path, callback) {
 	// 	clean.write(cleanChunk);
 	// });
 	unclean
-		.pipe(cleaner)
-		.pipe(clean);
+		.pipe( new Cleaner() )
+		.pipe( clean );
 
 	// When we're finished writing to the new file,
 	// send the file name to the callback

@@ -2,12 +2,21 @@
 var mysql 	   	= require('mysql');
 var Transform	= require('stream').Transform;
 var Baby		= require('babyparse');
-// var util 		= require('util');
+var util 		= require('util');
+util.inherits(Cleaner, Transform);
 
 // console.log(Table);
 // var table = new Table();
-var cleaner = new Transform({objectMode: true});
-cleaner._transform = function(chunk, encoding, callback) {
+// var cleaner = new Transform({objectMode: true});
+
+function Cleaner(options) {
+	if (!(this instanceof Cleaner))
+    	return new Cleaner(options);
+
+	Transform.call(this, options);
+}
+
+Cleaner.prototype._transform = function(chunk, encoding, callback) {
 	var _cleaner = this;
 	// Turn the chunk into a string
 	var chunkString = chunk.toString();
@@ -28,13 +37,13 @@ cleaner._transform = function(chunk, encoding, callback) {
  	callback();
 }
 
-cleaner._flush = function(callback) {
+Cleaner.prototype._flush = function(callback) {
 	if (this._lastLineData) this.push('\n' + this.cleanLine(this._lastLineData));
 	this._lastLineData = null;
 	callback();
 }
 
-cleaner.cleanLine = function(line) {
+Cleaner.prototype.cleanLine = function(line) {
 	// Break out individual data values
 	var values = Baby.parse(line);
 	// Escape each value
@@ -46,4 +55,4 @@ cleaner.cleanLine = function(line) {
 	return cleanValues.join();
 }
 
-module.exports = cleaner;
+module.exports = Cleaner;
