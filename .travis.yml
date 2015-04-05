@@ -3,7 +3,7 @@ language:
 node_js:
 - '0.10'
 env:
-- NODE_ENV='production'
+- NODE_ENV='test'
 deploy:
   - provider: elasticbeanstalk
     access_key_id: AKIAJ7BART2KY7QI45GA
