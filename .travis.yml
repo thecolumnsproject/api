@@ -10,20 +10,20 @@ deploy:
     secret_access_key:
       secure: GzVdPHy8dYXOnwA6zhVIru6Dd4qbz/JQfq6S1PYOk5TlEYxWo/IjoZe6CfOotl55KpwPCLXls7mkstB1lzDlsl0XAXUq0ow87U2k6W0eT12+Vuxsil5eMFBmJE64ohG5EBPtanEle29kIqVLHxkqP/ivqiB+xMGS0rQz/ScGaPM=
     app: api
-    env: api-stg-env
-    bucket_name: elasticbeanstalk-us-west-2-931267450346
-    region: us-west-2
-    on:
-      repo: thecolumnsproject/api
-      branch: master
-  - provider: elasticbeanstalk
-    access_key_id: AKIAJ7BART2KY7QI45GA
-    secret_access_key:
-      secure: GzVdPHy8dYXOnwA6zhVIru6Dd4qbz/JQfq6S1PYOk5TlEYxWo/IjoZe6CfOotl55KpwPCLXls7mkstB1lzDlsl0XAXUq0ow87U2k6W0eT12+Vuxsil5eMFBmJE64ohG5EBPtanEle29kIqVLHxkqP/ivqiB+xMGS0rQz/ScGaPM=
-    app: api
     env: api-env
     bucket_name: elasticbeanstalk-us-west-2-931267450346
     region: us-west-2
     on:
       repo: thecolumnsproject/api
       branch: production
+  - provider: elasticbeanstalk
+    access_key_id: AKIAJ7BART2KY7QI45GA
+    secret_access_key:
+      secure: GzVdPHy8dYXOnwA6zhVIru6Dd4qbz/JQfq6S1PYOk5TlEYxWo/IjoZe6CfOotl55KpwPCLXls7mkstB1lzDlsl0XAXUq0ow87U2k6W0eT12+Vuxsil5eMFBmJE64ohG5EBPtanEle29kIqVLHxkqP/ivqiB+xMGS0rQz/ScGaPM=
+    app: api
+    env: api-stg-env
+    bucket_name: elasticbeanstalk-us-west-2-931267450346
+    region: us-west-2
+    on:
+      repo: thecolumnsproject/api
+      branch: master
