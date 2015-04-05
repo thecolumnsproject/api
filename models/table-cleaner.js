@@ -14,7 +14,7 @@ function Cleaner(options) {
     	return new Cleaner(options);
 
 	Transform.call(this, options);
-}
+} 
 
 Cleaner.prototype._transform = function(chunk, encoding, callback) {
 	var _cleaner = this;

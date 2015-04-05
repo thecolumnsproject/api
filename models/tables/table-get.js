@@ -21,6 +21,12 @@ var Table = module.exports;
 Table.find = function(id, page, callback) {
 	var _this = this;
 
+	// Check for any errors
+	if ( id === undefined ) {
+		callback( new Error('No table id specified'), null );
+		return;
+	}
+
 	// Convert headers to array
 	// meta.columns = meta.columns.split(",");
 
@@ -34,6 +40,13 @@ Table.find = function(id, page, callback) {
 		var all_data = {};
 		_this.findMetaData(id, function(err, meta) {
 			if (err) { callback(err, null); _this.connection.release(); return; }
+
+			// Check for empty meta
+			if ( !meta ) {
+				callback( new Error( 'No table found for id undefined' ), null );
+				_this.connection.release(); _this.pool.end();
+				return;
+			}
 
 			// Add the meta data to a data hash
 			all_data = _this.sanitizeMetaData(meta);

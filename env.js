@@ -13,7 +13,16 @@ module.exports = {
 			"host": "localhost",
 			"user": "root",
 			"password": "",
-			"name": "columns-test"
+			"name": "columns_test"
+		},
+		"data_path": "./uploaded-data/"
+	},
+	"staging": {
+		"database": {
+			"host": process.env.RDS_HOSTNAME,
+			"user": process.env.RDS_USERNAME,
+			"password": process.env.RDS_PASSWORD,
+			"name": 'columns'
 		},
 		"data_path": "./uploaded-data/"
 	},

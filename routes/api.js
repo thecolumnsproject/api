@@ -76,7 +76,7 @@ router.route('/columns/table/:id')
 			if (err) {
 				res.json({
 					status: 'fail',
-					message: err
+					message: err.message
 				});
 			} else {
 				res.json({
