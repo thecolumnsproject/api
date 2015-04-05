@@ -8,10 +8,7 @@ var fixtures 	= require('./fixtures.json');
 describe('Tables', function() {
 
 	var table;
-	beforeEach(function() {
-
-		// Create the table object
-		table = new Table();
+	beforeEach(function( done ) {
 
 		// Add dummy data to test database
 		// connection.query('INSERT INTO types (name) VALUES (startup)', function(err, rows, fields) {
@@ -29,7 +26,16 @@ describe('Tables', function() {
 			});
 			var query = connection.query(sql, function(err, rows, fields) {
 				if (err) throw err;
+
+				// Create the table object
+				// once we've set up the database
+				table = new Table();
+
+				// End the connection
 				connection.end();
+
+				// Start running tests
+				done();
 			});
 		});
 	});
