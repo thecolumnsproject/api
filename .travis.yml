@@ -26,4 +26,4 @@ deploy:
     region: us-west-2
     on:
       repo: thecolumnsproject/api
-      branch: master
+      branch: staging
