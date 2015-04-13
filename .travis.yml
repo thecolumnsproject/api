@@ -4,6 +4,10 @@ node_js:
 - '0.10'
 env:
 - NODE_ENV='test'
+branches:
+  only:
+    - staging
+    - production
 deploy:
   - provider: elasticbeanstalk
     access_key_id: AKIAJ7BART2KY7QI45GA
