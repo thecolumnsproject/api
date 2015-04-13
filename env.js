@@ -6,6 +6,9 @@ module.exports = {
 			"password": "",
 			"name": "columns"
 		},
+		"app":{
+			"host": "http://127.0.0.1"
+		},
 		"data_path": "./uploaded-data/"
 	},
 	"test": {
@@ -15,6 +18,9 @@ module.exports = {
 			"password": "",
 			"name": "columns_test"
 		},
+		"app":{
+			"host": "http://appstg.thecolumnsproject.com"
+		},
 		"data_path": "./uploaded-data/"
 	},
 	"staging": {
@@ -23,6 +29,9 @@ module.exports = {
 			"user": process.env.RDS_USERNAME,
 			"password": process.env.RDS_PASSWORD,
 			"name": 'columns'
+		},
+		"app":{
+			"host": "http://appstg.thecolumnsproject.com"
 		},
 		"data_path": "./uploaded-data/"
 	},
@@ -38,6 +47,9 @@ module.exports = {
 			"user": process.env.RDS_USERNAME,
 			"password": process.env.RDS_PASSWORD,
 			"name": 'columns'
+		},
+		"app":{
+			"host": "http://app.thecolumnsproject.com"
 		},
 		"data_path": "./uploaded-data/"
 	}

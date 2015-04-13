@@ -1,6 +1,7 @@
-var express    	= require('express');
-var router 		= express.Router();
-var Table 		= require('../models/tables/table.js');
+var express    			= require('express');
+var router 				= express.Router();
+var Table 				= require('../models/tables/table.js');
+var Registration 		= require('../models/registration.js');
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
@@ -112,6 +113,25 @@ router.route('/columns/table')
 	// Return a table for a given id
 	.get(function(req, res) {
 		res.end();
+	});
+
+router.route('/columns/register')
+
+	.post(function( req, res ) {
+
+		var registration = new Registration;
+		registration.registerUser( req.body.user, function( err ) {
+			if (err) {
+				res.json({
+					status: 'fail',
+					message: err
+				});
+			} else {
+				res.json({
+					status: 'success'
+				});
+			}
+		});
 	});
 
 module.exports = router;

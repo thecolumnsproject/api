@@ -13,6 +13,18 @@ CREATE TABLE IF NOT EXISTS `tables` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+# Create the users table
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX (email)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+# Create a dummy user for the purpose of testing duplicates
+INSERT INTO users (email) VALUES ('jeremy.lubin@columns.com') ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id);
+
 # Create the types table
 -- CREATE TABLE IF NOT EXISTS `types` (
 --   `id` mediumint(9) NOT NULL AUTO_INCREMENT,

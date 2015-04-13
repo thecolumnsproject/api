@@ -13,6 +13,14 @@ CREATE TABLE IF NOT EXISTS `tables` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+# Create the users table
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX (email)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 # Create the types table
 -- CREATE TABLE IF NOT EXISTS `types` (
 --   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
