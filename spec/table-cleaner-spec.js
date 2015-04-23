@@ -20,7 +20,7 @@ describe('Table Cleaner', function() {
 	});
 
 	it('it should clean a line', function() {
-		var line = this.tableCleaner.cleanLine('Github,SCSS,Custom @mixins,100+ source files,"7,000 selectors","2 final stylesheets, because of IE selector limit","DROP TABLE tables",');
+		var line = this.tableCleaner.cleanLine('Github.,SCSS,Custom @mixins,100+ source files,"7,000 selectors","2 final stylesheets, because of IE selector limit","DROP TABLE tables",');
 		expect(line).toBe("'Github','SCSS','Custom @mixins','100+ source files','7,000 selectors','2 final stylesheets, because of IE selector limit','DROP TABLE tables',''");
 	});
 

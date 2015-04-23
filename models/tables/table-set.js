@@ -6,6 +6,8 @@ var Cleaner		= require('../table-cleaner.js');
 // var Transform	= require('stream').Transform;
 // var util 		= require('util');
 
+var CLEAN_SUFFIX = '__clean.csv';
+
 var Table = module.exports;
 
 /**
@@ -32,6 +34,9 @@ Table.create = function(meta, data_path, callback) {
 		if (err) { callback(err, null); return; }
 
 		_this.connection = connection;
+
+		// Clean the meta data
+		meta = _this.sanitizeMetaData( meta );
 
 		// Add our meta-data to the db
 		_this.addMetaData(meta, function(err, id) {
@@ -88,6 +93,7 @@ Table.update = function(id, meta, callback) {
  * @api private
 */
 Table.addMetaData = function(meta, callback) {
+
 	var sql =	"INSERT INTO tables (title, source, source_url, columns, layout) VALUES (?, ?, ?, ?, ?)";
 	var query = this.connection.query(sql, [meta.title, meta.source, meta.source_url, meta.columns, meta.layout], function(err, rows, fields) {
 		console.log(query.sql);
@@ -179,7 +185,7 @@ Table.cleanData = function(data_path, callback) {
 	// 	return cleanValues.join();
 	// }
 
-	var cleanPath = data_path.slice(0, -4) + '__clean.csv';
+	var cleanPath = data_path.slice(0, -4) + CLEAN_SUFFIX;
 	var unclean = fs.createReadStream(data_path);
 	var clean = fs.createWriteStream(cleanPath);
 	// unclean.on('data', function(chunk) {
@@ -207,6 +213,8 @@ Table.addDataToTable = function(tableName, data_path, callback) {
 					" INTO TABLE `?`" +
 					" FIELDS TERMINATED BY ',' ENCLOSED BY \"'\"" +
 					" IGNORE 1 LINES";
+		console.log("About to load data into db");
+		console.log( sql );
 		var query = _this.connection.query(sql, [data_path, tableName], function(err, rows, fields) {
 			console.log(query.sql);
 			if (err) {
@@ -225,10 +233,10 @@ Table.addDataToTable = function(tableName, data_path, callback) {
 					return;
 				}
 
-				fs.unlink(data_path, function(err) {
-					if (err) {console.log(err); return;}
-					callback(null)
-				});
+				// fs.unlink(data_path, function(err) {
+				// 	if (err) {console.log(err); return;}
+				// 	callback(null)
+				// });
 			});
 		});
 	});

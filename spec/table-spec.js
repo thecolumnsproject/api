@@ -91,4 +91,34 @@ describe('Tables', function() {
 			});
 		});
 	});
+
+	describe('Cleaning table meta data', function() {
+
+		it('should clean each individual column', function() {
+			expect( table.sanitizeMetaData({
+				columns: 'Github.,   .A random column.   '
+			})).toEqual({
+				title: undefined,
+				source: undefined,
+				source_url: undefined,
+				columns: 'Github,A random column',
+				layout: undefined
+			});
+		});
+	});
+
+	describe('Cleaning a table column name', function() {
+
+		it('should remove trailing periods and whitespace', function() {
+			expect( table.cleanColumn( 'Github.' ) ).toEqual( 'Github' );
+		});
+
+		it('should truncate anything after the 64th character', function() {
+			expect( table.cleanColumn('hi') ).toBe('hi');
+			expect( table.cleanColumn( 'aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftoweudci') )
+				.toBe('aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftoweud');
+			expect( table.cleanColumn( 'aherhaskflqoetickdneglticoelfotied cstufidosqleidcjflawudjftoweudci aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftoweudci') )
+				.toBe('aherhaskflqoetickdneglticoelfotied cstufidosqleidcjflawudjftoweu');
+		})
+	});
 });

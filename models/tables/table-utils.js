@@ -2,6 +2,8 @@ var pluralize = require('pluralize');
 
 var Table = module.exports;
 
+var MAX_COLUMN_LENGTH = 64;
+
 Table.formatType = function(name) {
 	return this.connection.escape(name).toLowerCase().replace(/ /g, '_').replace(/'/g, '');
 }
@@ -39,11 +41,24 @@ Table.sanitizeMetaData = function(meta) {
 	cleanMeta['source'] = meta.source == 'null' ? '' : meta.source;
 	cleanMeta['source_url'] = meta.source_url == 'null' ? '' : meta.source_url;
 
-	// Convert columns to an array
-	cleanMeta['columns'] = meta.columns.split(",");
-	console.log(cleanMeta['columns']);
+	// Clean the columns
+	cleanMeta['columns'] = meta.columns.split(",").map(function( column, i ) {
+		return Table.cleanColumn( column );
+	}).join();
 
 	cleanMeta['layout'] = meta.layout;
 
 	return cleanMeta; 
 }
+
+Table.cleanColumn = function( column ) {
+	var cleanColumn = column;
+
+	// Replace any trailing whitespace and periods
+	cleanColumn = cleanColumn.replace(/^[.\s]+|[.\s]+$/g, "");
+
+	// Make sure it's not too long for the DB
+	cleanColumn = cleanColumn.substring( 0, MAX_COLUMN_LENGTH );
+
+	return cleanColumn;
+}	

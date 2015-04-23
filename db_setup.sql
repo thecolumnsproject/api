@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `tables` (
   `title` varchar(255) DEFAULT NULL,
   `source` varchar(255) DEFAULT NULL,
   `source_url` varchar(255) DEFAULT NULL,
-  `columns` varchar(255) DEFAULT NULL,
+  `columns` varchar(10000) DEFAULT NULL,
   `layout` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

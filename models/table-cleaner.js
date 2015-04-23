@@ -48,8 +48,16 @@ Cleaner.prototype.cleanLine = function(line) {
 	var values = Baby.parse(line);
 	// Escape each value
 	var cleanValues = values.data[0].map(function(value) {
+		var cleanValue;
+
+		// Remove any training periods or whitespace
+		cleanValue = value.replace(/^[.\s]+|[.\s]+$/g, "");
+
 		// Escape the string and remove any quotes around it
-		return mysql.escape(value); // TODO use the node-mysql escape function directly
+		// TODO use the node-mysql escape function directly
+		cleanValue = mysql.escape( cleanValue );
+
+		return cleanValue;
 	});
 	// Turn the escaped values back into a string
 	return cleanValues.join();
