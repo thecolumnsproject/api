@@ -23,7 +23,7 @@ Cleaner.prototype._transform = function(chunk, encoding, callback) {
 	// If there's a partial line hanging around from the last chunk, prepend this chunk to it
 	if (this._lastLineData) chunkString = this._lastLineData + chunkString;
 	// Split the new string into lines, in case there's a new partial line
-	var lines = chunkString.split('\n');
+	var lines = this.splitLines( chunkString );
 	// Remember the last line so we can use it next time around, in case it's a partial
 	this._lastLineData = lines.splice(lines.length-1,1)[0];
 	// Clean each line
@@ -41,6 +41,10 @@ Cleaner.prototype._flush = function(callback) {
 	if (this._lastLineData) this.push('\n' + this.cleanLine(this._lastLineData));
 	this._lastLineData = null;
 	callback();
+}
+
+Cleaner.prototype.splitLines = function( lines ) {
+	return lines.split( /\r\n|\n|\r/ );
 }
 
 Cleaner.prototype.cleanLine = function(line) {
