@@ -105,6 +105,18 @@ describe('Tables', function() {
 				layout: undefined
 			});
 		});
+
+		it('should eliminate duplicate columns', function () {
+			expect( table.sanitizeMetaData({
+				columns: 'Which areas could be improved?,Which areas could be improved?,Which areas could be improved?,Which areas could be improved?'
+			})).toEqual({
+				title: undefined,
+				source: undefined,
+				source_url: undefined,
+				columns: 'Which areas could be improved?,Which areas could be improved?_2,Which areas could be improved?_3,Which areas could be improved?_4',
+				layout: undefined
+			});
+		});
 	});
 
 	describe('Cleaning a table column name', function() {
@@ -120,5 +132,28 @@ describe('Tables', function() {
 			expect( table.cleanColumn( 'aherhaskflqoetickdneglticoelfotied cstufidosqleidcjflawudjftoweudci aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftoweudci') )
 				.toBe('aherhaskflqoetickdneglticoelfotied cstufidosqleidcjflawudjftoweu');
 		})
+
+	});
+
+	describe('Appending a number to a column name', function() {
+		var column;
+
+		it('should append the count to the column so that the name is longer after than it was before', function() {
+			column = 'This is my column name';
+			expect( table.appendCount( column, 10 ).length ).toBe( column.length + 3 );
+			expect( table.appendCount( column, 1 ).length ).toBe( column.length + 2 );
+		});
+
+		it('should truncate the column so that the name is the same length before as after if appending the count would put the column over the limit', function() {
+			column = 'aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftoweud';
+			expect( table.appendCount( column, 10 ).length ).toBe( 64 );
+			expect( table.appendCount( column, 1 ).length ).toBe( 64 );
+			expect( table.appendCount( column + 'haera' , 10 ).length ).toBe( 64 );
+		});
+
+		it('should append the count to the column name, separated by an underscore', function() {
+			expect( table.appendCount( "Hi this is a column", 10 ) ).toBe( "Hi this is a column_10" );
+			expect( table.appendCount( "aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftoweudasdf", 10 ) ).toBe( "aherhaskflqoetickdneglticoelfotiedcstufidosqleidcjflawudjftow_10" );
+		});
 	});
 });

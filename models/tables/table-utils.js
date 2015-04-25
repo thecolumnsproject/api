@@ -42,9 +42,20 @@ Table.sanitizeMetaData = function(meta) {
 	cleanMeta['source_url'] = meta.source_url == 'null' ? '' : meta.source_url;
 
 	// Clean the columns
+	var counts = {};
 	cleanMeta['columns'] = meta.columns.split(",").map(function( column, i ) {
-		return Table.cleanColumn( column );
-	}).join();
+		column = Table.cleanColumn( column );
+
+		// Update the counts object with this column
+		counts[ column ] = ( counts[ column ] || 0 ) + 1;
+
+		// Update the column with a count if it's a duplicate
+		if ( counts[ column ] > 1 ) {
+			column = this.appendCount( column, counts[ column ] )
+		}
+
+		return column;
+	}.bind( this )).join();
 
 	cleanMeta['layout'] = meta.layout;
 
@@ -62,3 +73,16 @@ Table.cleanColumn = function( column ) {
 
 	return cleanColumn;
 }	
+
+Table.appendCount = function( column, count ) {
+	var separator = '_',
+		difference = MAX_COLUMN_LENGTH - ( column.length + separator.length + count.toString().length );
+
+	// If the column + count + separator length goes over the limit,
+	// truncate the column as necessary
+	if ( difference < 0 ) {
+		column = column.substring( 0, column.length + difference );
+	}
+
+	return column += separator + count;
+}
