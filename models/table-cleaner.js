@@ -47,22 +47,32 @@ Cleaner.prototype.splitLines = function( lines ) {
 	return lines.split( /\r\n|\n|\r/ );
 }
 
-Cleaner.prototype.cleanLine = function(line) {
-	// Break out individual data values
-	var values = Baby.parse(line);
-	// Escape each value
-	var cleanValues = values.data[0].map(function(value) {
-		var cleanValue;
+Cleaner.prototype.cleanLine = function( line ) {
+	var cleanValues = [],
+		values = Baby.parse( line ); // Break out individual data values
 
-		// Remove any training periods or whitespace
-		cleanValue = value.replace(/^[.\s]+|[.\s]+$/g, "");
+	if ( ! values.data[0] ) {
+		// Skip lines with data parsing errors
+		console.log('Skipped line:');
+		console.log( line );
+		console.log('Due to error:');
+		console.log( values );
+	} else {
+		// Escape each value
+		var cleanValues = values.data[0].map(function(value) {
+			var cleanValue;
 
-		// Escape the string and remove any quotes around it
-		// TODO use the node-mysql escape function directly
-		cleanValue = mysql.escape( cleanValue );
+			// Remove any training periods or whitespace
+			cleanValue = value.replace(/^[.\s]+|[.\s]+$/g, "");
 
-		return cleanValue;
-	});
+			// Escape the string and remove any quotes around it
+			// TODO use the node-mysql escape function directly
+			cleanValue = mysql.escape( cleanValue );
+
+			return cleanValue;
+		});
+	}
+	
 	// Turn the escaped values back into a string
 	return cleanValues.join();
 }

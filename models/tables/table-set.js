@@ -233,10 +233,10 @@ Table.addDataToTable = function(tableName, data_path, callback) {
 					return;
 				}
 
-				fs.unlink(data_path, function(err) {
-					if (err) {console.log(err); return;}
+				// fs.unlink(data_path, function(err) {
+					// if (err) {console.log(err); return;}
 					callback(null)
-				});
+				// });	
 			});
 		});
 	});
