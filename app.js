@@ -32,7 +32,33 @@ if (cluster.isMaster) {
 	// Set up global middleware
 	app.use(bodyParser({limit: '200mb'}));
 	app.use(multer({
-		dest: './uploaded-data/'
+		dest: './uploaded-data/',
+		onFileUploadStart: function(file) {
+            console.log('Starting ' + file.name);
+            // console.log(file);
+        },
+        onFileUploadData: function(file, data) {
+            console.log('Got a chunk of data!');
+            console.log(file.path);
+        },
+        onFileUploadComplete: function(file) {
+            console.log('Completed file!');
+            // console.log(file);
+        },
+        onParseStart: function() {
+            console.log('Starting to parse request!');
+        },
+        onParseEnd: function(req, next) {
+            console.log('Done parsing!');
+            console.log(req.files, req.body);
+            next();
+        },
+        onError: function(e, next) {
+            if (e) {
+                console.log(e.stack);
+            }
+            next();
+        }
 	}));
 	// app.use(function(req, res, next) {
 	// 	// req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
