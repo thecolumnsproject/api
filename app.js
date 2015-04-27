@@ -31,7 +31,12 @@ if (cluster.isMaster) {
 
 	// Set up global middleware
 	app.use(bodyParser({limit: '200mb'}));
-	app.use(multer({ dest: './uploaded-data/' }));
+	app.use(multer({
+		dest: './uploaded-data/',
+		onFileUploadComplete: function (file) {
+			process.stderr.write('done\n');
+		}
+	}));
 	// app.use(function(req, res, next) {
 	// 	// req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 	// 	// 	var saveTo = path.join(__dirname + '/uploaded-data/', path.basename(fieldname));

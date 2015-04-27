@@ -53,10 +53,10 @@ Cleaner.prototype.cleanLine = function( line ) {
 
 	if ( ! values.data[0] ) {
 		// Skip lines with data parsing errors
-		console.log('Skipped line:');
-		console.log( line );
-		console.log('Due to error:');
-		console.log( values );
+		// console.log('Skipped line:');
+		// console.log( line );
+		// console.log('Due to error:');
+		// console.log( values );
 	} else {
 		// Escape each value
 		var cleanValues = values.data[0].map(function(value) {
