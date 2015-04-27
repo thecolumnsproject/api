@@ -33,10 +33,12 @@ Table.create = function(meta, data_path, callback) {
 	this.pool.getConnection(function(err, connection) {
 		if (err) { callback(err, null); return; }
 
+		console.log( 'Got connection' );
 		_this.connection = connection;
 
 		// Clean the meta data
 		meta = _this.sanitizeMetaData( meta );
+		console.log( 'Cleaned meta data' );
 
 		// Add our meta-data to the db
 		_this.addMetaData(meta, function(err, id) {

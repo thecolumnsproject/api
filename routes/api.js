@@ -93,6 +93,8 @@ router.route('/columns/table')
 
 	.post(function(req, res) {
 		var table = new Table();
+		console.log( 'Creating new table from file:' );
+		console.log( 'req.files.data.path' );
 		table.create(req.body, req.files.data.path, function(err, id) {
 			if (err) {
 				res.json({
