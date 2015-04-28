@@ -33,6 +33,7 @@ if (cluster.isMaster) {
 	app.use(bodyParser({limit: '200mb'}));
 	app.use(multer({
 		dest: './uploaded-data/',
+		fileHwm: 500,
 		onFileUploadStart: function(file) {
             console.log('Starting ' + file.name);
             // console.log(file);
