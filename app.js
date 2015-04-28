@@ -53,6 +53,19 @@ if (cluster.isMaster) {
             console.log(req.files, req.body);
             next();
         },
+		onFileSizeLimit: function (file) {
+		  console.log('Crossed file size limit! Failed: ', file.originalname)
+		  fs.unlink('./' + file.path) // delete the partially written file 
+		},
+		onFilesLimit: function () {
+		  console.log('Crossed file limit!')
+		},
+		onFieldsLimit: function () {
+		  console.log('Crossed fields limit!')
+		},
+		onPartsLimit: function () {
+		  console.log('Crossed parts limit!')
+		},
         onError: function(e, next) {
             if (e) {
                 console.log(e.stack);
