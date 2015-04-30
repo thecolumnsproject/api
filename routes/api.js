@@ -1,5 +1,8 @@
 var express    			= require('express');
 var router 				= express.Router();
+var Busboy 				= require('busboy');
+var fs 					= require('fs');
+var cluster 			= require('cluster');
 var Table 				= require('../models/tables/table.js');
 var Registration 		= require('../models/registration.js');
 
@@ -93,9 +96,50 @@ router.route('/columns/table')
 
 	.post(function(req, res) {
 		var table = new Table();
+		var busboy = new Busboy({ headers: req.headers });
 
-		req.pipe(process.stdout);
-		
+		var filePath = './uploaded-data/' + new Date().toISOString() + '_' + cluster.worker.id + '.csv';
+
+		busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+
+		    file.pipe( fs.createWriteStream( filePath ) );
+
+		    file.on('data', function(data) {
+		        console.log('File [' + fieldname +'] got ' + data.length + ' bytes');
+		    });
+
+		    file.on('end', function() {
+		        console.log("file finished: " + filename);
+		    });
+		});
+
+		busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
+		    req.body[fieldname] = val;
+		});
+
+		busboy.on('finish', function () {
+		    console.log("finished");
+		    console.log( 'Creating new table from file:' );
+			// console.log( req.busboy );
+			table.create(req.body, filePath, function(err, id) {
+				if (err) {
+					res.json({
+						status: 'fail',
+						message: err
+					});
+				} else {
+					res.json({
+						status: 'success',
+						data: {
+							table_id: id
+						}
+					});
+				}
+			});
+		});
+
+		req.pipe(busboy);
+
 		// console.log( 'Creating new table from file:' );
 		// console.log( req.busboy );
 		// table.create(req.body, req.files.data.path, function(err, id) {

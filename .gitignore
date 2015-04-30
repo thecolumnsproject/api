@@ -51,7 +51,7 @@ node_modules
 # Generated data files
 data/
 data/*.csv
-uploaded-data/*.csv
+uploaded-data/
 .elasticbeanstalk/
 
 # AWS info
