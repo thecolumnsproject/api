@@ -98,7 +98,7 @@ router.route('/columns/table')
 		var table = new Table();
 		var busboy = new Busboy({ headers: req.headers });
 
-		var filePath = './uploaded-data/' + new Date().toISOString() + '_' + cluster.worker.id + '.csv';
+		var filePath = 'uploaded-data/' + new Date().toISOString() + '_' + cluster.worker.id + '.csv';
 
 		busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
 
