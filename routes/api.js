@@ -4,6 +4,7 @@ var Busboy 				= require('busboy');
 var fs 					= require('fs');
 var os 					= require('os');
 var cluster 			= require('cluster');
+var path 				= require('path');
 var Table 				= require('../models/tables/table.js');
 var Registration 		= require('../models/registration.js');
 
@@ -99,7 +100,7 @@ router.route('/columns/table')
 		var table = new Table();
 		var busboy = new Busboy({ headers: req.headers });
 
-		var filePath = os.tmpdir() + new Date().toISOString() + '_' + cluster.worker.id + '.csv';
+		var filePath = path.join( os.tmpdir(), new Date().toISOString() + '_' + cluster.worker.id + '.csv' );
 
 		busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
 
