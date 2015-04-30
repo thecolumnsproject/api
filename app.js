@@ -17,7 +17,10 @@ if (cluster.isMaster) {
 	var bodyParser 	= require('body-parser');
 	// var parted 		= require('parted');
 	var multer  	= require('multer');
+	// var busboy 		= require('connect-busboy');
+	var Busboy 		= require('busboy');
 	var session 	= require('cookie-session');
+	var fs 			= require('fs');
 	var app        	= express();
 
 	// Configure the API route settings
@@ -31,49 +34,50 @@ if (cluster.isMaster) {
 
 	// Set up global middleware
 	app.use(bodyParser({limit: '200mb'}));
-	app.use(multer({
-		dest: './uploaded-data/',
-		fileHwm: 500,
-		onFileUploadStart: function(file) {
-            console.log('Starting ' + file.name);
-            // console.log(file);
-        },
-        onFileUploadData: function(file, data) {
-            console.log('Got a chunk of data!');
-            console.log(file.path);
-        },
-        onFileUploadComplete: function(file) {
-            console.log('Completed file!');
-            // console.log(file);
-        },
-        onParseStart: function() {
-            console.log('Starting to parse request!');
-        },
-        onParseEnd: function(req, next) {
-            console.log('Done parsing!');
-            console.log(req.files, req.body);
-            next();
-        },
-		onFileSizeLimit: function (file) {
-		  console.log('Crossed file size limit! Failed: ', file.originalname)
-		  fs.unlink('./' + file.path) // delete the partially written file 
-		},
-		onFilesLimit: function () {
-		  console.log('Crossed file limit!')
-		},
-		onFieldsLimit: function () {
-		  console.log('Crossed fields limit!')
-		},
-		onPartsLimit: function () {
-		  console.log('Crossed parts limit!')
-		},
-        onError: function(e, next) {
-            if (e) {
-                console.log(e.stack);
-            }
-            next();
-        }
-	}));
+   	// app.use(busboy());
+	// app.use(multer({
+	// 	dest: './uploaded-data/',
+	// 	onFileUploadStart: function(file) {
+ //            console.log('Starting ' + file.name);
+ //            // console.log(file);
+ //        },
+ //        onFileUploadData: function(file, data) {
+ //            console.log('Got a chunk of data!');
+ //            console.log(file.path);
+ //        },
+ //        onFileUploadComplete: function(file) {
+ //            console.log('Completed file!');
+ //            // console.log(file);
+ //        },
+ //        onParseStart: function() {
+ //            console.log('Starting to parse request!');
+ //        },
+ //        onParseEnd: function(req, next) {
+ //            console.log('Done parsing!');
+ //            console.log(req.files, req.body);
+ //            next();
+ //        },
+	// 	onFileSizeLimit: function (file) {
+	// 	  console.log('Crossed file size limit! Failed: ', file.originalname)
+	// 	  fs.unlink('./' + file.path) // delete the partially written file 
+	// 	},
+	// 	onFilesLimit: function () {
+	// 	  console.log('Crossed file limit!')
+	// 	},
+	// 	onFieldsLimit: function () {
+	// 	  console.log('Crossed fields limit!')
+	// 	},
+	// 	onPartsLimit: function () {
+	// 	  console.log('Crossed parts limit!')
+	// 	},
+ //        onError: function(e, next) {
+ //            if (e) {
+ //                console.log(e.stack);
+ //            }
+ //            next();
+ //        }
+	// }));
+	
 	// app.use(function(req, res, next) {
 	// 	// req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 	// 	// 	var saveTo = path.join(__dirname + '/uploaded-data/', path.basename(fieldname));

@@ -93,23 +93,26 @@ router.route('/columns/table')
 
 	.post(function(req, res) {
 		var table = new Table();
-		console.log( 'Creating new table from file:' );
-		console.log( 'req.files.data.path' );
-		table.create(req.body, req.files.data.path, function(err, id) {
-			if (err) {
-				res.json({
-					status: 'fail',
-					message: err
-				});
-			} else {
-				res.json({
-					status: 'success',
-					data: {
-						table_id: id
-					}
-				});
-			}
-		});
+
+		req.pipe(process.stdout);
+		
+		// console.log( 'Creating new table from file:' );
+		// console.log( req.busboy );
+		// table.create(req.body, req.files.data.path, function(err, id) {
+		// 	if (err) {
+		// 		res.json({
+		// 			status: 'fail',
+		// 			message: err
+		// 		});
+		// 	} else {
+		// 		res.json({
+		// 			status: 'success',
+		// 			data: {
+		// 				table_id: id
+		// 			}
+		// 		});
+		// 	}
+		// });
 	})
 
 	// Return a table for a given id

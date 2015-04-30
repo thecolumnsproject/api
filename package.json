@@ -4,6 +4,7 @@
   "dependencies": {
     "babyparse": "^0.4.1",
     "body-parser": "~1.0.1",
+    "busboy": "^0.2.9",
     "conflate": "~1.1.0",
     "connect-busboy": "0.0.2",
     "cookie-session": "~1.0.2",
