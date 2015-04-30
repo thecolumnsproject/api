@@ -101,10 +101,30 @@ router.route('/columns/table')
 		var busboy = new Busboy({ headers: req.headers });
 
 		var filePath = path.join( os.tmpdir(), new Date().toISOString() + '_' + cluster.worker.id + '.csv' );
+		var fileStream = fs.createWriteStream( filePath );
 
 		busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
 
-		    file.pipe( fs.createWriteStream( filePath ) );
+		    file.pipe( fileStream );
+
+		    fileStream.on('finish', function() {
+		    	console.log( 'Creating new table from file:' );
+				table.create(req.body, filePath, function(err, id) {
+					if (err) {
+						res.json({
+							status: 'fail',
+							message: err
+						});
+					} else {
+						res.json({
+							status: 'success',
+							data: {
+								table_id: id
+							}
+						});
+					}
+				});
+		    });
 
 		    file.on('data', function(data) {
 		        console.log('File [' + fieldname +'] got ' + data.length + ' bytes');
@@ -121,23 +141,6 @@ router.route('/columns/table')
 
 		busboy.on('finish', function () {
 		    console.log("finished");
-		    console.log( 'Creating new table from file:' );
-			// console.log( req.busboy );
-			table.create(req.body, filePath, function(err, id) {
-				if (err) {
-					res.json({
-						status: 'fail',
-						message: err
-					});
-				} else {
-					res.json({
-						status: 'success',
-						data: {
-							table_id: id
-						}
-					});
-				}
-			});
 		});
 
 		req.pipe(busboy);
