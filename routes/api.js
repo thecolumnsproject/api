@@ -108,7 +108,28 @@ router.route('/columns/table')
 		    file.pipe( fileStream );
 
 		    fileStream.on('finish', function() {
-		    	console.log( 'Creating new table from file:' );
+		    	
+		    });
+
+		    file.on('data', function(data) {
+		        console.log('File [' + fieldname +'] got ' + data.length + ' bytes');
+		    });
+
+		    file.on('end', function() {
+		        console.log("file finished: " + filename);
+		    });
+		});
+
+		busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
+			console.log( fieldname );
+			console.log( val );
+		    req.body[fieldname] = val;
+		});
+
+		busboy.on('finish', function () {
+		    console.log("finished");
+
+		    console.log( 'Creating new table from file:' );
 				table.create(req.body, filePath, function(err, id) {
 					if (err) {
 						res.json({
@@ -124,23 +145,6 @@ router.route('/columns/table')
 						});
 					}
 				});
-		    });
-
-		    file.on('data', function(data) {
-		        console.log('File [' + fieldname +'] got ' + data.length + ' bytes');
-		    });
-
-		    file.on('end', function() {
-		        console.log("file finished: " + filename);
-		    });
-		});
-
-		busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
-		    req.body[fieldname] = val;
-		});
-
-		busboy.on('finish', function () {
-		    console.log("finished");
 		});
 
 		req.pipe(busboy);

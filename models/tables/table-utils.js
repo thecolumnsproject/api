@@ -44,8 +44,6 @@ Table.sanitizeMetaData = function(meta) {
 	// Clean the columns
 	var counts = {};
 	cleanMeta['columns'] = meta.columns.split(",").map(function( column, i ) {
-		console.log( 'Cleaning column:' );
-		console.log( column );
 		column = Table.cleanColumn( column );
 
 		// Update the counts object with this column
@@ -55,9 +53,6 @@ Table.sanitizeMetaData = function(meta) {
 		if ( counts[ column ] > 1 ) {
 			column = this.appendCount( column, counts[ column ] )
 		}
-
-		console.log( 'Cleaned column:' );
-		console.log( column );
 		
 		return column;
 	}.bind( this )).join();
