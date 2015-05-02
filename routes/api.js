@@ -98,74 +98,72 @@ router.route('/columns/table')
 
 	.post(function(req, res) {
 		var table = new Table();
-		var busboy = new Busboy({ headers: req.headers });
-
-		var filePath = path.join( os.tmpdir(), new Date().toISOString() + '_' + cluster.worker.id + '.csv' );
-		var fileStream = fs.createWriteStream( filePath );
-
-		busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-
-		    file.pipe( fileStream );
-
-		    fileStream.on('finish', function() {
-		    	
-		    });
-
-		    file.on('data', function(data) {
-		        console.log('File [' + fieldname +'] got ' + data.length + ' bytes');
-		    });
-
-		    file.on('end', function() {
-		        console.log("file finished: " + filename);
-		    });
-		});
-
-		busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
-			console.log( fieldname );
-			console.log( val );
-		    req.body[fieldname] = val;
-		});
-
-		busboy.on('finish', function () {
-		    console.log("finished");
-
-		    console.log( 'Creating new table from file:' );
-				table.create(req.body, filePath, function(err, id) {
-					if (err) {
-						res.json({
-							status: 'fail',
-							message: err
-						});
-					} else {
-						res.json({
-							status: 'success',
-							data: {
-								table_id: id
-							}
-						});
+		table.create(req.body, req.files.data.path, function(err, id) {
+			if (err) {
+				res.json({
+					status: 'fail',
+					message: err
+				});
+			} else {
+				res.json({
+					status: 'success',
+					data: {
+						table_id: id
 					}
 				});
+			}
 		});
 
-		req.pipe(busboy);
+		// var busboy = new Busboy({ headers: req.headers });
 
-		// console.log( 'Creating new table from file:' );
-		// console.log( req.busboy );
-		// table.create(req.body, req.files.data.path, function(err, id) {
-		// 	if (err) {
-		// 		res.json({
-		// 			status: 'fail',
-		// 			message: err
-		// 		});
-		// 	} else {
-		// 		res.json({
-		// 			status: 'success',
-		// 			data: {
-		// 				table_id: id
+		// var filePath = path.join( os.tmpdir(), new Date().toISOString() + '_' + cluster.worker.id + '.csv' );
+		// var fileStream = fs.createWriteStream( filePath );
+
+		// busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+
+		//     file.pipe( fileStream );
+
+		//     fileStream.on('finish', function() {
+		    	
+		//     });
+
+		//     file.on('data', function(data) {
+		//         console.log('File [' + fieldname +'] got ' + data.length + ' bytes');
+		//     });
+
+		//     file.on('end', function() {
+		//         console.log("file finished: " + filename);
+		//     });
+		// });
+
+		// busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
+		// 	console.log( fieldname );
+		// 	console.log( val );
+		//     req.body[fieldname] = val;
+		// });
+
+		// busboy.on('finish', function () {
+		//     console.log("finished");
+
+		//     console.log( 'Creating new table from file:' );
+		// 		table.create(req.body, filePath, function(err, id) {
+		// 			if (err) {
+		// 				res.json({
+		// 					status: 'fail',
+		// 					message: err
+		// 				});
+		// 			} else {
+		// 				res.json({
+		// 					status: 'success',
+		// 					data: {
+		// 						table_id: id
+		// 					}
+		// 				});
 		// 			}
 		// 		});
-		// 	}
 		// });
+
+		// req.pipe(busboy);
 	})
 
 	// Return a table for a given id
