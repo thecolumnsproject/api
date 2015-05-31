@@ -96,12 +96,12 @@ describe('Tables', function() {
 
 		it('should clean each individual column', function() {
 			expect( table.sanitizeMetaData({
-				columns: 'Github.,   .A random column.   '
+				columns: 'Github.,   .A random column.   ,Studio Filter10F 5&2 A23 A24 Abk. Abr. AD ADC AEF AF Ampl. Anch.'
 			})).toEqual({
 				title: undefined,
 				source: undefined,
 				source_url: undefined,
-				columns: 'Github,A random column',
+				columns: 'Github,A random column,Studio Filter10F 5&2 A23 A24 Abk Abr AD ADC AEF AF Ampl Anch',
 				layout: undefined
 			});
 		});
