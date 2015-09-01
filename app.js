@@ -15,6 +15,7 @@ if (cluster.isMaster) {
 
 	var express    	= require('express');
 	var bodyParser 	= require('body-parser');
+	var path 		= require('path');
 	// var parted 		= require('parted');
 	var multer  	= require('multer');
 	// var busboy 		= require('connect-busboy');
@@ -105,6 +106,10 @@ if (cluster.isMaster) {
 	  keys: ['blerg']
 	  // secureProxy: true // if you do SSL outside of node
 	}));
+
+	// Set up views
+	app.set('views', path.join(__dirname, 'views'));
+	app.set('view engine', 'hbs');
 
 	app.use('/', api);
 

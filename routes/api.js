@@ -16,6 +16,14 @@ router.get('/', function(req, res) {
 	res.redirect( config.app.host );
 });
 
+// Testing embeddable table
+router.get('/embed-table/:id', function( req, res ) {
+	res.render( 'embed-table', {
+		embed_post: process.env.PORT || 8080,
+		embed_id: req.params.id || 1
+	});
+});
+
 router.route('/columns')
 
 	// Create new columns

@@ -1,0 +1,478 @@
+// @import '../bower_components/cleanslate/cleanslate.css';
+@import 'variables';
+@import 'columns-font';
+@import 'keyframes';
+@import 'utils';
+@import 'bower_components/bourbon/app/assets/stylesheets/bourbon';
+
+$table-container-height:		100px;
+$table-container-padding: 		20px;
+
+$table-header-height:			30px;
+$table-header-padding-y:		15px;
+
+$table-row-offset-top:			5px;
+$table-row-box-shadow:			0px 2px 4px rgba(0,0,0,0.2);
+
+$columns-table-accent-color: 	#69A368;
+
+$animation-duration: 			0.25s;
+
+.columns-table-widget {
+	position: relative;
+	box-sizing: content-box;
+	// font-family: 'Heiti TC', 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+	font-family: 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+	max-width: none !important;
+
+	* {
+		box-sizing: content-box;
+		// font-family: 'Heiti TC', 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+		font-family: 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+		line-height: normal;
+		max-width: none !important;
+		border-radius: 0px;
+		letter-spacing: normal !important;
+ 	}
+}
+
+.columns-table-wrapper {
+	@include calc(width, '100% - #{$table-container-padding} * 2');
+	// height: 95px;
+	// @include calc(height, '100% - #{$table-header-height} - #{$table-header-padding-y} * 2');
+	@include display(flex);
+	@include flex-direction(column);
+	@include justify-content(flex-start);
+	position: relative;
+	padding: $table-container-padding;
+}
+
+.columns-table-container {
+	width: 100%;
+	background: $gray-lightest;
+	border-top: 1px solid $gray-lighter;
+	border-bottom: 1px solid $gray-lighter;
+}
+
+.columns-table {
+	position: relative;
+	min-height: $table-container-height - (2 * $table-container-padding);
+	border: 1px solid transparent;
+	// margin: 0;
+
+	// Set initial z-index position so rows with negative z-indeces
+	// don't appear underneath the table itself
+	z-index: 0;
+}
+
+.columns-table-row {
+	// height: 60px;
+	// box-sizing: border-box;
+	width: 100%;
+	background: #fff;
+	position: absolute;
+	top: $table-row-offset-top * 2;
+	overflow: hidden;
+	border: 1px solid transparent;
+	// @include transition(opacity 0.15s);
+	@include transition(box-shadow $animation-duration);
+	// @include transition(border-color $animation-duration);
+}
+
+/* The top three rows should show
+ * as a preview of the full stack
+ */
+
+@mixin table-row-top {
+	box-shadow: $table-row-box-shadow;
+	border-color: $gray-lighter;
+}
+
+.columns-table-row:nth-child(1) {
+	@include table-row-top;
+	// z-index: 3;
+	top: $table-row-offset-top * 0;
+}
+
+.columns-table-row:nth-child(2) {
+	@include table-row-top;
+	// z-index: 2;
+	top: $table-row-offset-top * 1;
+}
+
+.columns-table-row:nth-child(3) {
+	@include table-row-top;
+	// z-index: 1;
+	// top: $table-row-offset-top * 2;
+}
+
+.columns-table-header {
+	@include display(flex);
+	@include justify-content(space-between);
+	@include align-items(center);
+	height: $table-header-height;
+	width: 100%;
+	margin-bottom: $table-container-padding;
+	border-bottom: 1px solid transparent;
+	background: $gray-lightest;
+
+	@include transition(border-color $animation-duration);
+}
+
+.columns-table-header-name {
+	@include display(flex);
+	@include flex-direction(column);
+	@include justify-content(flex-start);
+	@include align-items(flex-start);
+}
+
+.columns-table-title {
+	color: $gray-darkest;
+	font-size: 20px; 
+	font-weight: bold;
+}
+
+.columns-table-subtitle {
+	color: $gray;
+	font-size: 14px;
+}
+
+.columns-table-header-controls {
+	@include display(flex);
+	@include justify-content(flex-start);
+	@include align-items(center);
+
+	@include transition(opacity $animation-duration);
+
+	opacity: 0;
+	pointer-events: none;
+}
+
+.columns-table-header-button {
+	height: $table-header-height;
+	font-size: 12px;
+	color: $gray-dark;
+	text-transform: uppercase;
+	padding: 0 12px;
+	// font-weight: bold;
+	@include appearance(none);
+	border: none;
+	outline: none;
+	background: none;
+}
+
+.columns-table-close-button {
+	// color: $columns-table-accent-color;
+	color: $primary-color;
+	border-left: 1px solid $gray-lighter;
+	padding-right: 0;
+}
+
+.columns-table-header-icon {
+	font-size: 18px;
+}
+
+.columns-table-footer {
+	@include display(flex);
+	@include justify-content(flex-end);
+	@include align-items(center);
+	position: relative;
+	padding: 0 4px;
+	padding-top: 10px;
+	font-size: 10px;
+	color: $gray;
+	@include transition(opacity 0.15s);
+}
+
+.columns-table-source {
+	margin-right: auto;
+	@include display(flex);
+	@include align-items(center);
+}
+
+.columns-table-items-count {
+	text-transform: uppercase;
+}
+
+.columns-table-expand-button {
+	color: $primary-color;
+	text-transform: uppercase;
+	margin-left: 12px;
+}
+
+.columns-table-footer-icon {
+	// color: $gray-light;
+	color: $primary-color;
+	font-size: 14px;
+}
+
+.columns-table-footer-icon.columns-logo {
+	margin-left: 12px;
+}
+
+.columns-table-footer-icon.columns-verified-source-icon {
+	margin-right: 6px;
+	color: $gray-light;
+}
+
+/* Placeholder styling
+ * ------------------
+ * These styles specify the position and look
+ * of loading and error indicators in the table
+ */
+
+.columns-table-loading,
+.columns-table-error {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	@include display(flex);
+	@include justify-content(center);
+	@include align-items(center);
+	visibility: hidden;
+	pointer-events: none;
+}
+
+.columns-table-error {
+	text-align: left;
+}
+
+.loading .columns-table-loading {
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.error .columns-table {
+	pointer-events: none;
+}
+
+.error .columns-table-error {
+	visibility: visible;
+}
+
+.columns-table-loading-img {
+	height: 20px;
+	margin-right: 12px;
+}
+
+.columns-table-error-icon {
+	color: red;
+	font-size: 20px;
+	margin-right: 12px;
+}
+
+.columns-table-loading-text,
+.columns-table-error-text {
+	color: $gray;
+	font-size: 14px;
+}
+
+.columns-table-error-text-header {
+	color: $gray-dark;
+}
+
+.columns-table-error-text-body {
+	color: $gray;
+}
+
+.loading .columns-table-row,
+.error .columns-table-row {
+	opacity: 0;
+}	
+
+.loading .columns-table-footer
+.error .columns-table-footer {
+	opacity: 0;
+}
+
+/* Relocated styling
+ * ------------------
+ * These styles specify the position and look
+ * of the table while it's been repositioned
+ * to the bottom of the DOM
+ */
+
+.columns-table-widget.relocated {
+	// position: fixed;
+	// margin-left: 0; /* We need to override 
+}
+
+
+/* Animation styling
+ * ------------------
+ * These styles specify the position and look
+ * of elements while animations are occuring
+ */
+
+.expanding .columns-table-container {
+	border-top: none;
+}
+
+.expanding .columns-table-header {
+	// border-bottom-color: $gray-lighter;
+}
+
+.collapsing .columns-table-header {
+	border-bottom-color: transparent;
+}
+
+.expanding .columns-table-header-controls {
+	// opacity: 1;
+}
+
+.collapsing .columns-table-header-controls {
+	@include transition(opacity 0.0s);
+ 	opacity: 0;
+}
+
+.expanding .columns-table-footer {
+ 	opacity: 0;
+}
+
+.collapsing .columns-table-footer {
+ 	@include transition(opacity 0.0s);
+ 	opacity: 0;
+}
+
+.expanding .columns-table-row {
+	box-shadow: none;
+	// border-bottom-color: $gray-lighter;
+	// box-shadow: $table-row-box-shadow;
+}
+
+/* Expanded styling
+ * ------------------
+ * These styles specify the position and look
+ * of elements while the table is expanded
+ */
+
+.table-expanded {
+	overflow: hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+.expanded .columns-table-container {
+	// transform: translateY(0px); /* Remove the expansion animation transform */
+	top: 0;
+	// @include calc(height, '100% - #{$table-container-padding} * 2' !important);
+	// height: 100% !important; /* Override the height set via animation */
+	overflow: scroll;
+	border-top: none;
+
+	@include transform(translateY(0px) !important);
+}
+
+.expanded.large-form-factor .columns-table-container {
+	position: absolute;
+}
+
+.expanded.small-form-factor .columns-table-container {
+	position: fixed;
+}
+
+.expanded .columns-table-wrapper {
+	height: auto;
+}
+
+.expanded .columns-table-header {
+	top: 0; left: 0;
+	@include calc(width, '100% - #{$table-container-padding} * 2');
+	padding: $table-header-padding-y $table-container-padding;
+	border-bottom-color: $gray-lighter;
+	// border-width: 1px;
+	z-index: 999;
+}
+
+// Add top border to header when it's been moved
+// outside of the table container so that it doesn't jump
+// a pixel when no longer pushed down by the container's top border
+.columns-table-widget > .columns-table-header {
+	// padding-top: $table-header-padding-y + 1;
+	// padding-bottom: $table-header-padding-y + 1;
+	// @include transform(translateY(1px));
+}
+
+.expanded .columns-table-header-controls {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.expanded.small-form-factor .columns-table-header {
+	position: fixed;
+}
+
+.expanded.large-form-factor .columns-table-header {
+	position: absolute;
+}
+
+.expanded .columns-table {
+	margin-top: 60px;
+	// transform: translateY(0px) !important; /* Remove the expansion animation transform */
+	height: auto !important; /* Override the custom height given on load */
+	border-color: $gray-lighter;
+
+	@include transform(translateY(0px) !important);
+}
+
+.expanded .columns-table-loading {
+	display: none;
+}
+
+.expanded .columns-table-row:last-child {
+	border-bottom: none;
+}
+
+.expanded .columns-table-row {
+	border-color: transparent; /* Remove the table-row-top borders */
+	border-bottom-color: $gray-lighter;
+
+	box-shadow: none; /* Remove the table-row-top box shadow */
+	top: 0px; /* Remove the table-top-row layout spacing */
+
+	// transform: translateY(0px) !important; /* Remove the expansion animation transform */
+	position:relative;
+	@include transform(translateY(0px) !important);
+}
+
+.expanded .columns-table-header {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.expanded .columns-table-expand-button {
+	display: none;
+}
+
+/* In-cell styling
+ * ------------------
+ * These styles correspond to properties
+ * determined by the user-defined template
+ */
+
+.row-group {
+	@include display(flex);
+	@include justify-content(space-between);
+	@include align-items(center);
+
+	&[data-flex-direction='row'] {
+		@include flex-direction(row);
+	}
+
+	&[data-flex-direction='column'] {
+		@include flex-direction(column);
+	}
+
+	&[data-align-items='flex-start'] {
+		@include align-items(flex-start);
+	}
+
+	&[data-align-items='center'] {
+		@include align-items(center);
+	}
+
+	&[data-align-items='flex-end'] {
+		@include align-items(flex-end);
+	}
+}
