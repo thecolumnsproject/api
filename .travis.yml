@@ -3,11 +3,29 @@ language:
 node_js:
 - '0.10'
 env:
-- NODE_ENV='test'
+# - NODE_ENV='test'
+- NODE_ENV=$TRAVIS_BRANCH
 branches:
   only:
     - staging
     - production
+install:
+  - npm install -g grunt-cli
+  - npm install -g bower
+  - gem install sass
+  - npm install
+  - bower install
+script:
+  - grunt build
+  - npm test
+before_deploy:
+  - rm -R node_modules
+  - rm -R fonts/vectors
+  - rm -R bower_components
+  - rm -R .sass-cache
+  - rm -R javascripts
+  - rm -R specs
+  - rm -R stylesheets
 deploy:
   - provider: elasticbeanstalk
     access_key_id: AKIAJ7BART2KY7QI45GA
