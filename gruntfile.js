@@ -125,14 +125,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-develop');
 
-	grunt.registerTask('default', [
+	grunt.registerTask('build', [
 		'sass',
 		'handlebars',
-		'webfont',
 		'browserify',
 		'replace',
-		'concat',
-		'develop',
-		'watch']
-	);
+		'concat'
+	]);
+
+	grunt.registerTask('default', ['webfont', 'build', 'develop', 'watch']);
 }
