@@ -10,11 +10,9 @@ var Registration 		= require('../models/registration.js');
 var common 	   			= require('../common');
 var config 	   			= common.config();
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+// Redirect root requests (http://colum.nz)
+// to the web app for now
 router.get('/', function(req, res) {
-	var env = process.env.NODE_ENV  || 'development';
-	// res.json({ message: 'hooray! welcome to our api! You are in the ' + env + ' environment' });
-	// console.log(app.get('env'));	
 	res.redirect( config.app.host );
 });
 
