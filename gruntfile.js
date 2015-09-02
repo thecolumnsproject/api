@@ -147,6 +147,13 @@ module.exports = function(grunt) {
 				files: 'fonts/ventors/*.svg',
 				tasks: ['webfont'],
 			},
+			sass: {
+				files: '**/*.scss',
+				tasks: ['sass'],
+				options: {
+					livereload: true,
+				},
+			},
 			js: {
 				files: [
 					'*.js',
