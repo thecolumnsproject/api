@@ -1,8 +1,8 @@
 var mysql 	   		= require('mysql');
 var fs 				= require('fs');
-var common 	   		= require('../common');
+var common 	   		= require('../../common');
 var config 	   		= common.config();
-var Registration	= require('../models/registration.js');
+var Registration	= require('../../models/registration.js');
 
 describe('Registration', function() {
 
@@ -10,7 +10,7 @@ describe('Registration', function() {
 	beforeEach(function( done ) {
 
 		// Rebuild the database
-		fs.readFile('spec/test_db_setup.sql', 'utf8', function(err, sql) {
+		fs.readFile('spec/api/test_db_setup.sql', 'utf8', function(err, sql) {
 			if (err) throw err;
 			var connection = mysql.createConnection({
 				host		: config.database.host,

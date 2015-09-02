@@ -1,8 +1,8 @@
 var mysql 	   	= require('mysql');
 var fs 			= require('fs');
-var common 	   	= require('../common');
+var common 	   	= require('../../common');
 var config 	   	= common.config();
-var Table 		= require('../models/tables/table.js');
+var Table 		= require('../../models/tables/table.js');
 var fixtures 	= require('./fixtures.json');
 
 describe('Tables', function() {
@@ -16,7 +16,7 @@ describe('Tables', function() {
 		// });
 
 		// Rebuild the database
-		fs.readFile('spec/test_db_setup.sql', 'utf8', function(err, sql) {
+		fs.readFile('spec/api/test_db_setup.sql', 'utf8', function(err, sql) {
 			if (err) throw err;
 			var connection = mysql.createConnection({
 				host		: config.database.host,

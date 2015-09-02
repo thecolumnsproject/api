@@ -1,12 +1,12 @@
 var fs 				= require('fs');
 var stream			= require('stream');
-var TableCleaner 	= require('../models/table-cleaner.js');
+var TableCleaner 	= require('../../models/table-cleaner.js');
 var spec 			= require('stream-spec');
 
 describe('Table Cleaner', function() {
 	var tableCleaner,
-		cleanData = './spec/test_table_cleaner_clean.csv',
-		csvPath = './spec/test_table_cleaner.csv';
+		cleanData = './spec/api/test_table_cleaner_clean.csv',
+		csvPath = './spec/api/test_table_cleaner.csv';
 
 	beforeEach(function( done ) {
 		// fs.createReadStream(csvPath).pipe(tableCleaner);

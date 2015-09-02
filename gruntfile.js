@@ -52,6 +52,10 @@ module.exports = function(grunt) {
 				// 	},
 				// }
 			},
+			specs: {
+				src: ['spec/embed/**/*.js', '!spec/embed/compiled-specs.js'],
+				dest: 'spec/embed/compiled-specs.js'
+			}
 		},
 		replace: {
 			embed: {
@@ -96,7 +100,45 @@ module.exports = function(grunt) {
 				dest: 'files/public/embed-table.js'
 			},
 		},
+		jasmine:  {
+			embed: {
+				options: {
+					specs: 'spec/embed/compiled-specs.js',
+					vendor: [
+						'bower_components/jquery/dist/jquery.js',
+						'bower_components/handlebars/handlebars.js',
+						'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
+						'bower_components/jasmine-ajax/lib/mock-ajax.js'
+					],
+					helpers: [
+						'views/embeddable-templates.js',
+					]
+				}
+			}
+		},
+		// jasmine_node: {
+		// 	options: {
+  //     			forceExit: true,
+		// 	    match: '.',
+		// 	    matchall: false,
+		// 	    extensions: 'js',
+		// 	    specNameMatcher: 'spec'
+  //   		},
+  //  			all: ['spec/']
+		// },
 		watch: {
+			spec: {
+				files: ['spec/embed/**/*.js', '!spec/embed/compiled-specs.js'],
+				tasks: ['browserify:specs']
+			},
+			handlebars: {
+				files: '**/*.hbs',
+				tasks: ['handlebars'/*, 'concat:embed'*/],
+			},
+			icons: {
+				files: 'fonts/ventors/*.svg',
+				tasks: ['webfont'],
+			},
 			js: {
 				files: [
 					'*.js',
@@ -108,14 +150,6 @@ module.exports = function(grunt) {
 				tasks: ['develop'],
 				options: { nospawn: true }
 			},
-			handlebars: {
-				files: '**/*.hbs',
-				tasks: ['handlebars'/*, 'concat:embed'*/],
-			},
-			icons: {
-				files: 'fonts/ventors/*.svg',
-				tasks: ['webfont'],
-			},
 		},
 	});
 
@@ -125,6 +159,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-text-replace');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-jasmine');
+	// grunt.loadNpmTasks('grunt-jasmine-node');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-develop');
 
