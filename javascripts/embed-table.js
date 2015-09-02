@@ -22,7 +22,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 		if(!Columns.scripts) { Columns.scripts = []; };
 		if(!Columns.tables) { Columns.tables = []; };
 
-		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['templates/embed-table/analytics.hbs']();
+		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;

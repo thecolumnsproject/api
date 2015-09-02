@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 					expand: true,
 					cwd: 'stylesheets',
 					src: ['*.scss'],
-					dest: 'css',
+					dest: 'files/css',
 					ext: '.css',
 				}],
 				options: {
@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 						} else if ( process.env.NODE_ENV == 'staging' ) {
 							return 'http://stg.colum.nz';
 						} else {
-							return 'http://127.0.0.1'
+							return 'http://127.0.0.1:8080'
 						}
 					}
 				}, {
@@ -91,12 +91,12 @@ module.exports = function(grunt) {
 			embed: {
 				src: [
 					'javascripts/embed-table-intro.js',
-					'node_modules/handlebars/runtime.js',
+					'bower_components/handlebars/handlebars.runtime.js',
 					'views/embeddable-templates.js',
 					'compiled-javascripts/embed-table.js',
 					'javascripts/embed-table-outro.js'
 				],
-				dest: 'public/embed-table.js'
+				dest: 'files/public/embed-table.js'
 			},
 		},
 		watch: {
@@ -105,6 +105,7 @@ module.exports = function(grunt) {
 					'*.js',
 					'*.json',
 					'models/**/*.js',
+					'javascripts/**/*.js',
 					'routes/**/*.js',
 				],
 				tasks: ['develop'],

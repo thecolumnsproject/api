@@ -15546,7 +15546,7 @@ Velocity, however, doesn't make this distinction. Thus, converting to or from th
 will produce an inaccurate conversion value. The same issue exists with the cx/cy attributes of SVG circles and ellipses. */
 },{}],4:[function(require,module,exports){
 var API_HOST = 'http://127.0.0.1:8080',
-	ROOT_PATH = 'http://127.0.0.1',
+	ROOT_PATH = 'http://127.0.0.1:8080',
 	EMBED_PATH = ROOT_PATH + '/public/embed-table.js',
 	CSS_PATH = ROOT_PATH + '/css/embed-table.css',
 	IMG_PATH = ROOT_PATH + '/images/';
@@ -15583,7 +15583,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 		if(!Columns.scripts) { Columns.scripts = []; };
 		if(!Columns.tables) { Columns.tables = []; };
 
-		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['templates/embed-table/analytics.hbs']();
+		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;
@@ -15723,7 +15723,7 @@ var MAX_SMARTPHONE_SCREEN_WIDTH = 568;
 
 // File System Constants
 // var API_HOST = 'http://127.0.0.1:8080';
-// var ROOT_PATH = 'http://127.0.0.1';
+// var ROOT_PATH = 'http://127.0.0.1:8080';
 // var API_HOST = 'http://127.0.0.1:8080/api';
 // var API_HOST = 'http://api-env-qdfe3rbbmw.elasticbeanstalk.com/api';
 // var ROOT_PATH = 'http://127.0.0.1/';
@@ -15808,7 +15808,7 @@ function ColumnsTable(script) {
 
 	// Create a unique handlebars environment
 	// this.columnsbars = Handlebars.noConflict();
-	// this._setupHandlebars();
+	this._setupHandlebars();
 };
 
 ColumnsTable.prototype._setupHandlebars = function() {
@@ -15827,8 +15827,8 @@ ColumnsTable.prototype._setupHandlebars = function() {
 	// Handlebars.registerPartial('group', Handlebars.template( Columns.EmbeddableTemplates['templates/embed-table/row-group.hbs']) );
 	// Handlebars.registerPartial('column', Columns.EmbeddableTemplates['templates/embed-table/row-value.hbs']);
 	// Handlebars.registerPartial('footer', Columns.EmbeddableTemplates['templates/embed-table/footer.hbs']);
-	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['templates/embed-table/layout.hbs']);
-	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['templates/embed-table/style.hbs']);
+	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
+	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
 
 	// Handlebars.registerHelper('ifIsGroup', function(type, options) {
 	// 	return type == 'group' ? options.fn(this) : options.inverse(this);
@@ -15846,7 +15846,7 @@ ColumnsTable.prototype.render = function() {
 
 	// Generate table skeleton
 	// and insert it befor the script
-	var skeleton = Columns.EmbeddableTemplates['templates/embed-table/skeleton.hbs'];
+	var skeleton = Columns.EmbeddableTemplates['views/embed-table/skeleton.hbs'];
 	var tmpDiv = document.createElement('div'); tmpDiv.innerHTML = skeleton();
 	this.table = this.script.parentNode.insertBefore(tmpDiv.firstChild, this.script);
 	this.$$table = $$(this.table);
@@ -15854,9 +15854,9 @@ ColumnsTable.prototype.render = function() {
 	// Generate table structure
 	// var loading = createLoading();
 	// var body = createBody();
-	var loading = Columns.EmbeddableTemplates['templates/embed-table/loading.hbs'];
-	var error = Columns.EmbeddableTemplates['templates/embed-table/error.hbs'];
-	var body = Columns.EmbeddableTemplates['templates/embed-table/body.hbs'];
+	var loading = Columns.EmbeddableTemplates['views/embed-table/loading.hbs'];
+	var error = Columns.EmbeddableTemplates['views/embed-table/error.hbs'];
+	var body = Columns.EmbeddableTemplates['views/embed-table/body.hbs'];
 	this.$$table.append(loading({img_path: Config.img_path}));
 	this.$$table.append(error());
 	this.$$table.append(body());
@@ -16007,9 +16007,9 @@ ColumnsTable.prototype.renderData = function(data) {
 	// var numRows = data.data.length;
 
 	// Generate table layouts with data
-	var header = Columns.EmbeddableTemplates['templates/embed-table/header.hbs'];
-	var rowsTemplate = Columns.EmbeddableTemplates['templates/embed-table/rows.hbs'];
-	var footer = Columns.EmbeddableTemplates['templates/embed-table/footer.hbs'];
+	var header = Columns.EmbeddableTemplates['views/embed-table/header.hbs'];
+	var rowsTemplate = Columns.EmbeddableTemplates['views/embed-table/rows.hbs'];
+	var footer = Columns.EmbeddableTemplates['views/embed-table/footer.hbs'];
 
 	// Render table components with data
 	var $$tableBody = this.$$table.find(TABLE_BODY_SELECTOR);
@@ -16128,7 +16128,7 @@ ColumnsTable.prototype.renderData = function(data) {
 };
 
 ColumnsTable.prototype.renderRow = function( data, index, layout ) {
-	var $$rowLayout = $$( Columns.EmbeddableTemplates['templates/embed-table/row-layout.hbs']() );
+	var $$rowLayout = $$( Columns.EmbeddableTemplates['views/embed-table/row-layout.hbs']() );
 
 	// Make sure the row is properly z-indexed
 	// Lower rows should be z-indexed below higher rows
@@ -16139,8 +16139,8 @@ ColumnsTable.prototype.renderRow = function( data, index, layout ) {
 
 ColumnsTable.prototype.renderRowComponent = function( data, component ) {
 	var $$component,
-		groupTemplate = Columns.EmbeddableTemplates['templates/embed-table/row-group.hbs'],
-		valueTemplate = Columns.EmbeddableTemplates['templates/embed-table/row-value.hbs'];
+		groupTemplate = Columns.EmbeddableTemplates['views/embed-table/row-group.hbs'],
+		valueTemplate = Columns.EmbeddableTemplates['views/embed-table/row-value.hbs'];
 
 	// Render the top level component
 	// as a group if it's a group

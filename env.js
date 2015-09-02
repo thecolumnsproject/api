@@ -9,6 +9,9 @@ module.exports = {
 		"app":{
 			"host": "http://127.0.0.1"
 		},
+		"embed":{
+			"host": "http://127.0.0.1:8080"
+		},
 		"data_path": "./uploaded-data/"
 	},
 	"test": {
@@ -21,6 +24,9 @@ module.exports = {
 		"app":{
 			"host": "http://appstg.thecolumnsproject.com"
 		},
+		"embed":{
+			"host": "http://stg.colum.nz"
+		},
 		"data_path": "./uploaded-data/"
 	},
 	"staging": {
@@ -32,6 +38,9 @@ module.exports = {
 		},
 		"app":{
 			"host": "http://appstg.thecolumnsproject.com"
+		},
+		"embed":{
+			"host": "http://stg.colum.nz"
 		},
 		"data_path": "./uploaded-data/"
 	},
@@ -50,6 +59,9 @@ module.exports = {
 		},
 		"app":{
 			"host": "http://app.thecolumnsproject.com"
+		},
+		"embed":{
+			"host": "http://colum.nz"
 		},
 		"data_path": "./uploaded-data/"
 	}

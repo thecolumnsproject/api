@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
 // Testing embeddable table
 router.get('/embed-table/:id', function( req, res ) {
 	res.render( 'embed-table', {
-		embed_post: process.env.PORT || 8080,
+		embed_host: config.embed.host,
 		embed_id: req.params.id || 1
 	});
 });
