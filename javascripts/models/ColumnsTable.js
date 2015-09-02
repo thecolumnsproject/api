@@ -47,26 +47,6 @@ var TABLE_SELECTOR = '.columns-table-widget',
 
 var MAX_SMARTPHONE_SCREEN_WIDTH = 568;
 
-// File System Constants
-// var API_HOST = '{{api_host}}';
-// var ROOT_PATH = '{{root_path}}';
-// var API_HOST = 'http://127.0.0.1:8080/api';
-// var API_HOST = 'http://api-env-qdfe3rbbmw.elasticbeanstalk.com/api';
-// var ROOT_PATH = 'http://127.0.0.1/';
-// var ROOT_PATH = 'https://thecolumnsproject.github.io/';
-// if (env) {
-// 	switch (env) {
-// 		case 'local':
-// 			ROOT_PATH = 'http://localhost/'
-// 			break;
-// 		default:
-// 			ROOT_PATH = 'https://thecolumnsproject.github.io/';
-// 	}
-// }
-// var EMBED_PATH = ROOT_PATH + '/public/embed-table.js';
-// var CSS_PATH = ROOT_PATH + '/css/embed-table.css';
-// var IMG_PATH = ROOT_PATH + '/images/';
-
 // Utility methods
 // ------------------------------
 

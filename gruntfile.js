@@ -63,7 +63,7 @@ module.exports = function(grunt) {
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://api.thecolumnsproject.com';
 						} else if ( process.env.NODE_ENV == 'staging' ) {
-							console.log( process.env.NODE_ENV );
+							console.log( matchedWord + ': ' + process.env.NODE_ENV );
 							return 'http://apistg.thecolumnsproject.com';
 						} else {
 							return 'http://127.0.0.1:8080'
@@ -75,16 +75,11 @@ module.exports = function(grunt) {
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://colum.nz';
 						} else if ( process.env.NODE_ENV == 'staging' ) {
-							console.log( process.env.NODE_ENV );
+							console.log( matchedWord + ': ' + process.env.NODE_ENV );
 							return 'http://stg.colum.nz';
 						} else {
 							return 'http://127.0.0.1:8080'
 						}
-					}
-				}, {
-					from: '{{environment}}',
-					to: function(matchedWord) {
-							return process.env.NODE_ENV || 'development';
 					}
 				}]
 			},
