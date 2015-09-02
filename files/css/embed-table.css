@@ -1,8 +1,8 @@
 /* Grays */
 @font-face {
   font-family: "columns-font";
-  src: url("../fonts/columns-font.eot?75cc67f6f11b2a04734475a197aef918");
-  src: url("../fonts/columns-font.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-font.woff?75cc67f6f11b2a04734475a197aef918") format("woff"), url("../fonts/columns-font.ttf?75cc67f6f11b2a04734475a197aef918") format("truetype");
+  src: url("../files/fonts/columns-font.eot?51dc6ce60738ea35a78cfdcb267ecb7a");
+  src: url("../files/fonts/columns-font.eot?#iefix") format("embedded-opentype"), url("../files/fonts/columns-font.woff?51dc6ce60738ea35a78cfdcb267ecb7a") format("woff"), url("../files/fonts/columns-font.ttf?51dc6ce60738ea35a78cfdcb267ecb7a") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="icon-"]:before,
