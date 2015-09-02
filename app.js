@@ -109,6 +109,7 @@ if (cluster.isMaster) {
 
 	// Set up static file serving
 	app.use(express.static('files'));
+	app.use(express.static('fonts'));
 
 	// Set up views
 	app.set('views', path.join(__dirname, 'views'));

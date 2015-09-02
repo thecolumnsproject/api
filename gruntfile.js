@@ -87,6 +87,14 @@ module.exports = function(grunt) {
 					}
 				}]
 			},
+			embed_font: {
+				src: ['stylesheets/_columns-font.scss'],
+				dest: 'stylesheets/_columns-font.scss',
+				replacements: [{
+					from: '../files/fonts',
+					to: '../fonts'
+				}]
+			}
 		},
 		concat: {
 			embed: {
@@ -165,10 +173,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-develop');
 
 	grunt.registerTask('build', [
+		'replace:embed_font',
 		'sass',
 		'handlebars',
 		'browserify',
-		'replace',
+		'replace:embed',
 		'concat'
 	]);
 

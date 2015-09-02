@@ -57,10 +57,10 @@
 
 @font-face {
 	font-family:"columns-font";
-	src:url("../files/fonts/columns-font.eot?51dc6ce60738ea35a78cfdcb267ecb7a");
+	src:url("../files/fonts/columns-font.eot?b31f813b0ae7f0c651695aff119b0999");
 	src:url("../files/fonts/columns-font.eot?#iefix") format("embedded-opentype"),
-		url("../files/fonts/columns-font.woff?51dc6ce60738ea35a78cfdcb267ecb7a") format("woff"),
-		url("../files/fonts/columns-font.ttf?51dc6ce60738ea35a78cfdcb267ecb7a") format("truetype");
+		url("../files/fonts/columns-font.woff?b31f813b0ae7f0c651695aff119b0999") format("woff"),
+		url("../files/fonts/columns-font.ttf?b31f813b0ae7f0c651695aff119b0999") format("truetype");
 	font-weight:normal;
 	font-style:normal;
 }
@@ -88,14 +88,26 @@
 /* Icons */
 
 
-.icon-columns-small:before {
+.icon-circle-check-open:before {
 	content:"\f101";
 }
 
 
 
-.icon-source:before {
+.icon-columns-small:before {
 	content:"\f102";
+}
+
+
+
+.icon-columns:before {
+	content:"\f103";
+}
+
+
+
+.icon-source:before {
+	content:"\f104";
 }
 
 
@@ -106,7 +118,11 @@
 
 		<div class="icons" id="icons">
 			
+				<div class="icons__item" data-name="circle-check-open"><i class=" icon-circle-check-open"></i> icon-circle-check-open</div>
+			
 				<div class="icons__item" data-name="columns-small"><i class=" icon-columns-small"></i> icon-columns-small</div>
+			
+				<div class="icons__item" data-name="columns"><i class=" icon-columns"></i> icon-columns</div>
 			
 				<div class="icons__item" data-name="source"><i class=" icon-source"></i> icon-source</div>
 			
