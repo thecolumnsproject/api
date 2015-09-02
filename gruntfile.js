@@ -45,7 +45,8 @@ module.exports = function(grunt) {
 		browserify: {
 			embed: {
 				src: ['javascripts/embed-table.js'],
-				dest: 'compiled-javascripts/embed-table.js',
+				// dest: 'compiled-javascripts/embed-table.js',
+				dest: 'files/public/browserified-table.js',
 				// options: {
 				// 	browserifyOptions: {
 				// 		debug: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ? false : true
@@ -55,8 +56,10 @@ module.exports = function(grunt) {
 		},
 		replace: {
 			embed: {
-				src: ['compiled-javascripts/embed-table.js'],
-				dest: 'compiled-javascripts/embed-table.js',
+				// src: ['compiled-javascripts/embed-table.js'],
+				// dest: 'compiled-javascripts/embed-table.js',
+				src: ['files/public/browserified-table.js'],
+				dest: 'files/public/replaced-table.js',
 				replacements: [{
 					from: '{{api_host}}',
 					to: function(matchedWord) {
@@ -90,7 +93,8 @@ module.exports = function(grunt) {
 					'javascripts/embed-table-intro.js',
 					'bower_components/handlebars/handlebars.runtime.js',
 					'views/embeddable-templates.js',
-					'compiled-javascripts/embed-table.js',
+					// 'compiled-javascripts/embed-table.js',
+					'files/public/replaced-table.js',
 					'javascripts/embed-table-outro.js'
 				],
 				dest: 'files/public/embed-table.js'
