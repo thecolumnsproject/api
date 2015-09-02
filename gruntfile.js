@@ -60,6 +60,7 @@ module.exports = function(grunt) {
 				replacements: [{
 					from: '{{api_host}}',
 					to: function(matchedWord) {
+						console.log( process.env.NODE_ENV );
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://api.thecolumnsproject.com';
 						} else if ( process.env.NODE_ENV == 'staging' ) {
@@ -71,6 +72,7 @@ module.exports = function(grunt) {
 				}, {
 					from: '{{root_path}}',
 					to: function(matchedWord) {
+						console.log( process.env.NODE_ENV );
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://colum.nz';
 						} else if ( process.env.NODE_ENV == 'staging' ) {
