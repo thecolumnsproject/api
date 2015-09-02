@@ -24,7 +24,7 @@ before_deploy:
   - rm -R bower_components
   - rm -R .sass-cache
   - rm -R javascripts
-  - rm -R specs
+  # - rm -R specs
   - rm -R stylesheets
 deploy:
   - provider: elasticbeanstalk
