@@ -60,10 +60,10 @@ module.exports = function(grunt) {
 				replacements: [{
 					from: '{{api_host}}',
 					to: function(matchedWord) {
-						console.log( process.env.NODE_ENV );
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://api.thecolumnsproject.com';
 						} else if ( process.env.NODE_ENV == 'staging' ) {
+							console.log( process.env.NODE_ENV );
 							return 'http://apistg.thecolumnsproject.com';
 						} else {
 							return 'http://127.0.0.1:8080'
@@ -72,10 +72,10 @@ module.exports = function(grunt) {
 				}, {
 					from: '{{root_path}}',
 					to: function(matchedWord) {
-						console.log( process.env.NODE_ENV );
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://colum.nz';
 						} else if ( process.env.NODE_ENV == 'staging' ) {
+							console.log( process.env.NODE_ENV );
 							return 'http://stg.colum.nz';
 						} else {
 							return 'http://127.0.0.1:8080'
