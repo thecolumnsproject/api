@@ -34,6 +34,7 @@ deploy:
     app: api
     env: api-env
     bucket_name: elasticbeanstalk-us-west-2-931267450346
+    skip_cleanup: true
     region: us-west-2
     on:
       repo: thecolumnsproject/api
@@ -45,6 +46,7 @@ deploy:
     app: api
     env: api-stg-env
     bucket_name: elasticbeanstalk-us-west-2-931267450346
+    skip_cleanup: true
     region: us-west-2
     on:
       repo: thecolumnsproject/api
