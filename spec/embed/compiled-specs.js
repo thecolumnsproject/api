@@ -15619,6 +15619,12 @@ var Config = require('../embed-config.js'),
 	PreventGhostClick = require('../prevent-ghost-click.js'),
 	ColumnsEvent = require('./ColumnsEvent.js'),
 	ColumnsAnalytics = require('./ColumnsAnalytics.js');
+	// Handlebars = require('../../bower_components/handlebars/handlebars.runtime.js'),
+	// Columns.EmbeddableTemplates = require('../../views/embeddable-templates.js')(Handlebars);
+
+// Set up templates
+
+// var Embeddlebars = Handlebars.noConflict();
 
 // Make sure our version of jquery isn't polluting the namespace
 // if ( window.jQuery ) {
@@ -15741,11 +15747,12 @@ ColumnsTable.prototype._setupHandlebars = function() {
 	//     return Columns['row-templates'][ name ](ctx, hash);
 	// }.bind(this));
 	// Handlebars.registerPartial({
-	// 	group: Columns.EmbeddableTemplates['templates/embed-table/row-group.hbs']
+	// 	group: Templates['templates/embed-table/row-group.hbs']
 	// });
-	// Handlebars.registerPartial('group', Handlebars.template( Columns.EmbeddableTemplates['templates/embed-table/row-group.hbs']) );
-	// Handlebars.registerPartial('column', Columns.EmbeddableTemplates['templates/embed-table/row-value.hbs']);
-	// Handlebars.registerPartial('footer', Columns.EmbeddableTemplates['templates/embed-table/footer.hbs']);
+	// Handlebars.registerPartial('group', Handlebars.template( Templates['templates/embed-table/row-group.hbs']) );
+	// Handlebars.registerPartial('column', Templates['templates/embed-table/row-value.hbs']);
+	// Handlebars.registerPartial('footer', Templates['templates/embed-table/footer.hbs']);
+	console.log("Registering partials");
 	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
 	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
 
@@ -15896,7 +15903,7 @@ ColumnsTable.prototype.generateLayout = function(layout, reload) {
 	// Set up the row layout as a handlebars partial
 	// dynamically based on the row layout object
 	this.layout = layout;
-	// var row_layout = Columns.EmbeddableTemplates['templates/embed-table/row-layout.hbs']({layout: layout});
+	// var row_layout = Columns.EmbeddableTemplates['Columns.Embeddabletemplates/embed-table/row-layout.hbs']({layout: layout});
 	// var row_template = Handlebars.compile(row_layout);
 	// var templateName = this.templateName();
 	// // Handlebars.registerPartial('row_layout', row_template);

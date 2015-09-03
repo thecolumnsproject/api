@@ -16581,8 +16581,37 @@ module.exports = {
 	img_path: IMG_PATH
 };
 },{}],5:[function(require,module,exports){
+// Setup necessary handlebars templates and helpers
+// Handlebars.registerPartial('row', Columns.EmbeddableTemplates['templates/embed-table/row.hbs']);
+Handlebars.registerHelper('partial', function(name, ctx, hash) {
+    console.log(name);
+    console.log(Handlebars.partials);
+    var ps = Handlebars.partials;
+    if(typeof ps[name] !== 'function')
+        ps[name] = Handlebars.compile(ps[name]);
+    return ps[name](ctx, hash);
+});
+Handlebars.registerPartial('group', Columns.EmbeddableTemplates['views/embed-table/row-group.hbs']);
+Handlebars.registerPartial('column', Columns.EmbeddableTemplates['views/embed-table/row-value.hbs']);
+Handlebars.registerPartial('footer', Columns.EmbeddableTemplates['views/embed-table/footer.hbs']);
+Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
+Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
+
+Handlebars.registerHelper('ifIsGroup', function(type, options) {
+	return type == 'group' ? options.fn(this) : options.inverse(this);
+});
+
+Handlebars.registerHelper('ifIsSingle', function(type, options) {
+	return type == 'single' ? options.fn(this) : options.inverse(this);
+});
+
+module.exports = Handlebars;
+},{}],6:[function(require,module,exports){
 var Config = require('./embed-config.js');
 var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
+var Columnsbars = require('./embed-handlebars.js');
+// var Handlebars = require('../bower_components/handlebars/handlebars.runtime.js');
+// var Templates = require('../views/embeddable-templates.js')(Handlebars);
 
 (function() {
 
@@ -16590,6 +16619,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 	// ------------------------------------------------------
 
 	// Do the following tasks only once per page
+	if( window.Columns === undefined ) { window.Columns = {}; }
 	if(!Columns.hasFinishedSetup) { Columns.hasFinishedSetup = false; };
 	if (!Columns.hasFinishedSetup) {
 
@@ -16605,6 +16635,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 		if(!Columns.scripts) { Columns.scripts = []; };
 		if(!Columns.tables) { Columns.tables = []; };
 
+		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 
 		// Make sure we don't do this setup again
@@ -16641,7 +16672,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 
 
 })();
-},{"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":4}],6:[function(require,module,exports){
+},{"../javascripts/models/ColumnsTable.js":9,"./embed-config.js":4,"./embed-handlebars.js":5}],7:[function(require,module,exports){
 module.exports = ColumnsAnalytics;
 
 function ColumnsAnalytics() {}
@@ -16671,7 +16702,7 @@ ColumnsAnalytics.send = function( props ) {
 	}
 
 };
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 function ColumnsEvent () {
 
 }
@@ -16693,7 +16724,7 @@ ColumnsEvent.offAll = function() {
 };
 
 module.exports = ColumnsEvent;
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var $$ = require('../../bower_components/jquery/dist/jquery.js');
 
 var Config = require('../embed-config.js'),
@@ -16702,6 +16733,12 @@ var Config = require('../embed-config.js'),
 	PreventGhostClick = require('../prevent-ghost-click.js'),
 	ColumnsEvent = require('./ColumnsEvent.js'),
 	ColumnsAnalytics = require('./ColumnsAnalytics.js');
+	// Handlebars = require('../../bower_components/handlebars/handlebars.runtime.js'),
+	// Columns.EmbeddableTemplates = require('../../views/embeddable-templates.js')(Handlebars);
+
+// Set up templates
+
+// var Embeddlebars = Handlebars.noConflict();
 
 // Make sure our version of jquery isn't polluting the namespace
 // if ( window.jQuery ) {
@@ -16824,11 +16861,12 @@ ColumnsTable.prototype._setupHandlebars = function() {
 	//     return Columns['row-templates'][ name ](ctx, hash);
 	// }.bind(this));
 	// Handlebars.registerPartial({
-	// 	group: Columns.EmbeddableTemplates['templates/embed-table/row-group.hbs']
+	// 	group: Templates['templates/embed-table/row-group.hbs']
 	// });
-	// Handlebars.registerPartial('group', Handlebars.template( Columns.EmbeddableTemplates['templates/embed-table/row-group.hbs']) );
-	// Handlebars.registerPartial('column', Columns.EmbeddableTemplates['templates/embed-table/row-value.hbs']);
-	// Handlebars.registerPartial('footer', Columns.EmbeddableTemplates['templates/embed-table/footer.hbs']);
+	// Handlebars.registerPartial('group', Handlebars.template( Templates['templates/embed-table/row-group.hbs']) );
+	// Handlebars.registerPartial('column', Templates['templates/embed-table/row-value.hbs']);
+	// Handlebars.registerPartial('footer', Templates['templates/embed-table/footer.hbs']);
+	console.log("Registering partials");
 	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
 	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
 
@@ -16979,7 +17017,7 @@ ColumnsTable.prototype.generateLayout = function(layout, reload) {
 	// Set up the row layout as a handlebars partial
 	// dynamically based on the row layout object
 	this.layout = layout;
-	// var row_layout = Columns.EmbeddableTemplates['templates/embed-table/row-layout.hbs']({layout: layout});
+	// var row_layout = Columns.EmbeddableTemplates['Columns.Embeddabletemplates/embed-table/row-layout.hbs']({layout: layout});
 	// var row_template = Handlebars.compile(row_layout);
 	// var templateName = this.templateName();
 	// // Handlebars.registerPartial('row_layout', row_template);
@@ -17932,7 +17970,7 @@ ColumnsTable.prototype.send = function( props ) {
 };
 
 module.exports = ColumnsTable;
-},{"../../bower_components/hammerjs/hammer.js":1,"../../bower_components/jquery/dist/jquery.js":2,"../../bower_components/velocity/velocity.js":3,"../embed-config.js":4,"../prevent-ghost-click.js":9,"./ColumnsAnalytics.js":6,"./ColumnsEvent.js":7}],9:[function(require,module,exports){
+},{"../../bower_components/hammerjs/hammer.js":1,"../../bower_components/jquery/dist/jquery.js":2,"../../bower_components/velocity/velocity.js":3,"../embed-config.js":4,"../prevent-ghost-click.js":10,"./ColumnsAnalytics.js":7,"./ColumnsEvent.js":8}],10:[function(require,module,exports){
 /**
  * Prevent click events after a touchend.
  * 
@@ -18029,6 +18067,6 @@ module.exports = ColumnsTable;
     };
 
 })(window, document, 'PreventGhostClick');
-},{}]},{},[5]);
+},{}]},{},[6]);
 
 }());

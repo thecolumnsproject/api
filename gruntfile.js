@@ -24,6 +24,11 @@ module.exports = function(grunt) {
 			embed: {
 				options: {
 					namespace: "Columns.EmbeddableTemplates",
+					// namespace: false,
+					// commonjs: true,
+					// partialsUseNamespace: true,
+					// wrapped: true,
+					// node: true
 				},
 				files: {
 					"views/embeddable-templates.js": "views/embed-table/*.hbs"
@@ -150,9 +155,6 @@ module.exports = function(grunt) {
 			sass: {
 				files: '**/*.scss',
 				tasks: ['sass'],
-				options: {
-					livereload: true,
-				},
 			},
 			js: {
 				files: [
@@ -162,7 +164,7 @@ module.exports = function(grunt) {
 					'javascripts/**/*.js',
 					'routes/**/*.js',
 				],
-				tasks: ['develop'],
+				tasks: ['browserify', 'replace:embed', 'concat', 'develop'],
 				options: { nospawn: true }
 			},
 		},

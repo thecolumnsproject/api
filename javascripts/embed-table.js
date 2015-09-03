@@ -1,5 +1,8 @@
 var Config = require('./embed-config.js');
 var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
+var Columnsbars = require('./embed-handlebars.js');
+// var Handlebars = require('../bower_components/handlebars/handlebars.runtime.js');
+// var Templates = require('../views/embeddable-templates.js')(Handlebars);
 
 (function() {
 
@@ -7,6 +10,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 	// ------------------------------------------------------
 
 	// Do the following tasks only once per page
+	if( window.Columns === undefined ) { window.Columns = {}; }
 	if(!Columns.hasFinishedSetup) { Columns.hasFinishedSetup = false; };
 	if (!Columns.hasFinishedSetup) {
 
@@ -22,6 +26,7 @@ var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
 		if(!Columns.scripts) { Columns.scripts = []; };
 		if(!Columns.tables) { Columns.tables = []; };
 
+		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 
 		// Make sure we don't do this setup again
