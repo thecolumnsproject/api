@@ -54,6 +54,9 @@ data/*.csv
 uploaded-data/
 .elasticbeanstalk/
 
+# Generated SASS cache
+.sass-cache
+
 # AWS info
 clmzkeypair.pem
 rootkey.csv

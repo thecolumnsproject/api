@@ -9,6 +9,8 @@ var Table 				= require('../models/tables/table.js');
 var Registration 		= require('../models/registration.js');
 var common 	   			= require('../common');
 var config 	   			= common.config();
+var hbs 				= require('hbs');
+var path 				= require('path');
 
 // Redirect root requests (http://colum.nz)
 // to the web app for now
@@ -22,6 +24,28 @@ router.get('/embed-table/:id', function( req, res ) {
 		embed_host: config.embed.host,
 		embed_id: req.params.id || 1
 	});
+});
+
+router.get('/:id', function( req, res ) {
+
+	// Get the data for this table id
+	var table = new Table();
+	table.find(req.params.id, req.query.page || 0, function(err, data) {
+		if (err) {
+			res.json({
+				status: 'fail',
+				message: err.message
+			});
+		} else {
+
+			// Set up the partials we'll need to render the table
+			hbs.registerPartials( path.join( __dirname + '/../views/embed-table' ) ); 
+			res.render( 'table', {
+				data: data
+			});
+		}
+	});
+
 });
 
 router.route('/columns')
