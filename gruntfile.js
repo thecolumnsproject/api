@@ -42,7 +42,7 @@ module.exports = function(grunt) {
 				destCss: 'stylesheets/',
 				options: {
 					stylesheet: 'scss',
-					font: 'columns-font',
+					font: 'columns-project',
 					syntax: 'bootstrap'
 				}
 			}
@@ -93,8 +93,8 @@ module.exports = function(grunt) {
 				}]
 			},
 			embed_font: {
-				src: ['stylesheets/_columns-font.scss'],
-				dest: 'stylesheets/_columns-font.scss',
+				src: ['stylesheets/_columns-project.scss'],
+				dest: 'stylesheets/_columns-project.scss',
 				replacements: [{
 					from: '../files/fonts',
 					to: '../fonts'

@@ -1,13 +1,13 @@
 /* Grays */
 @font-face {
-  font-family: "columns-font";
-  src: url("../fonts/columns-font.eot?4ddd9f668e1bee66d26dce72cb4a9933");
-  src: url("../fonts/columns-font.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-font.woff?4ddd9f668e1bee66d26dce72cb4a9933") format("woff"), url("../fonts/columns-font.ttf?4ddd9f668e1bee66d26dce72cb4a9933") format("truetype");
+  font-family: "columns-project";
+  src: url("../fonts/columns-project.eot?9e57d1133ee39df6ef9bed98ce8ddb17");
+  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?9e57d1133ee39df6ef9bed98ce8ddb17") format("woff"), url("../fonts/columns-project.ttf?9e57d1133ee39df6ef9bed98ce8ddb17") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
-  font-family: "columns-font";
+  font-family: "columns-project";
   display: inline-block;
   vertical-align: middle;
   line-height: 1;
