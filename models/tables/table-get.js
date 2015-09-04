@@ -104,7 +104,7 @@ Table.findRowCountForTableId = function(id, callback) {
 	});
 }
 
-Table.getTitle = function(id, callback) {
+Table.getMetaData = function(id, callback) {
 
 	// Check for any errors
 	if ( id === undefined ) {
@@ -116,7 +116,7 @@ Table.getTitle = function(id, callback) {
 	this.pool.getConnection(function(err, connection) {
 		if (err) { callback(err, null); return; }
 
-		var sql = "SELECT title FROM tables where id=?";
+		var sql = "SELECT * FROM tables WHERE id=?";
 		var query = connection.query(sql, [id], function( err, rows, fields ) {
 
 			// End the connections
@@ -132,15 +132,8 @@ Table.getTitle = function(id, callback) {
 				return;
 			}
 
-			// Extract the title
-			var title = rows[0]['title'];
-
-			// Got stuff!
-			console.log("Got title:");
-			console.log( title );
-
 			// Send it back
-			callback( null, title );
+			callback( null, rows[0] );
 
 		}.bind( this ));
 

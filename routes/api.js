@@ -7,6 +7,7 @@ var cluster 			= require('cluster');
 var path 				= require('path');
 var Table 				= require('../models/tables/table.js');
 var Registration 		= require('../models/registration.js');
+var ShareMessage 		= require('../models/share-message.js');
 var common 	   			= require('../common');
 var config 	   			= common.config();
 var hbs 				= require('hbs');
@@ -30,18 +31,24 @@ router.get('/:id', function( req, res ) {
 
 	// Get the data for this table id
 	var table = new Table();
-	table.getTitle(req.params.id, function(err, title) {
+	table.getMetaData(req.params.id, function(err, data) {
 
 		// Send up handelbars helper
 		hbs.registerHelper('ifIsProduction', function( options ) {
 			return process.env.NODE_ENV === 'production' ? options.fn(this) : options.inverse(this);
 		});
 
+		// Set up share message generator
+		var shareMessage = new ShareMessage( data );
+
 		res.render( 'table', {
-			title: title || 'Untitled',
+			title: data.title || 'Untitled',
 			embed_host: config.embed.host,
 			embed_id: req.params.id || 1,
-			embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 )
+			embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 ),
+			tweet_body: encodeURIComponent( shareMessage.twitterMessage() ),
+			email_subject: shareMessage.emailMessage().subject,
+			email_body: shareMessage.emailMessage().body
 		});
 	});
 });

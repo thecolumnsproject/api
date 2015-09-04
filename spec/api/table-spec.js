@@ -82,7 +82,7 @@ describe('Tables', function() {
 		});
 	});
 
-	describe('Getting a table title', function() {
+	describe('Getting table data', function() {
 
 		beforeEach(function( done ) {
 			var sql = 'INSERT INTO tables (title) VALUES ("Hello")';
@@ -95,22 +95,22 @@ describe('Tables', function() {
 		});
 
 		it('should return an error when not passed a table id', function( done ) {
-			table.getTitle( undefined, function( err, title ) {
+			table.getMetaData( undefined, function( err, data ) {
 				expect( err ).toEqual( new Error('No table id specified') );
 				done();
 			});
 		});
 
 		it('should return an error if the table does not exist', function( done ) {
-			table.getTitle( 1, function( err, title ) {
+			table.getMetaData( 1, function( err, data ) {
 				expect( err ).toEqual( new Error( 'No table found for id 1' ) );
 				done();
 			});
 		});
 
 		it('should return a title when the id is valid', function( done ) {
-			table.getTitle( 2, function( err, title ) {
-				expect( title ).toEqual( "Hello" );
+			table.getMetaData( 2, function( err, data ) {
+				expect( data.title ).toEqual( "Hello" );
 				done();
 			});
 		});
