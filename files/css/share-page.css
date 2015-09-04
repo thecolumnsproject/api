@@ -203,6 +203,9 @@ h2 {
   font-weight: 300; }
 
 /* Fix bug with grunt-webfont plugin */
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  vertical-align: inherit !important; }
+
 .columns-button {
   display: inline-block;
   height: 42px;
