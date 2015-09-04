@@ -298,7 +298,8 @@ section.share-page-header {
   font-weight: 500;
   color: #fff; }
   section.share-page-header i {
-    font-size: 2rem; }
+    font-size: 1.5rem;
+    margin-bottom: 4px; }
 
 .share-page-action-button {
   display: -webkit-box;
@@ -383,5 +384,17 @@ section.share-page-header {
     padding: 16px;
     font-size: 0.8em;
     color: rgba(0, 0, 0, 0.87); }
+
+.share-page-action-link {
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  font-size: 0.625em;
+  margin-top: 16px;
+  margin-bottom: 32px; }
+  .share-page-action-link a {
+    text-decoration: none;
+    color: #3E97BD; }
 
 /*# sourceMappingURL=share-page.css.map */

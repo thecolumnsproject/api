@@ -22,8 +22,8 @@ section.share-page-header {
 	color: #fff;
 
 	i {
-		font-size: 2rem;
-		// margin-bottom: 8px;
+		font-size: 1.5rem;
+		margin-bottom: $spacing/2;
 	}
 }
 
@@ -80,5 +80,21 @@ $button-icon-size: $spacing*3;
 	
 		font-size: 0.8em;
 		color: rgba(0,0,0,0.87);
+	}
+}
+
+.share-page-action-link {
+	text-transform: uppercase;
+	text-align: center;
+	letter-spacing: 0.5px;
+	font-weight: 600;
+	font-size: 0.625em;
+
+	margin-top: $spacing*2;
+	margin-bottom: $spacing*4;
+
+	a {
+		text-decoration: none;
+		color: $primary-color;
 	}
 }
