@@ -30,7 +30,7 @@ h2 {
 }
 
 /* Fix bug with grunt-webfont plugin */
-[class^="icon-"]:before, [class*=" icon-"]:before {
+[class^="clmnz-icon-"]:before, [class*=" clmnz-icon-"]:before {
  	vertical-align: inherit !important;
 }
 

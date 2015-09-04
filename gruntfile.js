@@ -43,8 +43,11 @@ module.exports = function(grunt) {
 				options: {
 					stylesheet: 'scss',
 					font: 'columns-project',
-					syntax: 'bootstrap'
-				}
+					syntax: 'bootstrap',
+					templateOptions: {
+				    	classPrefix: 'clmnz-icon-',
+				    }
+				},
 			}
 		},
 		browserify: {

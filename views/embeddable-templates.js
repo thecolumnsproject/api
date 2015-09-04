@@ -10,13 +10,13 @@ this["Columns"]["EmbeddableTemplates"]["views/embed-table/body.hbs"] = Handlebar
 },"useData":true});
 
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/error.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class=\"columns-table-error\">\n	<i class=\"icon-columns columns-table-error-icon\"></i>\n	<span class=\"columns-table-error-text\">\n		<span class=\"columns-table-error-text-header\">Shoot, we can't load the table right now.<br />\n		<span class=\"columns-table-error-text-body\">Tap to try again.</span>\n	</span>\n</div>";
+    return "<div class=\"columns-table-error\">\n	<i class=\"clmnz-icon-columns columns-table-error-icon\"></i>\n	<span class=\"columns-table-error-text\">\n		<span class=\"columns-table-error-text-header\">Shoot, we can't load the table right now.<br />\n		<span class=\"columns-table-error-text-body\">Tap to try again.</span>\n	</span>\n</div>";
 },"useData":true});
 
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/footer.hbs"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var helper;
 
-  return "			<i class=\"columns-table-footer-icon columns-verified-source-icon icon-circle-check-open\"></i>\n			"
+  return "			<i class=\"columns-table-footer-icon columns-verified-source-icon clmnz-icon-circle-check-open\"></i>\n			"
     + this.escapeExpression(((helper = (helper = helpers.source || (depth0 != null ? depth0.source : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"source","hash":{},"data":data}) : helper)))
     + "\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -26,7 +26,7 @@ this["Columns"]["EmbeddableTemplates"]["views/embed-table/footer.hbs"] = Handleb
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.source : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "	</span>\n	<span class=\"columns-table-items-count\">"
     + this.escapeExpression(((helper = (helper = helpers.item_count || (depth0 != null ? depth0.item_count : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"item_count","hash":{},"data":data}) : helper)))
-    + " Items</span>\n	<i class=\"columns-table-footer-icon columns-logo icon-columns\"></i>\n	<span class=\"columns-table-expand-button\">Expand</span>\n</div>";
+    + " Items</span>\n	<i class=\"columns-table-footer-icon columns-logo clmnz-icon-columns\"></i>\n	<span class=\"columns-table-expand-button\">Expand</span>\n</div>";
 },"useData":true});
 
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/header.hbs"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {

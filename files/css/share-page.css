@@ -1,12 +1,12 @@
 /* Grays */
 @font-face {
   font-family: "columns-project";
-  src: url("../fonts/columns-project.eot?b38eee4fc2aa673fb63b5eaea0bcefdf");
-  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?b38eee4fc2aa673fb63b5eaea0bcefdf") format("woff"), url("../fonts/columns-project.ttf?b38eee4fc2aa673fb63b5eaea0bcefdf") format("truetype");
+  src: url("../fonts/columns-project.eot?504f4f11935527e9aed9d517aea323d2");
+  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?504f4f11935527e9aed9d517aea323d2") format("woff"), url("../fonts/columns-project.ttf?504f4f11935527e9aed9d517aea323d2") format("truetype");
   font-weight: normal;
   font-style: normal; }
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
+[class^="clmnz-icon-"]:before,
+[class*=" clmnz-icon-"]:before {
   font-family: "columns-project";
   display: inline-block;
   vertical-align: middle;
@@ -20,28 +20,28 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
-.icon-circle-check-open:before {
+.clmnz-icon-circle-check-open:before {
   content: "\f101"; }
 
-.icon-code:before {
+.clmnz-icon-code:before {
   content: "\f102"; }
 
-.icon-columns-small:before {
+.clmnz-icon-columns-small:before {
   content: "\f103"; }
 
-.icon-columns:before {
+.clmnz-icon-columns:before {
   content: "\f104"; }
 
-.icon-email:before {
+.clmnz-icon-email:before {
   content: "\f105"; }
 
-.icon-facebook:before {
+.clmnz-icon-facebook:before {
   content: "\f106"; }
 
-.icon-source:before {
+.clmnz-icon-source:before {
   content: "\f107"; }
 
-.icon-twitter:before {
+.clmnz-icon-twitter:before {
   content: "\f108"; }
 
 @-webkit-keyframes pop-in {
@@ -203,7 +203,7 @@ h2 {
   font-weight: 300; }
 
 /* Fix bug with grunt-webfont plugin */
-[class^="icon-"]:before, [class*=" icon-"]:before {
+[class^="clmnz-icon-"]:before, [class*=" clmnz-icon-"]:before {
   vertical-align: inherit !important; }
 
 .columns-button {
