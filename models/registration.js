@@ -54,11 +54,11 @@ Registration.prototype._addUser = function( user, callback ) {
 
 Registration.prototype._welcomeUser = function( user ) {
 	var transporter = nodemailer.createTransport(smtpTransport({
-	 	host: "smtp.1and1.com",
-        port: 587,
+	 	host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
 		auth: {
-			user: 'jeremy@thecolumnsproject.com',
-			pass: 'C0lumn5!'
+			user: process.env.EMAIL_USER,
+			pass: process.env.EMAIL_PASSWORD
 		}
 	}));
 
