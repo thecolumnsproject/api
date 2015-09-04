@@ -38,11 +38,11 @@ h2 {
 	
 	display: inline-block;
 
-	height: 42px;
+	height: 40px;
 	line-height: 42px;
 	border: 1px solid #fff;
 	border-radius: 22px;
-	padding: 0 40px;
+	padding: 2px 40px 0 40px;
 	font-size: 12px;
 	font-weight: 500;
 	text-transform: uppercase;
@@ -72,15 +72,15 @@ h2 {
 }
 
 .button-large {
-	height: 52px;
-	line-height: 54px;
+	height: 50px;
+	line-height: 52px;
 	border-radius: 26px;
 	padding: 0 50px;
 }
 
 .button-small {
-	height: 34px;
-	line-height: 34px;
+	height: 32px;
+	line-height: 32px;
 	border-radius: 17px;
 	padding: 0 20px;
 }

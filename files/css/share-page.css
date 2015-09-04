@@ -1,8 +1,8 @@
 /* Grays */
 @font-face {
   font-family: "columns-project";
-  src: url("../fonts/columns-project.eot?9e57d1133ee39df6ef9bed98ce8ddb17");
-  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?9e57d1133ee39df6ef9bed98ce8ddb17") format("woff"), url("../fonts/columns-project.ttf?9e57d1133ee39df6ef9bed98ce8ddb17") format("truetype");
+  src: url("../fonts/columns-project.eot?b38eee4fc2aa673fb63b5eaea0bcefdf");
+  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?b38eee4fc2aa673fb63b5eaea0bcefdf") format("woff"), url("../fonts/columns-project.ttf?b38eee4fc2aa673fb63b5eaea0bcefdf") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="icon-"]:before,
@@ -208,11 +208,11 @@ h2 {
 
 .columns-button {
   display: inline-block;
-  height: 42px;
+  height: 40px;
   line-height: 42px;
   border: 1px solid #fff;
   border-radius: 22px;
-  padding: 0 40px;
+  padding: 2px 40px 0 40px;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
@@ -234,14 +234,14 @@ h2 {
     font-size: 1.25rem; }
 
 .button-large {
-  height: 52px;
-  line-height: 54px;
+  height: 50px;
+  line-height: 52px;
   border-radius: 26px;
   padding: 0 50px; }
 
 .button-small {
-  height: 34px;
-  line-height: 34px;
+  height: 32px;
+  line-height: 32px;
   border-radius: 17px;
   padding: 0 20px; }
 
@@ -292,11 +292,13 @@ section.share-page-header {
   -o-align-items: center;
   align-items: center;
   -ms-flex-align: center;
-  font-size: 1.5em;
+  font-size: .75em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
   color: #fff; }
   section.share-page-header i {
-    font-size: 1.75rem;
-    margin-bottom: 8px; }
+    font-size: 2rem; }
 
 .share-page-action-button {
   display: -webkit-box;
@@ -332,9 +334,7 @@ section.share-page-header {
   margin-top: 32px; }
   .share-page-action-button i {
     position: absolute;
-    left: 16px;
-    height: 24px;
-    width: 24px; }
+    left: 16px; }
     .share-page-action-button i:before {
       line-height: 24px; }
 
