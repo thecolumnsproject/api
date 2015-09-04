@@ -57,9 +57,17 @@ module.exports = function(grunt) {
 				// 	},
 				// }
 			},
-			specs: {
+			web: {
+				src: ['javascripts/share-page.js'],
+				dest: 'files/js/share-page.js'
+			},
+			embed_specs: {
 				src: ['spec/embed/**/*.js', '!spec/embed/compiled-specs.js'],
 				dest: 'spec/embed/compiled-specs.js'
+			},
+			web_specs: {
+				src: ['spec/views/**/*.js', '!spec/views/compiled-specs.js'],
+				dest: 'spec/views/compiled-specs.js'
 			}
 		},
 		replace: {
@@ -127,6 +135,15 @@ module.exports = function(grunt) {
 						'views/embeddable-templates.js',
 					]
 				}
+			},
+			web: {
+				options: {
+					specs: 'spec/views/compiled-specs.js',
+					vendor: [
+						'files/js/share-page.js',
+						'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
+					]
+				}
 			}
 		},
 		// jasmine_node: {
@@ -140,9 +157,13 @@ module.exports = function(grunt) {
   //  			all: ['spec/']
 		// },
 		watch: {
-			spec: {
+			embed_specs: {
 				files: ['spec/embed/**/*.js', '!spec/embed/compiled-specs.js'],
-				tasks: ['browserify:specs']
+				tasks: ['browserify:embed_specs']
+			},
+			web_specs: {
+				files: ['spec/views/**/*.js', '!spec/views/compiled-specs.js'],
+				tasks: ['browserify:web_specs']
 			},
 			handlebars: {
 				files: '**/*.hbs',

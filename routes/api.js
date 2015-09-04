@@ -31,20 +31,18 @@ router.get('/:id', function( req, res ) {
 	// Get the data for this table id
 	var table = new Table();
 	table.getTitle(req.params.id, function(err, title) {
-		if (err) {
-			res.json({
-				status: 'fail',
-				message: err.message
-			});
-		} else {
 
-			res.render( 'table', {
-				title: title,
-				embed_host: config.embed.host,
-				embed_id: req.params.id || 1,
-				embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 )
-			});
-		}
+		// Send up handelbars helper
+		hbs.registerHelper('ifIsProduction', function( options ) {
+			return process.env.NODE_ENV === 'production' ? options.fn(this) : options.inverse(this);
+		});
+
+		res.render( 'table', {
+			title: title || 'Untitled',
+			embed_host: config.embed.host,
+			embed_id: req.params.id || 1,
+			embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 )
+		});
 	});
 });
 
