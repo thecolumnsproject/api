@@ -62,7 +62,7 @@ $button-icon-size: $spacing*3;
 	margin: auto;
 	margin-top: $spacing*4;
 
-	label {
+	.share-page-url-label {
 		text-transform: uppercase;
 		text-align: center;
 		letter-spacing: 0.5px;
@@ -71,8 +71,9 @@ $button-icon-size: $spacing*3;
 		font-size: 0.625em;
 	}
 
-	span {
+	.share-page-url {
 		margin-top: $spacing;
+		margin-bottom: $spacing*4;
 		border-top: 1px solid $border-color;
 		border-bottom: 1px solid $border-color;
 		padding: $spacing*2;
