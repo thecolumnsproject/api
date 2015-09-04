@@ -104,6 +104,49 @@ Table.findRowCountForTableId = function(id, callback) {
 	});
 }
 
+Table.getTitle = function(id, callback) {
+
+	// Check for any errors
+	if ( id === undefined ) {
+		callback( new Error('No table id specified'), null );
+		return;
+	}
+
+	// Check for undefined id
+	this.pool.getConnection(function(err, connection) {
+		if (err) { callback(err, null); return; }
+
+		var sql = "SELECT title FROM tables where id=?";
+		var query = connection.query(sql, [id], function( err, rows, fields ) {
+
+			// End the connections
+			connection.release();
+			this.pool.end();
+
+			// Is there an error
+			if ( err ) { callback( err, null ); console.log( err ); return }
+
+			// Was there really a table here?
+			if ( !rows[0] ) {
+				callback( new Error( 'No table found for id ' + id ), null );
+				return;
+			}
+
+			// Extract the title
+			var title = rows[0]['title'];
+
+			// Got stuff!
+			console.log("Got title:");
+			console.log( title );
+
+			// Send it back
+			callback( null, title );
+
+		}.bind( this ));
+
+	}.bind( this ));
+}
+
 /**
  * Accept a query from string
  * and parse for type and columns

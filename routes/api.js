@@ -30,7 +30,7 @@ router.get('/:id', function( req, res ) {
 
 	// Get the data for this table id
 	var table = new Table();
-	table.find(req.params.id, req.query.page || 0, function(err, data) {
+	table.getTitle(req.params.id, function(err, title) {
 		if (err) {
 			res.json({
 				status: 'fail',
@@ -38,14 +38,14 @@ router.get('/:id', function( req, res ) {
 			});
 		} else {
 
-			// Set up the partials we'll need to render the table
-			hbs.registerPartials( path.join( __dirname + '/../views/embed-table' ) ); 
 			res.render( 'table', {
-				data: data
+				title: title,
+				embed_host: config.embed.host,
+				embed_id: req.params.id || 1,
+				embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 )
 			});
 		}
 	});
-
 });
 
 router.route('/columns')

@@ -8,7 +8,16 @@ var fixtures 	= require('./fixtures.json');
 describe('Tables', function() {
 
 	var table;
+	var connection;
+
 	beforeEach(function( done ) {
+
+		connection = mysql.createConnection({
+			host		: config.database.host,
+			user		: config.database.user,
+			password	: config.database.password,
+			multipleStatements	: true
+		});
 
 		// Add dummy data to test database
 		// connection.query('INSERT INTO types (name) VALUES (startup)', function(err, rows, fields) {
@@ -18,12 +27,6 @@ describe('Tables', function() {
 		// Rebuild the database
 		fs.readFile('spec/api/test_db_setup.sql', 'utf8', function(err, sql) {
 			if (err) throw err;
-			var connection = mysql.createConnection({
-				host		: config.database.host,
-				user		: config.database.user,
-				password	: config.database.password,
-				multipleStatements	: true
-			});
 			var query = connection.query(sql, function(err, rows, fields) {
 				if (err) throw err;
 
@@ -31,14 +34,18 @@ describe('Tables', function() {
 				// once we've set up the database
 				table = new Table();
 
-				// End the connection
-				connection.end();
-
 				// Start running tests
 				done();
 			});
 		});
 	});
+
+	afterEach(function( done ) {
+		// End the connection
+		connection.end();
+
+		done();
+	});	
 
 	xdescribe('Initiating a table', function() {
 		
@@ -71,6 +78,40 @@ describe('Tables', function() {
 				// waitsFor()
 
 
+			});
+		});
+	});
+
+	describe('Getting a table title', function() {
+
+		beforeEach(function( done ) {
+			var sql = 'INSERT INTO tables (title) VALUES ("Hello")';
+			var query = connection.query(sql, function(err, rows, fields) {
+				if (err) throw err;
+
+				// Start running tests
+				done();
+			});
+		});
+
+		it('should return an error when not passed a table id', function( done ) {
+			table.getTitle( undefined, function( err, title ) {
+				expect( err ).toEqual( new Error('No table id specified') );
+				done();
+			});
+		});
+
+		it('should return an error if the table does not exist', function( done ) {
+			table.getTitle( 1, function( err, title ) {
+				expect( err ).toEqual( new Error( 'No table found for id 1' ) );
+				done();
+			});
+		});
+
+		it('should return a title when the id is valid', function( done ) {
+			table.getTitle( 2, function( err, title ) {
+				expect( title ).toEqual( "Hello" );
+				done();
 			});
 		});
 	});

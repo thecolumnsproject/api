@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<title>{{#if data.title}}{{data.title}}{{else}}Untitled{{/if}} | The Columns Project</title>
+	<title>{{#if title}}{{title}}{{else}}Untitled{{/if}} | The Columns Project</title>
 
 	<!-- Google Webmaster Tools Verification -->
 	<meta name="google-site-verification" content="cGqPP1heySk1JcsVGIzL-gc2p6ykZl6mKzzr92E610k" />
@@ -13,19 +13,40 @@
 	<link rel="icon" type="image/png" href="images/favicon.png" />
 
 	<!-- CSS -->
-	<link href="css/embed-table.css" rel="stylesheet">
+	<link href="css/share-page.css" rel="stylesheet">
 
 </head>
 <body>
-	{{> header data.title}}
-	<div class="columns-table-container">
-		<div class="columns-table-wrapper">
-			<div class="columns-table">
-				{{#each data.data}}
-					{{> row this}}
-				{{/each}}
-			</div>
-			
+	
+	<section class="share-page-header">
+		<i class="icon-columns"></i>
+		The Columns Project
+	</section>
+	<section class="share-page-embed">
+		<script type="text/javascript"
+			src="{{ embed_host }}/public/embed-table.js"
+			data-table-id="{{ embed_id }}">
+		</script>
+	</section>
+	<section class="share-page-actions">
+		<a class="columns-button button-secondary share-page-action-button" href="https://twitter.com/intent/tweet?text=Suh-weet.&url={{embed_uri}}" target="_blank">
+			<i class="icon-twitter"></i>
+			Tweet this table
+		</a>
+		<a class="columns-button button-secondary share-page-action-button" href="mailto:?subject=Check out this table&body={{embed_host}}/{{embed_id}}" target="_blank">
+			<i class="icon-email"></i>
+			Email this table
+		</a>
+
+		<div class="share-page-action-url">
+			<label for="share-page-url">Or share the url</label>
+			<span class="share-page-url">
+				{{embed_host}}/{{embed_id}}
+			</span>
 		</div>
-	</div>
+	</section>
+
+	<script>
+
+	</script>
 </body>
