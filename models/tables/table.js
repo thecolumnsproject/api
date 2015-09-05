@@ -17,7 +17,8 @@ function Table() {
 		user				: config.database.user,
 		password			: config.database.password,
 		database			: config.database.name,
-		multipleStatements	: true
+		multipleStatements	: true,
+		charset 			: 'utf8'
 	});
 	this.connection;
 }

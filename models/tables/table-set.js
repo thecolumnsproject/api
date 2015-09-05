@@ -132,7 +132,7 @@ Table.createDataTable = function(id, columns, callback) {
 			sql += ","
 		}
 	});
-	sql += ")";
+	sql += ") DEFAULT CHARSET=utf8";
 	var query = this.connection.query(sql, [this.pool.config.connectionConfig.database, id].concat(columnsArray), function(err, rows, fields) {
 		console.log(query.sql);
 		if (err) { callback(err, null); console.log(err); return; }
@@ -213,6 +213,7 @@ Table.addDataToTable = function(tableName, data_path, callback) {
 		var sql =	"LOAD DATA CONCURRENT LOCAL INFILE ?" +
 					" IGNORE" +
 					" INTO TABLE `?`" +
+					" CHARACTER SET UTF8" +
 					" FIELDS TERMINATED BY ',' ENCLOSED BY \"'\"" +
 					" IGNORE 1 LINES";
 		console.log("About to load data into db");
