@@ -116,7 +116,8 @@ module.exports = function(grunt) {
 			embed: {
 				src: [
 					'javascripts/embed-table-intro.js',
-					'bower_components/handlebars/handlebars.runtime.js',
+					// 'bower_components/handlebars/handlebars.runtime.js',
+					'vendor/javascripts/handlebars.runtime.custom.js',
 					'views/embeddable-templates.js',
 					'compiled-javascripts/embed-table.js',
 					'javascripts/embed-table-outro.js'

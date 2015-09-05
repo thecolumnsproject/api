@@ -2,7 +2,7 @@ var $$ = require('../../bower_components/jquery/dist/jquery.js');
 
 var Config = require('../embed-config.js'),
 	Velocity = require('../../bower_components/velocity/velocity.js'),
-	Hammer = require('../../bower_components/hammerjs/hammer.js'),
+	Hammer = require('../../vendor/javascripts/hammer.custom.js'),
 	PreventGhostClick = require('../prevent-ghost-click.js'),
 	ColumnsEvent = require('./ColumnsEvent.js'),
 	ColumnsAnalytics = require('./ColumnsAnalytics.js');
