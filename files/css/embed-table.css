@@ -339,7 +339,7 @@
 
 .columns-table-title {
   color: #3a3a3a;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold; }
 
 .columns-table-subtitle {
@@ -372,6 +372,10 @@
   -o-align-items: center;
   align-items: center;
   -ms-flex-align: center;
+  -webkit-flex-shrink: 0;
+  -moz-flex-shrink: 0;
+  flex-shrink: 0;
+  -ms-flex-negative: 0;
   -webkit-transition: opacity 0.25s;
   -moz-transition: opacity 0.25s;
   transition: opacity 0.25s;
