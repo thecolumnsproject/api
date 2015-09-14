@@ -295,7 +295,7 @@ $animation-duration: 			0.25s;
  * to the bottom of the DOM
  */
 
-.columns-table-widget.relocated {
+.columns-table-widget.columns-table-relocated {
 	// position: fixed;
 	// margin-left: 0; /* We need to override 
 }
@@ -307,37 +307,37 @@ $animation-duration: 			0.25s;
  * of elements while animations are occuring
  */
 
-.expanding .columns-table-container {
+.columns-table-expanding .columns-table-container {
 	border-top: none;
 }
 
-.expanding .columns-table-header {
+.columns-table-expanding .columns-table-header {
 	// border-bottom-color: $gray-lighter;
 }
 
-.collapsing .columns-table-header {
+.columns-table-collapsing .columns-table-header {
 	border-bottom-color: transparent;
 }
 
-.expanding .columns-table-header-controls {
+.columns-table-expanding .columns-table-header-controls {
 	// opacity: 1;
 }
 
-.collapsing .columns-table-header-controls {
+.columns-table-collapsing .columns-table-header-controls {
 	@include transition(opacity 0.0s);
  	opacity: 0;
 }
 
-.expanding .columns-table-footer {
+.columns-table-expanding .columns-table-footer {
  	opacity: 0;
 }
 
-.collapsing .columns-table-footer {
+.columns-table-collapsing .columns-table-footer {
  	@include transition(opacity 0.0s);
  	opacity: 0;
 }
 
-.expanding .columns-table-row {
+.columns-table-expanding .columns-table-row {
 	box-shadow: none;
 	// border-bottom-color: $gray-lighter;
 	// box-shadow: $table-row-box-shadow;
@@ -354,7 +354,7 @@ $animation-duration: 			0.25s;
 	-webkit-overflow-scrolling: touch;
 }
 
-.expanded .columns-table-container {
+.columns-table-expanded .columns-table-container {
 	// transform: translateY(0px); /* Remove the expansion animation transform */
 	top: 0;
 	// @include calc(height, '100% - #{$table-container-padding} * 2' !important);
@@ -365,19 +365,19 @@ $animation-duration: 			0.25s;
 	@include transform(translateY(0px) !important);
 }
 
-.expanded.large-form-factor .columns-table-container {
+.columns-table-expanded.large-form-factor .columns-table-container {
 	position: absolute;
 }
 
-.expanded.small-form-factor .columns-table-container {
+.columns-table-expanded.small-form-factor .columns-table-container {
 	position: fixed;
 }
 
-.expanded .columns-table-wrapper {
+.columns-table-expanded .columns-table-wrapper {
 	height: auto;
 }
 
-.expanded .columns-table-header {
+.columns-table-expanded .columns-table-header {
 	top: 0; left: 0;
 	@include calc(width, '100% - #{$table-container-padding} * 2');
 	padding: $table-header-padding-y $table-container-padding;
@@ -395,20 +395,20 @@ $animation-duration: 			0.25s;
 	// @include transform(translateY(1px));
 }
 
-.expanded .columns-table-header-controls {
+.columns-table-expanded .columns-table-header-controls {
 	opacity: 1;
 	pointer-events: auto;
 }
 
-.expanded.small-form-factor .columns-table-header {
+.columns-table-expanded.small-form-factor .columns-table-header {
 	position: fixed;
 }
 
-.expanded.large-form-factor .columns-table-header {
+.columns-table-expanded.large-form-factor .columns-table-header {
 	position: absolute;
 }
 
-.expanded .columns-table {
+.columns-table-expanded .columns-table {
 	margin-top: 60px;
 	// transform: translateY(0px) !important; /* Remove the expansion animation transform */
 	height: auto !important; /* Override the custom height given on load */
@@ -417,15 +417,15 @@ $animation-duration: 			0.25s;
 	@include transform(translateY(0px) !important);
 }
 
-.expanded .columns-table-loading {
+.columns-table-expanded .columns-table-loading {
 	display: none;
 }
 
-.expanded .columns-table-row:last-child {
+.columns-table-expanded .columns-table-row:last-child {
 	border-bottom: none;
 }
 
-.expanded .columns-table-row {
+.columns-table-expanded .columns-table-row {
 	border-color: transparent; /* Remove the table-row-top borders */
 	border-bottom-color: $gray-lighter;
 
@@ -437,12 +437,12 @@ $animation-duration: 			0.25s;
 	@include transform(translateY(0px) !important);
 }
 
-.expanded .columns-table-header {
+.columns-table-expanded .columns-table-header {
 	opacity: 1;
 	pointer-events: auto;
 }
 
-.expanded .columns-table-expand-button {
+.columns-table-expanded .columns-table-expand-button {
 	display: none;
 }
 

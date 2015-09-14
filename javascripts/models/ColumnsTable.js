@@ -41,10 +41,10 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	TABLE_HEADER_SELECTOR = '.columns-table-header',
 	TABLE_FOOTER_SELECTOR = '.columns-table-footer',
 	PLACEHOLDER_CLASS = 'columns-table-placeholder',
-	EXPANDED_CLASS = 'expanded',
-	EXPANDING_CLASS = 'expanding',
-	COLLAPSING_CLASS = 'collapsing',
-	RELOCATED_CLASS = 'relocated',
+	EXPANDED_CLASS = 'columns-table-expanded',
+	EXPANDING_CLASS = 'columns-table-expanding',
+	COLLAPSING_CLASS = 'columns-table-collapsing',
+	RELOCATED_CLASS = 'columns-table-relocated',
 	LOADING_CLASS = 'loading',
 	ERROR_CLASS = 'error',
 	ANIMATING_CLASS = 'velocity-animating',
@@ -345,11 +345,13 @@ ColumnsTable.prototype.renderData = function(data) {
 	if ($$footer.length > 0) {
 		this.updateComponent($$footer, {
 			source: data.source,
+			source_url: data.source_url,
 			item_count: data.num_rows || data.data.length
 		}, footer);
 	} else {
 		$$tableBody.after(footer({
 			source: data.source,
+			source_url: data.source_url,
 			item_count: data.num_rows || data.data.length
 		}));
 	}

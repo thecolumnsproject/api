@@ -570,28 +570,28 @@
  * These styles specify the position and look
  * of elements while animations are occuring
  */
-.expanding .columns-table-container {
+.columns-table-expanding .columns-table-container {
   border-top: none; }
 
-.collapsing .columns-table-header {
+.columns-table-collapsing .columns-table-header {
   border-bottom-color: transparent; }
 
-.collapsing .columns-table-header-controls {
+.columns-table-collapsing .columns-table-header-controls {
   -webkit-transition: opacity 0s;
   -moz-transition: opacity 0s;
   transition: opacity 0s;
   opacity: 0; }
 
-.expanding .columns-table-footer {
+.columns-table-expanding .columns-table-footer {
   opacity: 0; }
 
-.collapsing .columns-table-footer {
+.columns-table-collapsing .columns-table-footer {
   -webkit-transition: opacity 0s;
   -moz-transition: opacity 0s;
   transition: opacity 0s;
   opacity: 0; }
 
-.expanding .columns-table-row {
+.columns-table-expanding .columns-table-row {
   box-shadow: none; }
 
 /* Expanded styling
@@ -603,7 +603,7 @@
   overflow: hidden;
   -webkit-overflow-scrolling: touch; }
 
-.expanded .columns-table-container {
+.columns-table-expanded .columns-table-container {
   top: 0;
   overflow: scroll;
   border-top: none;
@@ -613,16 +613,16 @@
   -o-transform: translateY(0px) !important;
   transform: translateY(0px) !important; }
 
-.expanded.large-form-factor .columns-table-container {
+.columns-table-expanded.large-form-factor .columns-table-container {
   position: absolute; }
 
-.expanded.small-form-factor .columns-table-container {
+.columns-table-expanded.small-form-factor .columns-table-container {
   position: fixed; }
 
-.expanded .columns-table-wrapper {
+.columns-table-expanded .columns-table-wrapper {
   height: auto; }
 
-.expanded .columns-table-header {
+.columns-table-expanded .columns-table-header {
   top: 0;
   left: 0;
   width: -webkit-calc(100% - 20px * 2);
@@ -631,17 +631,17 @@
   border-bottom-color: #ebebeb;
   z-index: 999; }
 
-.expanded .columns-table-header-controls {
+.columns-table-expanded .columns-table-header-controls {
   opacity: 1;
   pointer-events: auto; }
 
-.expanded.small-form-factor .columns-table-header {
+.columns-table-expanded.small-form-factor .columns-table-header {
   position: fixed; }
 
-.expanded.large-form-factor .columns-table-header {
+.columns-table-expanded.large-form-factor .columns-table-header {
   position: absolute; }
 
-.expanded .columns-table {
+.columns-table-expanded .columns-table {
   margin-top: 60px;
   height: auto !important;
   /* Override the custom height given on load */
@@ -652,13 +652,13 @@
   -o-transform: translateY(0px) !important;
   transform: translateY(0px) !important; }
 
-.expanded .columns-table-loading {
+.columns-table-expanded .columns-table-loading {
   display: none; }
 
-.expanded .columns-table-row:last-child {
+.columns-table-expanded .columns-table-row:last-child {
   border-bottom: none; }
 
-.expanded .columns-table-row {
+.columns-table-expanded .columns-table-row {
   border-color: transparent;
   /* Remove the table-row-top borders */
   border-bottom-color: #ebebeb;
@@ -673,11 +673,11 @@
   -o-transform: translateY(0px) !important;
   transform: translateY(0px) !important; }
 
-.expanded .columns-table-header {
+.columns-table-expanded .columns-table-header {
   opacity: 1;
   pointer-events: auto; }
 
-.expanded .columns-table-expand-button {
+.columns-table-expanded .columns-table-expand-button {
   display: none; }
 
 /* In-cell styling
