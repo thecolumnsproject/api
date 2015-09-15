@@ -196,6 +196,8 @@ ColumnsTable.prototype.render = function() {
 			"z-index": (highestZIndex('*') + 1)
 		});
 		$$('body').append( this.$$panel );
+	} else if( this.preview || this.sample ) {
+		this.$$container = this.$$table.parent();
 	} else {
 		this.$$container = $$(window);
 		this.$$table.addClass('small-form-factor');
@@ -226,11 +228,15 @@ ColumnsTable.prototype.renderLargeFormFactorExpandedTable = function() {
 };
 
 ColumnsTable.prototype.isLargeFormFactor = function() {
-	return $$(window).width() > MAX_SMARTPHONE_SCREEN_WIDTH;
+	if ( this.preview || this.sample ) {
+		return false;
+	} else {
+		return $$(window).width() > MAX_SMARTPHONE_SCREEN_WIDTH;
+	}
 };
 
 ColumnsTable.prototype.getOffsetTop = function() {
-	if (this.isLargeFormFactor()) {
+	if ( this.isLargeFormFactor() || this.preview || this.sample ) {
 		return this.$$table.position().top; 
 		// return this.$$container.scrollTop();
 	} else {
@@ -242,8 +248,9 @@ ColumnsTable.prototype.getOffsetTop = function() {
 
 ColumnsTable.prototype.getOffsetLeft = function() {
 	if (this.isLargeFormFactor()) {
-		// return this.$$table.position().left;
 		return 0;
+	} else if ( this.preview || this.sample ) {
+		return this.$$table.position().left;
 	} else {
 		return this.$$table.offset().left;
 	}
@@ -726,7 +733,7 @@ ColumnsTable.prototype.expand = function() {
 	// add a placeholder
 	// and make sure we're the highest z-index in the land
 	var offsetTop;
-	if (this.preview || this.forceMobile ) {
+	if ( this.preview || this.forceMobile ) {
 		offsetTop = this.getOffsetTop() + this.$$container.scrollTop();
 	} else {
 		// offsetTop = parseInt($$.Velocity.hook($$table, "translateY"));
@@ -743,15 +750,29 @@ ColumnsTable.prototype.expand = function() {
 		'z-index': (highestZIndex('*') + 1)
 	};
 	
-	if ( !this.isLargeFormFactor() ) {
+	if ( this.isLargeFormFactor() ) {
 
+		$$bg.css({ "height": this.$$panel.find( TABLE_PANEL_SELECTOR ).height() });
+		Velocity( $$('html'), {
+			width: "-=" + this.$$panel.find( TABLE_PANEL_SELECTOR ).width() + "px"
+		}, {
+			duration: ANIMATION_DURATION
+		});
+
+	} else {
+		
 		// Replace the table with a same-height placeholder
 		var placeholder = document.createElement('div');
 		placeholder.className = PLACEHOLDER_CLASS;
 		placeholder.style.height = $$table.outerHeight( true ) + 'px';
 		placeholder.style.width = $$table.outerWidth() + 'px';
 
-		$$table.appendTo('body');
+		if ( this.preview || this.sample ) {
+			$$table.appendTo( this.$$container );
+		} else {
+			$$table.appendTo('body');
+		}
+
 		$$table.addClass(RELOCATED_CLASS);
 		$$table.css(offsets);
 		$$( this.script ).before(placeholder);
@@ -759,13 +780,6 @@ ColumnsTable.prototype.expand = function() {
 		this.expandBackground($$bg, $$rows, $$header, $$footer);
 		this.expandRows($$rows);
 		this.expandBody($$body);
-	} else {
-		$$bg.css({ "height": this.$$panel.find( TABLE_PANEL_SELECTOR ).height() });
-		Velocity( $$('html'), {
-			width: "-=" + this.$$panel.find( TABLE_PANEL_SELECTOR ).width() + "px"
-		}, {
-			duration: ANIMATION_DURATION
-		});
 	}
 
 	this.expandHeader($$header);
@@ -834,12 +848,21 @@ ColumnsTable.prototype.expandBackground = function($$bg, $$rows, $$header, $$foo
 		bgOffsetLeft,
 		bgHeight;
 
-	if (this.isLargeFormFactor()) {
+	if ( this.isLargeFormFactor() ) {
+
 		this.originalBackground['positionY'] = $$bg.position().top;
 		bgOffsetTop = 0;
 		// bgOffsetLeft = $$(window).width() - this.$$panel.find( TABLE_PANEL_SELECTOR ).width();
 		bgHeight = this.$$panel.find( TABLE_PANEL_SELECTOR ).height();
+
+	} else if ( this.preview || this.sample ) {
+
+		this.originalBackground['positionY'] = $$bg.position().top;
+		bgOffsetTop = 0;
+		bgHeight = this.$$container.get(0).innerHeight || this.$$container.outerHeight();
+
 	} else {
+		
 		this.originalBackground['positionY'] = $$bg.offset().top;
 		bgOffsetTop = -$$bg.offset().top + this.$$container.scrollTop();
 		// bgOffsetLeft = 0;
