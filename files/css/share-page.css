@@ -397,4 +397,10 @@ section.share-page-header {
     text-decoration: none;
     color: #3E97BD; }
 
+@media only screen and (min-device-width: 568px) {
+  .share-page-embed {
+    width: 400px;
+    margin: auto;
+    margin-top: 32px; } }
+
 /*# sourceMappingURL=share-page.css.map */

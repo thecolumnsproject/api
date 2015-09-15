@@ -1,0 +1,86 @@
+
+@import 'variables';
+@import 'columns-project';
+@import 'keyframes';
+@import 'utils';
+@import 'bower_components/bourbon/app/assets/stylesheets/bourbon';
+
+/* Panel styling
+ * ------------------
+ * These styles specify the position and look
+ * of the table when it's rendered as a side panel
+ */
+
+@media only screen and (min-device-width: $max-smartphone-width) {
+	body.columns-table-expanded {
+		overflow: scroll;
+		-webkit-overflow-scrolling: touch;
+	}	
+}
+
+.large-form-factor .columns-table-container {
+	border-left: 1px solid $gray-lighter;
+	border-right: 1px solid $gray-lighter;
+	border-radius: 2px;
+}
+
+.columns-table-panel-container {
+	position:relative;
+}
+
+.columns-table-shield {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0,0,0,0.36);
+	@include transition(opacity $animation-duration);
+
+	// Hide the shield by default
+	opacity: 0;
+	pointer-events: none;
+}
+
+$columns-panel-width: 320px;
+.columns-table-panel {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: $columns-panel-width;
+	height: 100%;
+	box-shadow: -1px 0px 4px rgba(0,0,0,0.2);
+	background-color: $gray-lightest;
+
+	// Hide the panel off screen by default
+	@include transform(translateX(100%));
+	@include transition(transform $animation-duration);
+}
+
+// Large form factor style + behavior
+.columns-table-expanding .columns-table-shield,
+.columns-table-expanded .columns-table-shield {
+
+	// Make visible and interactive
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.columns-table-expanding .columns-table-panel,
+.columns-table-expanded .columns-table-panel {
+	@include transform(translateX(0px));
+}
+
+.columns-table-expanding .large-form-factor,
+.columns-table-collapsing .large-form-factor {
+	opacity: 0;
+}
+
+.columns-table-expanding.large-form-factor .columns-table-container {
+	border-color: transparent;
+}
+
+.columns-table-expanded.large-form-factor .columns-table-container {
+	position: absolute;
+	border-color: transparent;
+}

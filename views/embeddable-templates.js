@@ -77,6 +77,10 @@ this["Columns"]["EmbeddableTemplates"]["views/embed-table/loading.hbs"] = Handle
     + "loading-gray.gif\" class='columns-table-loading-img'>\n	<span class=\"columns-table-loading-text\">Loading data...</span>\n</div>";
 },"useData":true});
 
+this["Columns"]["EmbeddableTemplates"]["views/embed-table/panel-skeleton.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"columns-table-panel-container\">\n	<div class=\"columns-table-panel\"></div>\n</div>";
+},"useData":true});
+
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/row-group.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -118,6 +122,10 @@ this["Columns"]["EmbeddableTemplates"]["views/embed-table/rows.hbs"] = Handlebar
 
   return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.rows : depth0),{"name":"each","hash":{},"fn":this.program(1, data, 0, blockParams, depths),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"useData":true,"useDepths":true});
+
+this["Columns"]["EmbeddableTemplates"]["views/embed-table/shield.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"columns-table-shield\"></div>";
+},"useData":true});
 
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/skeleton.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class=\"columns-table-widget cleanslate\"></div>";

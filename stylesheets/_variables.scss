@@ -26,3 +26,7 @@ $secondary-color: lighten($primary-color, 20%);
 $primary-white: fade-out(#fff, 0.04);
 
 $text-color: $gray-darker;
+
+$animation-duration: 			0.25s;
+
+$max-smartphone-width: 			568px;

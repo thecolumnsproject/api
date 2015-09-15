@@ -40,6 +40,8 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	TABLE_ROW_SELECTOR = '.columns-table-row',
 	TABLE_HEADER_SELECTOR = '.columns-table-header',
 	TABLE_FOOTER_SELECTOR = '.columns-table-footer',
+	TABLE_SHIELD_SELECTOR = '.columns-table-shield',
+	TABLE_PANEL_SELECTOR = '.columns-table-panel',
 	PLACEHOLDER_CLASS = 'columns-table-placeholder',
 	EXPANDED_CLASS = 'columns-table-expanded',
 	EXPANDING_CLASS = 'columns-table-expanding',
@@ -100,7 +102,11 @@ function ColumnsTable(script) {
 	// Get a reference to the table's container.
 	// On a smartphone, we'll use the window.
 	// On larger form factors, we'll use the table's container.
+	// Also get a reference to the table's panel if it's a large form factor
 	this.$$container = $$(window);
+	if ( this.isLargeFormFactor() ) {
+		this.$$panel;
+	}
 
 	// Save a reference to the layout we create specifically for rows of this table
 	this.row_layout;
@@ -185,6 +191,11 @@ ColumnsTable.prototype.render = function() {
 	if (this.isLargeFormFactor()) {
 		this.$$container = this.$$table.parent();
 		this.$$table.addClass('large-form-factor');
+		this.$$panel = $$( this.renderLargeFormFactorExpandedTable() );
+		this.$$panel.css({
+			"z-index": (highestZIndex('*') + 1)
+		});
+		$$('body').append( this.$$panel );
 	} else {
 		this.$$container = $$(window);
 		this.$$table.addClass('small-form-factor');
@@ -207,6 +218,11 @@ ColumnsTable.prototype.render = function() {
 		category: 'table',
 		action: 'render'
 	});
+};
+
+ColumnsTable.prototype.renderLargeFormFactorExpandedTable = function() {
+	var panel = Columns.EmbeddableTemplates['views/embed-table/panel-skeleton.hbs'];
+	return panel();
 };
 
 ColumnsTable.prototype.isLargeFormFactor = function() {
@@ -693,14 +709,7 @@ ColumnsTable.prototype.expand = function() {
 	
 	var _this = this;
 
-	// Tell everyone we're about to expand
-	// var willExpandEvent = new CustomEvent('ColumnsTableWillExpand', {
-	// 	detail: {
-	// 		table: this.$$table
-	// 	}
-	// });
 	if (this.preview || this.sample ) {
-		// $(document).trigger('ColumnsTableWillExpand', {table: this});
 		ColumnsEvent.send('ColumnsTableWillExpand', {table: this});
 	}
 
@@ -720,7 +729,11 @@ ColumnsTable.prototype.expand = function() {
 		offsetTop = this.getOffsetTop() + this.$$container.scrollTop();
 	} else {
 		// offsetTop = parseInt($$.Velocity.hook($$table, "translateY"));
-		offsetTop = this.getOffsetTop();
+		if ( this.isLargeFormFactor() ) {
+			offsetTop = 0;
+		} else {
+			offsetTop = this.getOffsetTop();
+		}
 	}
 	var offsets = {
 		top: offsetTop,
@@ -729,77 +742,84 @@ ColumnsTable.prototype.expand = function() {
 		'z-index': (highestZIndex('*') + 1)
 	};
 	
-	// Replace the table with a same-height placeholder
-	var placeholder = document.createElement('div');
-	placeholder.className = PLACEHOLDER_CLASS;
-	placeholder.style.height = $$table.outerHeight( true ) + 'px';
-	placeholder.style.width = $$table.outerWidth() + 'px';
-	// this.$$originalSibling = $$table.siblings('script').first();
-	if (this.isLargeFormFactor()) {
-		$$table.appendTo(this.$$container);	
-	} else {
-		$$table.appendTo('body');
-	}
-	$$table.addClass(RELOCATED_CLASS);
-	$$table.css(offsets);
-	// this.$$originalSibling.before(placeholder);
-	$$( this.script ).before(placeholder);
+	if ( !this.isLargeFormFactor() ) {
 
-	this.expandBackground($$bg, $$rows, $$header, $$footer);
-	this.expandRows($$rows);
-	this.expandBody($$body);
+		// Replace the table with a same-height placeholder
+		var placeholder = document.createElement('div');
+		placeholder.className = PLACEHOLDER_CLASS;
+		placeholder.style.height = $$table.outerHeight( true ) + 'px';
+		placeholder.style.width = $$table.outerWidth() + 'px';
+
+		$$table.appendTo('body');
+		$$table.addClass(RELOCATED_CLASS);
+		$$table.css(offsets);
+		$$( this.script ).before(placeholder);
+
+		this.expandBackground($$bg, $$rows, $$header, $$footer);
+		this.expandRows($$rows);
+		this.expandBody($$body);
+	} else {
+		$$bg.css({ "height": this.$$panel.find( TABLE_PANEL_SELECTOR ).height() });
+		Velocity( $$('html'), {
+			width: "-=" + this.$$panel.find( TABLE_PANEL_SELECTOR ).width() + "px"
+		}, {
+			duration: ANIMATION_DURATION
+		});
+	}
+
 	this.expandHeader($$header);
 
-	var props;
-	if (this.preview || this.forceMobile ) {
-		props = {
-			translateY: -this.getOffsetTop()
-		}
-	} else {
-		props = {
-			opacity: 1
-		}
+	$$('body').addClass( EXPANDING_CLASS );
+	$$table.addClass(EXPANDING_CLASS);
+
+	// Initiate with a meaningless property
+	// because we can't pass Velocity an empty properties object
+	var props = {};
+
+	if ( this.isLargeFormFactor() ) {
+		props["width"] = this.$$panel.find( TABLE_PANEL_SELECTOR ).width();
 	}
 
-	Velocity($$table.get(0), props, { 
-	// $$table.velocity(props, {
+	if (this.preview || this.forceMobile ) {
+		props["translateY"] = -this.getOffsetTop();
+	}
 
-		duration: ANIMATION_DURATION,
-		begin: function(elements) {
-			$$table.addClass(EXPANDING_CLASS);
-		},
-		complete: function(elements) {
-			$$table.addClass(EXPANDED_CLASS);
-			$$table.removeClass(EXPANDING_CLASS);
+	var onExpanded = function() {
+		$$table.addClass(EXPANDED_CLASS);
+		$$table.removeClass(EXPANDING_CLASS);
 
-			setTimeout(function() {
-				$$('html').addClass('table-expanded');
-				this.$$container.addClass('table-expanded');
-			}.bind( this ), 0);
+		// On large for factor,
+		// move the table into the container only after the animation
+		if ( this.isLargeFormFactor() ) {
+			$$table.css(offsets);
+			$$table.appendTo( this.$$panel.find( TABLE_PANEL_SELECTOR ) );
+			$$table.addClass(RELOCATED_CLASS);
+		}
 
-			if (_this.preview || this.sample ) {
-				// $(document).trigger('ColumnsTableDidExpand', {table: _this});
-				ColumnsEvent.send('ColumnsTableDidExpand', {table: _this});
-			}
-		}.bind( this )
-	});
+		setTimeout(function() {
+			$$('body').removeClass( EXPANDING_CLASS );
+			$$('body').addClass( EXPANDED_CLASS );
+		}.bind( this ), 0);
+
+		if (_this.preview || this.sample ) {
+			ColumnsEvent.send('ColumnsTableDidExpand', {table: _this});
+		}
+
+	}.bind( this );
+
+	if ( Object.keys(props).length ) {
+		Velocity( $$table.get(0), props, { 
+			duration: ANIMATION_DURATION,
+			complete: onExpanded
+		});
+	} else {
+		setTimeout( onExpanded, ANIMATION_DURATION );
+	}
 
 	this.position();
 };
 
 ColumnsTable.prototype.expandHeader = function($$header) {
-
-	// Bring the header into view
-	// Velocity($$header.get(0), {
-	// // $$header.velocity({
-	// 	opacity: 1 /* Fade the header into view */
-	// }, {
-	// 	duration: ANIMATION_DURATION,
-	// 	delay: ANIMATION_DURATION,
-	// 	complete: function(elements) {
-	// 		// $$header.addClass(EXPANDED_CLASS);
-	// 	}
-	// });
 
 	// Move header out of the table body
 	// so that it locks atop the screen
@@ -809,47 +829,31 @@ ColumnsTable.prototype.expandHeader = function($$header) {
 };
 
 ColumnsTable.prototype.expandBackground = function($$bg, $$rows, $$header, $$footer) {
+	var bgOffsetTop,
+		bgOffsetLeft,
+		bgHeight;
 
-	// Save values to be used upon reset
-	this.originalBackground['height'] = $$bg.height();
-	var bgOffsetTop;
 	if (this.isLargeFormFactor()) {
 		this.originalBackground['positionY'] = $$bg.position().top;
 		bgOffsetTop = 0;
+		// bgOffsetLeft = $$(window).width() - this.$$panel.find( TABLE_PANEL_SELECTOR ).width();
+		bgHeight = this.$$panel.find( TABLE_PANEL_SELECTOR ).height();
 	} else {
 		this.originalBackground['positionY'] = $$bg.offset().top;
 		bgOffsetTop = -$$bg.offset().top + this.$$container.scrollTop();
+		// bgOffsetLeft = 0;
+
+		// The background should be the height of the container
+		// Use javascript height method because of a bug with jQuery and the iOS safari toolbar
+		bgHeight = this.$$container.get(0).innerHeight || this.$$container.outerHeight();
 	}
 
-	// Calculate new background position
-	// bgOffsetTop += this.$$container.scrollTop();
-	var bgWidth = this.$$container.width();
-
-	// The background should be as tall as necessary to fit all the rows
-	// but the screen height at minimum
-	// Update: the background should be the height of the container
-	// var bgHeight = $$bg.outerHeight() + $$header.outerHeight() + $$footer.outerHeight() + ( $$rows.outerHeight() * ($$rows.length - 1) );
-	// var bgHeight = bgHeight < this.$$container.height ? this.$$container.height : bgHeight;
-	// var bgHeight = this.$$container.height();
-	// Use javascript height method because of a bug with jQuery and the iOS safari toolbar
-	var bgHeight = this.$$container.get(0).innerHeight || this.$$container.outerHeight();
-
 	Velocity($$bg.get(0), {
-	// $$bg.velocity({
 		height: bgHeight, 			/* Fill the entire screen */
-		translateY: bgOffsetTop 	/* Move to the top of the screen */
+		translateY: bgOffsetTop, 	/* Move to the top of the screen */
+		// translateX: bgOffsetLeft 	/* Move to the right if large form factor */
 	},{
 		duration: ANIMATION_DURATION,
-		begin: function(elements) {
-			// $$bg.addClass(EXPANDING_CLASS);
-			// $$bg.removeClass('translateY-reset');
-		},
-		complete: function(elements) {
-			// $$bg.removeClass(EXPANDING_CLASS);
-			// $$bg.addClass(EXPANDED_CLASS);
-			// $$bg.addClass('translateY-reset');
-			// $$TABLE.removeClass(RELOCATED_CLASS);
-		}
 	});
 };
 
@@ -873,18 +877,6 @@ ColumnsTable.prototype.expandBody = function($$body) {
 		'padding-top': paddingTop /* Move down a few more pixels to account for the template row in preview mode */
 	}, {
 		duration: ANIMATION_DURATION,
-		begin: function(elements) {
-			// _this.$$table.addClass(EXPANDING_CLASS);
-			// $$body.removeClass('translateY-reset');
-		},
-		complete: function(elements) {
-			// _this.$$table.addClass(EXPANDED_CLASS);
-			// _this.$$table.removeClass(EXPANDING_CLASS);
-			// $$('html').addClass('table-expanded');
-			// $$body.addClass(EXPANDED_CLASS);
-			// $$body.addClass('translateY-reset');
-			// $$body.css( { "margin-top": "60px" } );
-		}
 	});
 }
 
@@ -969,21 +961,23 @@ ColumnsTable.prototype.collapse = function() {
 	$$header = $$table.find('.columns-table-header');
 
 	if (this.preview || this.sample ) {
-		// $(document).trigger('ColumnsTableWillExpand', {table: this});
 		ColumnsEvent.send('ColumnsTableWillCollapse', {table: this});
 	}
 
-	// and remove the placeholder
-
-	// $$parent.addClass(RELOCATED_CLASS);
-	// $$table.insertBefore( $$( this.script ) );
-
-	// setTimeout(function() {
-		this.collapseHeader($$header);
+	if ( !this.isLargeFormFactor() ) {
 		this.collapseBackground($$bg);
 		this.collapseBody($$body);
 		this.collapseRows($$rows);
-	// }, 0);
+	} else {
+		$$bg.css({ "height": this.backgroundHeight() + 60 + this.headerHeight() });
+		Velocity( $$('html'), {
+			width: "+=" + this.$$panel.find( TABLE_PANEL_SELECTOR ).width() + "px"
+		}, {
+			duration: ANIMATION_DURATION
+		});
+	}
+
+	this.collapseHeader($$header);
 
 	var onCollapsed = function() {
 		$$table.insertBefore( $$( this.script ) );
@@ -997,8 +991,10 @@ ColumnsTable.prototype.collapse = function() {
 			'z-index': 0
 		});
 		$$( this.script ).siblings('.' + PLACEHOLDER_CLASS).remove();
-		$$('html').removeClass('table-expanded');
-		this.$$container.removeClass('table-expanded');
+
+		setTimeout(function() {
+			$$('body').removeClass( COLLAPSING_CLASS );	
+		}.bind( this ), 0);
 
 		if (_this.preview || this.sample ) {
 			// $(document).trigger('ColumnsTableDidCollapse', {table: _this});
@@ -1010,6 +1006,8 @@ ColumnsTable.prototype.collapse = function() {
 
 	$$table.addClass(COLLAPSING_CLASS);
 	$$table.removeClass(EXPANDED_CLASS);
+	$$('body').addClass( COLLAPSING_CLASS );
+	$$('body').removeClass( EXPANDED_CLASS );
 
 	// var props = {};
 	if (this.preview || this.forceMobile ) {

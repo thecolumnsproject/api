@@ -4,6 +4,7 @@
 @import 'keyframes';
 @import 'utils';
 @import 'bower_components/bourbon/app/assets/stylesheets/bourbon';
+@import 'embed-table-large-ff';
 
 $table-container-height:		100px;
 $table-container-padding: 		20px;
@@ -15,8 +16,6 @@ $table-row-offset-top:			5px;
 $table-row-box-shadow:			0px 2px 4px rgba(0,0,0,0.2);
 
 $columns-table-accent-color: 	#69A368;
-
-$animation-duration: 			0.25s;
 
 .columns-table-widget {
 	position: relative;
@@ -34,6 +33,9 @@ $animation-duration: 			0.25s;
 		border-radius: 0px;
 		letter-spacing: normal !important;
  	}
+
+ 	@include transition(opacity $animation-duration);
+ 	@include transition(height $animation-duration);
 }
 
 .columns-table-wrapper {
@@ -52,6 +54,8 @@ $animation-duration: 			0.25s;
 	background: $gray-lightest;
 	border-top: 1px solid $gray-lighter;
 	border-bottom: 1px solid $gray-lighter;
+
+	@include transition(border-color $animation-duration);
 }
 
 .columns-table {
@@ -349,9 +353,11 @@ $animation-duration: 			0.25s;
  * of elements while the table is expanded
  */
 
-.table-expanded {
-	overflow: hidden;
-	-webkit-overflow-scrolling: touch;
+@media only screen and (max-device-width: $max-smartphone-width - 1) {
+	body.columns-table-expanded {
+		overflow: hidden;
+		-webkit-overflow-scrolling: touch;
+	}	
 }
 
 .columns-table-expanded .columns-table-container {
@@ -363,10 +369,6 @@ $animation-duration: 			0.25s;
 	border-top: none;
 
 	@include transform(translateY(0px) !important);
-}
-
-.columns-table-expanded.large-form-factor .columns-table-container {
-	position: absolute;
 }
 
 .columns-table-expanded.small-form-factor .columns-table-container {

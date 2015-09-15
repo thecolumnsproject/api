@@ -98,3 +98,11 @@ $button-icon-size: $spacing*3;
 		color: $primary-color;
 	}
 }
+
+@media only screen and (min-device-width: $max-smartphone-width) {
+	.share-page-embed {
+		width: 400px;
+		margin: auto;
+		margin-top: 32px;
+	}
+}

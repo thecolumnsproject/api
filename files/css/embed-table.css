@@ -180,11 +180,270 @@
   transform: translateY(0px) !important;
   /* override inline style translateY */ }
 
+/* Grays */
+@font-face {
+  font-family: "columns-project";
+  src: url("../fonts/columns-project.eot?504f4f11935527e9aed9d517aea323d2");
+  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?504f4f11935527e9aed9d517aea323d2") format("woff"), url("../fonts/columns-project.ttf?504f4f11935527e9aed9d517aea323d2") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+[class^="clmnz-icon-"]:before,
+[class*=" clmnz-icon-"]:before {
+  font-family: "columns-project";
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  font-weight: normal;
+  font-style: normal;
+  speak: none;
+  text-decoration: inherit;
+  text-transform: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.clmnz-icon-circle-check-open:before {
+  content: "\f101"; }
+
+.clmnz-icon-code:before {
+  content: "\f102"; }
+
+.clmnz-icon-columns-small:before {
+  content: "\f103"; }
+
+.clmnz-icon-columns:before {
+  content: "\f104"; }
+
+.clmnz-icon-email:before {
+  content: "\f105"; }
+
+.clmnz-icon-facebook:before {
+  content: "\f106"; }
+
+.clmnz-icon-source:before {
+  content: "\f107"; }
+
+.clmnz-icon-twitter:before {
+  content: "\f108"; }
+
+@-webkit-keyframes pop-in {
+  0% {
+    -webkit-transform: scale(1); }
+  50% {
+    -webkit-transform: scale(0.9); }
+  100% {
+    -webkit-transform: scale(1); } }
+@-moz-keyframes pop-in {
+  0% {
+    -moz-transform: scale(1); }
+  50% {
+    -moz-transform: scale(0.9); }
+  100% {
+    -moz-transform: scale(1); } }
+@keyframes pop-in {
+  0% {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1); }
+  50% {
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -o-transform: scale(0.9);
+    transform: scale(0.9); }
+  100% {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1); } }
+@-webkit-keyframes pulsate {
+  0% {
+    -webkit-transform: scale(0.5, 0.5);
+    opacity: 0.5; }
+  50% {
+    -webkit-transform: scale(1, 1);
+    opacity: 1.0; }
+  100% {
+    -webkit-transform: scale(0.5, 0.5);
+    opacity: 0.5; } }
+@-moz-keyframes pulsate {
+  0% {
+    -moz-transform: scale(0.5, 0.5);
+    opacity: 0.5; }
+  50% {
+    -moz-transform: scale(1, 1);
+    opacity: 1.0; }
+  100% {
+    -moz-transform: scale(0.5, 0.5);
+    opacity: 0.5; } }
+@keyframes pulsate {
+  0% {
+    -webkit-transform: scale(0.5, 0.5);
+    -moz-transform: scale(0.5, 0.5);
+    -ms-transform: scale(0.5, 0.5);
+    -o-transform: scale(0.5, 0.5);
+    transform: scale(0.5, 0.5);
+    opacity: 0.5; }
+  50% {
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    transform: scale(1, 1);
+    opacity: 1.0; }
+  100% {
+    -webkit-transform: scale(0.5, 0.5);
+    -moz-transform: scale(0.5, 0.5);
+    -ms-transform: scale(0.5, 0.5);
+    -o-transform: scale(0.5, 0.5);
+    transform: scale(0.5, 0.5);
+    opacity: 0.5; } }
+@-webkit-keyframes shake {
+  8%, 41% {
+    -webkit-transform: translateX(-10px); }
+  25%, 58% {
+    -webkit-transform: translateX(10px); }
+  75% {
+    -webkit-transform: translateX(-5px); }
+  92% {
+    -webkit-transform: translateX(5px); }
+  0%, 100% {
+    -webkit-transform: translateX(0); } }
+@-moz-keyframes shake {
+  8%, 41% {
+    -moz-transform: translateX(-10px); }
+  25%, 58% {
+    -moz-transform: translateX(10px); }
+  75% {
+    -moz-transform: translateX(-5px); }
+  92% {
+    -moz-transform: translateX(5px); }
+  0%, 100% {
+    -moz-transform: translateX(0); } }
+@keyframes shake {
+  8%, 41% {
+    -webkit-transform: translateX(-10px);
+    -moz-transform: translateX(-10px);
+    -ms-transform: translateX(-10px);
+    -o-transform: translateX(-10px);
+    transform: translateX(-10px); }
+  25%, 58% {
+    -webkit-transform: translateX(10px);
+    -moz-transform: translateX(10px);
+    -ms-transform: translateX(10px);
+    -o-transform: translateX(10px);
+    transform: translateX(10px); }
+  75% {
+    -webkit-transform: translateX(-5px);
+    -moz-transform: translateX(-5px);
+    -ms-transform: translateX(-5px);
+    -o-transform: translateX(-5px);
+    transform: translateX(-5px); }
+  92% {
+    -webkit-transform: translateX(5px);
+    -moz-transform: translateX(5px);
+    -ms-transform: translateX(5px);
+    -o-transform: translateX(5px);
+    transform: translateX(5px); }
+  0%, 100% {
+    -webkit-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+    -o-transform: translateX(0);
+    transform: translateX(0); } }
+.translateY-reset {
+  -webkit-transform: translateY(0px) !important;
+  -moz-transform: translateY(0px) !important;
+  -ms-transform: translateY(0px) !important;
+  -o-transform: translateY(0px) !important;
+  transform: translateY(0px) !important;
+  /* override inline style translateY */ }
+
+/* Panel styling
+ * ------------------
+ * These styles specify the position and look
+ * of the table when it's rendered as a side panel
+ */
+@media only screen and (min-device-width: 568px) {
+  body.columns-table-expanded {
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch; } }
+.large-form-factor .columns-table-container {
+  border-left: 1px solid #ebebeb;
+  border-right: 1px solid #ebebeb;
+  border-radius: 2px; }
+
+.columns-table-panel-container {
+  position: relative; }
+
+.columns-table-shield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.36);
+  -webkit-transition: opacity 0.25s;
+  -moz-transition: opacity 0.25s;
+  transition: opacity 0.25s;
+  opacity: 0;
+  pointer-events: none; }
+
+.columns-table-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.2);
+  background-color: #fafafa;
+  -webkit-transform: translateX(100%);
+  -moz-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  -o-transform: translateX(100%);
+  transform: translateX(100%);
+  -webkit-transition: -webkit-transform 0.25s;
+  -moz-transition: -moz-transform 0.25s;
+  transition: transform 0.25s; }
+
+.columns-table-expanding .columns-table-shield,
+.columns-table-expanded .columns-table-shield {
+  opacity: 1;
+  pointer-events: auto; }
+
+.columns-table-expanding .columns-table-panel,
+.columns-table-expanded .columns-table-panel {
+  -webkit-transform: translateX(0px);
+  -moz-transform: translateX(0px);
+  -ms-transform: translateX(0px);
+  -o-transform: translateX(0px);
+  transform: translateX(0px); }
+
+.columns-table-expanding .large-form-factor,
+.columns-table-collapsing .large-form-factor {
+  opacity: 0; }
+
+.columns-table-expanding.large-form-factor .columns-table-container {
+  border-color: transparent; }
+
+.columns-table-expanded.large-form-factor .columns-table-container {
+  position: absolute;
+  border-color: transparent; }
+
 .columns-table-widget {
   position: relative;
   box-sizing: content-box;
   font-family: 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
-  max-width: none !important; }
+  max-width: none !important;
+  -webkit-transition: opacity 0.25s;
+  -moz-transition: opacity 0.25s;
+  transition: opacity 0.25s;
+  -webkit-transition: height 0.25s;
+  -moz-transition: height 0.25s;
+  transition: height 0.25s; }
   .columns-table-widget * {
     box-sizing: content-box;
     font-family: 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
@@ -229,7 +488,10 @@
   width: 100%;
   background: #fafafa;
   border-top: 1px solid #ebebeb;
-  border-bottom: 1px solid #ebebeb; }
+  border-bottom: 1px solid #ebebeb;
+  -webkit-transition: border-color 0.25s;
+  -moz-transition: border-color 0.25s;
+  transition: border-color 0.25s; }
 
 .columns-table {
   position: relative;
@@ -599,10 +861,10 @@
  * These styles specify the position and look
  * of elements while the table is expanded
  */
-.table-expanded {
-  overflow: hidden;
-  -webkit-overflow-scrolling: touch; }
-
+@media only screen and (max-device-width: 567px) {
+  body.columns-table-expanded {
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch; } }
 .columns-table-expanded .columns-table-container {
   top: 0;
   overflow: scroll;
@@ -612,9 +874,6 @@
   -ms-transform: translateY(0px) !important;
   -o-transform: translateY(0px) !important;
   transform: translateY(0px) !important; }
-
-.columns-table-expanded.large-form-factor .columns-table-container {
-  position: absolute; }
 
 .columns-table-expanded.small-form-factor .columns-table-container {
   position: fixed; }

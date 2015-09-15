@@ -46,6 +46,61 @@ describe('Embeddable Table', function() {
 		});
 	});
 
+	describe('Rendering Skeleton', function() {
+
+		it('should render large form factor when appropriate', function() {
+			spyOn( embed, 'isLargeFormFactor' ).and.returnValue( true );
+			embed.render();
+			expect( $('.columns-table-panel-container').length ).toBe( 1 );
+			expect( $('.columns-table-panel-container').parent() ).toBeMatchedBy('body');
+		});
+
+		describe('Large Form Factor', function() {
+
+			it('should create the large form factor expanded table structure', function() {
+				expect( $( embed.renderLargeFormFactorExpandedTable() ) ).toHaveClass('columns-table-panel-container');
+				expect( $( embed.renderLargeFormFactorExpandedTable() ).find('.columns-table-shield').length ).toBe( 1 );
+				expect( $( embed.renderLargeFormFactorExpandedTable() ).find('.columns-table-panel').length ).toBe( 1 );
+			});
+		});
+	});
+
+	describe('Expanding Table', function() {
+
+		describe('Large Form Factor', function() {
+
+			beforeEach(function() {
+				loadFixtures('embeddable-panel.html');
+				spyOn( embed, 'isLargeFormFactor' ).and.returnValue( true );
+				embed.render();
+			});
+
+			it('should append the table to the panel', function() {
+				embed.expand();
+				expect( embed.$$table.parent() ).toHaveClass('columns-table-panel');
+			});
+
+			it('should animate the rows into position in the panel', function() {
+
+			});
+		});
+	});
+
+	xdescribe('Rendering Data', function() {
+
+		describe('Large Form Factor', function() {
+
+			beforeEach(function() {
+				spyOn( embed, 'isLargeFormFactor' ).and.returnValue( true );
+				embed.render();
+			});
+
+			it('should add a header to the panel', function() {
+
+			});
+		})
+	});
+
 	describe('Rendering a Row', function() {
 		var layout = {
 			type: 'group',
