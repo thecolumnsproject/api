@@ -103,11 +103,19 @@ module.exports = function(grunt) {
 					}
 				}]
 			},
+			columns_font: {
+				src: ['stylesheets/_columns-project.scss'],
+				dest: 'stylesheets/_columns-project.scss',
+				replacements: [{
+					from: '../files/fonts',
+					to: '../fonts'
+				}]
+			},
 			embed_font: {
 				src: ['files/css/embed-table.css'],
 				dest: 'files/css/embed-table.css',
 				replacements: [{
-					from: '../files/fonts',
+					from: '../fonts',
 					to: function( matchedWord ) {
 						if (process.env.NODE_ENV == 'production') {
 							return 'http://colum.nz/fonts';
@@ -189,11 +197,11 @@ module.exports = function(grunt) {
 			},
 			icons: {
 				files: 'fonts/ventors/*.svg',
-				tasks: ['webfont'],
+				tasks: ['webfont', 'replace:columns_font'],
 			},
 			sass: {
 				files: '**/*.scss',
-				tasks: ['sass', 'replace:embed_font', 'concat:embed_css'],
+				tasks: ['replace:columns_font', 'sass', 'replace:embed_font', 'concat:embed_css'],
 			},
 			js: {
 				files: [
@@ -221,6 +229,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-develop');
 
 	grunt.registerTask('build', [
+		'replace:columns_font',
 		'sass',
 		'replace:embed_font',
 		'concat:embed_css',
