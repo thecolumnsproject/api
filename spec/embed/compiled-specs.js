@@ -13917,6 +13917,7 @@ ColumnsTable.prototype.expand = function() {
 
 		if ( this.preview || this.sample ) {
 			$$table.appendTo( this.$$container );
+			this.$$container.addClass( EXPANDED_CLASS );
 		} else {
 			$$table.appendTo('body');
 		}
@@ -14153,6 +14154,7 @@ ColumnsTable.prototype.collapse = function() {
 
 	var onCollapsed = function() {
 		$$table.insertBefore( $$( this.script ) );
+		this.$$container.removeClass( EXPANDED_CLASS );
 		$$table.removeClass(EXPANDED_CLASS);
 		$$table.removeClass(RELOCATED_CLASS);
 		$$table.removeClass(COLLAPSING_CLASS);

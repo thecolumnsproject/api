@@ -359,12 +359,12 @@ $columns-table-accent-color: 	#69A368;
  * of elements while the table is expanded
  */
 
-@media only screen and (max-device-width: $max-smartphone-width - 1) {
-	body.columns-table-expanded {
+// @media only screen and (max-device-width: $max-smartphone-width - 1) {
+	.columns-table-expanded:not(.columns-table-widget) {
 		overflow: hidden;
 		-webkit-overflow-scrolling: touch;
 	}	
-}
+// }
 
 .columns-table-expanded .columns-table-container {
 	// transform: translateY(0px); /* Remove the expansion animation transform */

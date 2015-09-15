@@ -193,7 +193,7 @@ module.exports = function(grunt) {
 			},
 			sass: {
 				files: '**/*.scss',
-				tasks: ['sass', 'concat:embed_css'],
+				tasks: ['sass', 'replace:embed_font', 'concat:embed_css'],
 			},
 			js: {
 				files: [

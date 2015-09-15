@@ -864,10 +864,10 @@
  * These styles specify the position and look
  * of elements while the table is expanded
  */
-@media only screen and (max-device-width: 567px) {
-  body.columns-table-expanded {
-    overflow: hidden;
-    -webkit-overflow-scrolling: touch; } }
+.columns-table-expanded:not(.columns-table-widget) {
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch; }
+
 .columns-table-expanded .columns-table-container {
   top: 0;
   overflow: scroll;
