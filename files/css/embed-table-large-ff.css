@@ -186,7 +186,7 @@
  * of the table when it's rendered as a side panel
  */
 @media only screen and (min-device-width: 568px) {
-  body.columns-table-expanded {
+  body.columns-table-expanded:not(.columns-table-widget) {
     overflow: scroll;
     -webkit-overflow-scrolling: touch; } }
 .large-form-factor .columns-table-container {

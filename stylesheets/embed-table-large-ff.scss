@@ -12,7 +12,7 @@
  */
 
 @media only screen and (min-device-width: $max-smartphone-width) {
-	body.columns-table-expanded {
+	body.columns-table-expanded:not(.columns-table-widget) {
 		overflow: scroll;
 		-webkit-overflow-scrolling: touch;
 	}	
