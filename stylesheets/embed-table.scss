@@ -89,6 +89,11 @@ $columns-table-accent-color: 	#69A368;
 	// @include transition(opacity 0.15s);
 	@include transition(box-shadow $animation-duration);
 	// @include transition(border-color $animation-duration);
+
+	// Make sure that just the very first row grows
+	> .row-group {
+		@include flex-grow(1);
+	}
 }
 
 /* The top three rows should show
@@ -472,7 +477,6 @@ $columns-table-accent-color: 	#69A368;
 	@include display(flex);
 	@include justify-content(space-between);
 	@include align-items(center);
-	@include flex-grow(1);
 
 	// Treat rows as flex-direction: row by default
 	.row-group {
