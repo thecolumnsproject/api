@@ -397,10 +397,30 @@ section.share-page-header {
     text-decoration: none;
     color: #3E97BD; }
 
+.share-page-error-message {
+  text-align: center;
+  padding: 32px;
+  background: #fafafa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08); }
+
+.share-page-error-message-header {
+  margin-bottom: 8px; }
+
+.share-page-error-message-subheader {
+  font-size: 0.875em;
+  color: rgba(0, 0, 0, 0.54); }
+
 @media only screen and (min-device-width: 568px) {
   .share-page-embed {
     width: 400px;
     margin: auto;
-    margin-top: 32px; } }
+    margin-top: 32px; }
+
+  .share-page-error-message {
+    width: 400px;
+    margin: auto;
+    margin-top: 32px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 2px; } }
 
 /*# sourceMappingURL=share-page.css.map */

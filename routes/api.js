@@ -32,24 +32,31 @@ router.get('/:id', function( req, res ) {
 	// Get the data for this table id
 	var table = new Table();
 	table.getMetaData(req.params.id, function(err, data) {
+		if ( err ) {
+			console.log( err );
+			res.render( 'table', {
+				title: "Ain't no table here"
+			});
+		} else {
+			// Send up handelbars helper
+			hbs.registerHelper('ifIsProduction', function( options ) {
+				return process.env.NODE_ENV === 'production' ? options.fn(this) : options.inverse(this);
+			});
 
-		// Send up handelbars helper
-		hbs.registerHelper('ifIsProduction', function( options ) {
-			return process.env.NODE_ENV === 'production' ? options.fn(this) : options.inverse(this);
-		});
+			// Set up share message generator
+			var shareMessage = new ShareMessage( data );
+			console.log( data );
 
-		// Set up share message generator
-		var shareMessage = new ShareMessage( data );
-
-		res.render( 'table', {
-			title: data.title || 'Untitled',
-			embed_host: config.embed.host,
-			embed_id: req.params.id || 1,
-			embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 ),
-			tweet_body: encodeURIComponent( shareMessage.twitterMessage() ),
-			email_subject: shareMessage.emailMessage().subject,
-			email_body: shareMessage.emailMessage().body
-		});
+			res.render( 'table', {
+				title: data.title || 'Untitled',
+				embed_host: config.embed.host,
+				embed_id: req.params.id || 1,
+				embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 ),
+				tweet_body: encodeURIComponent( shareMessage.twitterMessage() ),
+				email_subject: shareMessage.emailMessage().subject,
+				email_body: shareMessage.emailMessage().body
+			});
+		}
 	});
 });
 

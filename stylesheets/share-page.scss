@@ -99,10 +99,34 @@ $button-icon-size: $spacing*3;
 	}
 }
 
+.share-page-error-message {
+	text-align: center;
+	padding: $spacing*4;
+	background: $gray-lightest;
+	border-bottom: 1px solid $border-color;
+}
+
+.share-page-error-message-header {
+	margin-bottom: $spacing;
+}
+
+.share-page-error-message-subheader {
+	font-size: 0.875em;
+	color: rgba(0,0,0,0.54);
+}
+
 @media only screen and (min-device-width: $max-smartphone-width) {
 	.share-page-embed {
 		width: 400px;
 		margin: auto;
-		margin-top: 32px;
+		margin-top: $spacing*4;
+	}
+
+	.share-page-error-message {
+		width: 400px;
+		margin: auto;
+		margin-top: $spacing*4;
+		border: 1px solid $border-color;
+		border-radius: 2px;
 	}
 }

@@ -39,33 +39,53 @@
 		<i class="clmnz-icon-columns"></i>
 		The Columns Project
 	</section>
-	<section class="share-page-embed">
-		<script type="text/javascript"
-			src="{{ embed_host }}/public/embed-table.js"
-			data-table-id="{{ embed_id }}">
-		</script>
-	</section>
-	<section class="share-page-actions">
-		<a class="columns-button button-secondary share-page-action-button tweet" href="https://twitter.com/intent/tweet?text={{tweet_body}}&url={{embed_uri}}" target="_blank">
-			<i class="clmnz-icon-twitter"></i>
-			Tweet this table
-		</a>
-		<a class="columns-button button-secondary share-page-action-button email" href="mailto:?subject={{email_subject}}&body={{email_body}}" target="_blank">
-			<i class="clmnz-icon-email"></i>
-			Email this table
-		</a>
+	{{#if embed_id}}
+		<section class="share-page-embed">
+			<script type="text/javascript"
+				src="{{ embed_host }}/public/embed-table.js"
+				data-table-id="{{ embed_id }}">
+			</script>
+		</section>
+		<section class="share-page-actions">
+			<a class="columns-button button-secondary share-page-action-button tweet" href="https://twitter.com/intent/tweet?text={{tweet_body}}&url={{embed_uri}}" target="_blank">
+				<i class="clmnz-icon-twitter"></i>
+				Tweet this table
+			</a>
+			<a class="columns-button button-secondary share-page-action-button email" href="mailto:?subject={{email_subject}}&body={{email_body}}" target="_blank">
+				<i class="clmnz-icon-email"></i>
+				Email this table
+			</a>
 
-		<div class="share-page-action-url">
-			<div class="share-page-url-label">Or share the url</div>
-			<div class="share-page-url">
-				{{embed_host}}/{{embed_id}}
-			</span>
-		</div>
+			<div class="share-page-action-url">
+				<div class="share-page-url-label">Or share the url</div>
+				<div class="share-page-url">
+					{{embed_host}}/{{embed_id}}
+				</span>
+			</div>
 
-		<div class="share-page-action-link">
-			<a href="mailto:jeremy@thecolumnsproject.com?subject=Feedback on The Columns Project">Have feedback?</a>
-		</div>
-	</section>
+			<div class="share-page-action-link">
+				<a href="mailto:jeremy@thecolumnsproject.com?subject=Feedback on The Columns Project">Have feedback?</a>
+			</div>
+		</section>
+	{{else}}
+		<section class="share-page-error">
+
+			<div class="share-page-error-message">
+				<div class="share-page-error-message-header">
+					Shucks, we couldn't find this table.
+				</div>
+				<div class="share-page-error-message-subheader">
+					Whatd'ya say we table this for now?<br />
+					Feedback on both technical problems<br />
+					and terrible puns is highly encouraged.
+				</div>
+			</div>
+
+			<div class="share-page-action-link">
+				<a href="mailto:jeremy@thecolumnsproject.com?subject=Feedback on The Columns Project">Have feedback?</a>
+			</div>
+		</section>
+	{{/if}}
 
 	<!-- Application Javascript -->
 	<script type="text/javascript" src="js/share-page.js"></script>
