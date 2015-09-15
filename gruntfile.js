@@ -104,8 +104,8 @@ module.exports = function(grunt) {
 				}]
 			},
 			embed_font: {
-				src: ['stylesheets/_columns-project.scss'],
-				dest: 'stylesheets/_columns-project.scss',
+				src: ['files/css/embed-table.css'],
+				dest: 'files/css/embed-table.css',
 				replacements: [{
 					from: '../files/fonts',
 					to: function( matchedWord ) {
@@ -221,8 +221,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-develop');
 
 	grunt.registerTask('build', [
-		'replace:embed_font',
 		'sass',
+		'replace:embed_font',
 		'concat:embed_css',
 		'handlebars',
 		'browserify',
