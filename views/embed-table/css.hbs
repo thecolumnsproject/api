@@ -433,6 +433,10 @@
   position: absolute;
   border-color: transparent; }
 
+/* Fix bug with grunt-webfont plugin */
+[class^="clmnz-icon-"]:before, [class*=" clmnz-icon-"]:before {
+  vertical-align: inherit !important; }
+
 .columns-table-widget {
   position: relative;
   box-sizing: content-box;

@@ -17,6 +17,11 @@ $table-row-box-shadow:			0px 2px 4px rgba(0,0,0,0.2);
 
 $columns-table-accent-color: 	#69A368;
 
+/* Fix bug with grunt-webfont plugin */
+[class^="clmnz-icon-"]:before, [class*=" clmnz-icon-"]:before {
+ 	vertical-align: inherit !important;
+}
+
 .columns-table-widget {
 	position: relative;
 	box-sizing: content-box;
