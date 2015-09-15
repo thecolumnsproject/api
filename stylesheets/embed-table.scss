@@ -75,6 +75,9 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-row {
+
+	@include display(flex);
+
 	// height: 60px;
 	// box-sizing: border-box;
 	width: 100%;
@@ -469,13 +472,39 @@ $columns-table-accent-color: 	#69A368;
 	@include display(flex);
 	@include justify-content(space-between);
 	@include align-items(center);
+	@include flex-grow(1);
+
+	// Treat rows as flex-direction: row by default
+	.row-group {
+		margin-right: $spacing*2;
+	}
+
+	.row-group:last-child {
+		margin-right: 0;
+	}
 
 	&[data-flex-direction='row'] {
 		@include flex-direction(row);
+
+		// .row-group {
+		// 	margin-right: $spacing*2;
+		// }
+
+		// .row-group:last-child {
+		// 	margin-right: 0;
+		// }
 	}
 
 	&[data-flex-direction='column'] {
 		@include flex-direction(column);
+		
+		.row-group {
+			margin-bottom: $spacing*2;
+		}
+
+		.row-group:last-child {
+			margin-bottom: 0;
+		}
 	}
 
 	&[data-align-items='flex-start'] {
