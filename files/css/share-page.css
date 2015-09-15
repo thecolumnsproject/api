@@ -1,8 +1,8 @@
 /* Grays */
 @font-face {
   font-family: "columns-project";
-  src: url("../fonts/columns-project.eot?504f4f11935527e9aed9d517aea323d2");
-  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?504f4f11935527e9aed9d517aea323d2") format("woff"), url("../fonts/columns-project.ttf?504f4f11935527e9aed9d517aea323d2") format("truetype");
+  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?504f4f11935527e9aed9d517aea323d2");
+  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("http://127.0.0.1:8080/fonts/columns-project.woff?504f4f11935527e9aed9d517aea323d2") format("woff"), url("http://127.0.0.1:8080/fonts/columns-project.ttf?504f4f11935527e9aed9d517aea323d2") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="clmnz-icon-"]:before,

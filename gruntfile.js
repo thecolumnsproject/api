@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 					// node: true
 				},
 				files: {
-					"views/embeddable-templates.js": "views/embed-table/*.hbs"
+					"views/embeddable-templates.js": "views/embed-table/**/*.hbs"
 				}
 			}
 		},
@@ -108,7 +108,15 @@ module.exports = function(grunt) {
 				dest: 'stylesheets/_columns-project.scss',
 				replacements: [{
 					from: '../files/fonts',
-					to: '../fonts'
+					to: function( matchedWord ) {
+						if (process.env.NODE_ENV == 'production') {
+							return 'http://colum.nz/fonts';
+						} else if ( process.env.NODE_ENV == 'staging' ) {
+							return 'http://stg.colum.nz/fonts';
+						} else {
+							return 'http://127.0.0.1:8080/fonts'
+						}
+					}
 				}]
 			}
 		},
@@ -124,6 +132,12 @@ module.exports = function(grunt) {
 				],
 				dest: 'files/public/embed-table.js'
 			},
+			embed_css: {
+				src: [
+					'files/css/embed-table.css',
+				],
+				dest: 'views/embed-table/css.hbs'
+			}
 		},
 		jasmine:  {
 			embed: {
@@ -179,7 +193,7 @@ module.exports = function(grunt) {
 			},
 			sass: {
 				files: '**/*.scss',
-				tasks: ['sass'],
+				tasks: ['sass', 'concat:embed_css'],
 			},
 			js: {
 				files: [
@@ -209,10 +223,11 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', [
 		'replace:embed_font',
 		'sass',
+		'concat:embed_css',
 		'handlebars',
 		'browserify',
 		'replace:embed',
-		'concat'
+		'concat:embed'
 	]);
 
 	grunt.registerTask('default', ['webfont', 'build', 'develop', 'watch']);

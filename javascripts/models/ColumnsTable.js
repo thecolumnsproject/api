@@ -242,7 +242,8 @@ ColumnsTable.prototype.getOffsetTop = function() {
 
 ColumnsTable.prototype.getOffsetLeft = function() {
 	if (this.isLargeFormFactor()) {
-		return this.$$table.position().left; 
+		// return this.$$table.position().left;
+		return 0;
 	} else {
 		return this.$$table.offset().left;
 	}

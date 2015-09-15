@@ -15,12 +15,17 @@ var Columnsbars = require('./embed-handlebars.js');
 	if (!Columns.hasFinishedSetup) {
 
 		// Add the table stylsheet to the page
-		var style = document.createElement('link');
-		style.rel = 'stylesheet';
-		style.type = 'text/css';
-		style.href = Config.css_path;
-		style.media = 'all';
-		document.head.appendChild(style);
+		// var style = document.createElement('link');
+		// style.rel = 'stylesheet';
+		// style.type = 'text/css';
+		// style.href = Config.css_path;
+		// style.media = 'all';
+		// document.head.appendChild( style );
+		// setTimeout(function() {
+			var style = document.createElement('style');
+			style.innerHTML = Columns.EmbeddableTemplates['views/embed-table/css.hbs']();
+			document.head.appendChild( style );
+		// }, 0);
 
 		// Create global variables to store our tables and manage the load process
 		if(!Columns.scripts) { Columns.scripts = []; };
