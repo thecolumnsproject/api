@@ -529,7 +529,7 @@
     flex-grow: 1;
     -ms-flex-positive: 1; }
   .columns-table-row:nth-child(n+10) {
-    opacity: 0; }
+    display: none; }
 
 /* The top three rows should show
  * as a preview of the full stack
@@ -869,7 +869,13 @@
   opacity: 0; }
 
 .columns-table-expanding .columns-table-row {
-  opacity: 1;
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
   /* Make sure all columns are visible in expanding mode */ }
 
 .columns-table-expanding .columns-table-footer {
@@ -953,7 +959,13 @@
   /* Remove the table-row-top box shadow */
   top: 0px;
   /* Remove the table-top-row layout spacing */
-  opacity: 1;
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
   /* Make sure all columns are visible in expand mode */
   position: relative;
   -webkit-transform: translateY(0px) !important;

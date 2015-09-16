@@ -98,7 +98,7 @@ $columns-table-accent-color: 	#69A368;
 	
 	// Don't show any rows past the 10th while the table is collapsed
 	&:nth-child(n+10) {
-		opacity: 0;
+		display: none;
 	}
 }
 
@@ -358,7 +358,7 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-expanding .columns-table-row {
-	opacity: 1; /* Make sure all columns are visible in expanding mode */
+	@include display(flex); /* Make sure all columns are visible in expanding mode */
 }
 
 .columns-table-expanding .columns-table-footer {
@@ -463,7 +463,7 @@ $columns-table-accent-color: 	#69A368;
 	box-shadow: none; /* Remove the table-row-top box shadow */
 	top: 0px; /* Remove the table-top-row layout spacing */
 
-	opacity: 1; /* Make sure all columns are visible in expand mode */
+	@include display(flex); /* Make sure all columns are visible in expand mode */
 
 	// transform: translateY(0px) !important; /* Remove the expansion animation transform */
 	position:relative;
