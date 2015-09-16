@@ -83,8 +83,9 @@ Table.findMetaData = function(id, callback) {
 }
 
 Table.findData = function(id, startingPoint, callback) {
-	var sql = "SELECT * FROM ?? LIMIT ?,?";
-	var query = this.connection.query(sql, [id, startingPoint, this.pagingLimit], function(err, rows, fields) {
+	// var sql = "SELECT * FROM ?? LIMIT ?,?";
+	var sql = "SELECT * FROM ??";
+	var query = this.connection.query(sql, [id/*, startingPoint, this.pagingLimit*/], function(err, rows, fields) {
 		console.log(query.sql);
 		if (err) { callback(err, null); console.log(err); return; }
 		console.log("Got Data For Table:");

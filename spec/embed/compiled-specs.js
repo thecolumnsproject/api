@@ -13539,7 +13539,11 @@ ColumnsTable.prototype.renderData = function(data) {
 	// 	rows: data.data.slice(0, 20)
 	// }));
 	
-	data.data.slice( 0, 20 ).forEach(function( rowData, i) {
+	// data.data.slice( 0, 20 ).forEach(function( rowData, i) {
+	// 	$$tableBody.append( this.renderRow( rowData, i, this.layout ) );
+	// }.bind( this ));
+
+	data.data.forEach(function( rowData, i) {
 		$$tableBody.append( this.renderRow( rowData, i, this.layout ) );
 	}.bind( this ));
 
@@ -14057,7 +14061,7 @@ ColumnsTable.prototype.expandRows = function($$rows) {
 	var _this = this;
 
 	// Calculate the new position for each row
-	var duration = ANIMATION_DURATION - ( ($$rows.length - 1) * ROW_DELAY );
+	var duration = ANIMATION_DURATION/* - ( ($$rows.length - 1) * ROW_DELAY )*/;
 	$$rows.each(function(index, row) {
 		var $$row = $$(row);
 
@@ -14072,40 +14076,34 @@ ColumnsTable.prototype.expandRows = function($$rows) {
 }
 
 ColumnsTable.prototype.expandRowAtIndex = function($$row, index, duration) {
-
-	var rowHeight = $$row.outerHeight();
-	var offsetY = (index * rowHeight) - this.headerHeight();
-	switch (index) {
-		case 0:
-		break;
-		case 1:
-		offsetY -= ROW_OFFSET;
-		break;
-		case 2:
-		offsetY -= ROW_OFFSET * 2;
-		break;
-		default:
-		offsetY -= ROW_OFFSET * 2;
-	}
-
-	Velocity($$row.get(0), {
-	// $$row.velocity({
-		translateY: offsetY /* Move each row down into its natural position */
-	}, {
-		duration: duration,
-		delay: ROW_DELAY,
-		begin: function(elements) {
-			// $$row.removeClass('translateY-reset');
-		},
-		complete: function(elements) {
-			// $$row.addClass(EXPANDED_CLASS);
-			// setTimeout(function() {
-				// $$row.addClass('translateY-reset');	
-				// $$row.css( { position: 'relative' } );
-			// }, 0);
-			
+	
+	// If we're past the 10th row, just change the opacity
+	// since the user can't see it anyway
+	if ( index >= 10 ) {
+		
+	} else {
+		var rowHeight = $$row.outerHeight();
+		var offsetY = (index * rowHeight) - this.headerHeight();
+		switch (index) {
+			case 0:
+			break;
+			case 1:
+			offsetY -= ROW_OFFSET;
+			break;
+			case 2:
+			offsetY -= ROW_OFFSET * 2;
+			break;
+			default:
+			offsetY -= ROW_OFFSET * 2;
 		}
-	});
+
+		Velocity($$row.get(0), {
+			translateY: offsetY /* Move each row down into its natural position */
+		}, {
+			duration: duration,
+			delay: ROW_DELAY,
+		});
+	}
 }
 
 // Define table animation sequences
@@ -14195,35 +14193,6 @@ ColumnsTable.prototype.collapse = function() {
 		setTimeout( onCollapsed, ANIMATION_DURATION );
 		// props["opacity"] = 1;
 	}
-
-	// Velocity($$table.get(0), props, {
-	// // $$table.velocity(props, {
-	// 	duration: ANIMATION_DURATION,
-	// 	begin: function(elements) {
-	// 		$$table.addClass(COLLAPSING_CLASS);
-	// 		$$table.removeClass(EXPANDED_CLASS);
-	// 	},
-	// 	complete: function(elements) {
-	// 		$$table.removeClass(RELOCATED_CLASS);
-	// 		$$table.removeClass(COLLAPSING_CLASS);
-	// 		// Move the table back to its original DOM position
-	// 		$$table.css({
-	// 			top: 0,
-	// 			position: 'relative',
-	// 			'z-index': 0
-	// 		});
-	// 		$$( this.script ).siblings('.' + PLACEHOLDER_CLASS).remove();
-	// 		$$('html').removeClass('table-expanded');
-	// 		this.$$container.removeClass('table-expanded');
-
-	// 		if (_this.preview || this.sample ) {
-	// 			// $(document).trigger('ColumnsTableDidCollapse', {table: _this});
-	// 			ColumnsEvent.send('ColumnsTableDidCollapse', {table: _this});
-	// 		}
-	// 	}.bind( this )
-	// });
-
-	// this.position();
 }
 
 ColumnsTable.prototype.collapseHeader = function($$header) {
@@ -14316,7 +14285,7 @@ ColumnsTable.prototype.collapseBody = function($$body) {
 ColumnsTable.prototype.collapseRows = function($$rows) {
 
 	var _this = this;
-	var duration = ANIMATION_DURATION - ( ($$rows.length - 1) * ROW_DELAY );
+	var duration = ANIMATION_DURATION/* - ( ($$rows.length - 1) * ROW_DELAY )*/;
 	$$rows.each(function(index, row) {
 		_this.collapseRowAtIndex($$(row), index, duration);
 	});
@@ -14324,26 +14293,30 @@ ColumnsTable.prototype.collapseRows = function($$rows) {
 
 ColumnsTable.prototype.collapseRowAtIndex = function($$row, index, duration) {
 
-	// Calculate the old position for each row
-	var newPosition = this.originalRows[index].positionY - $$row.offset().top;
-	Velocity($$row.get(0), {
-	// $$row.velocity({
+	// If we're past the 10th row, just hide the card rather than moving it
+	if ( index >= 10 ) {
+		// Velocity( $$row.get( 0 ), {
+		// 	opacity: 0
+		// }, {
+		// 	duration: duration,
+		// 	begin: function( elements ) {
+				$$row.removeClass( EXPANDED_CLASS );
+		// 	}
+		// })
+	} else {
+		Velocity($$row.get(0), {
 
-		// Move each row to its collapsed position
-		translateY: 0
+			// Move each row to its collapsed position
+			translateY: 0
+		}, {
+			duration: duration,
+			delay: ROW_DELAY,
+			begin: function(elements) {
+				$$row.removeClass(EXPANDED_CLASS);
+			}
+		});
+	}
 
-	}, {
-		duration: duration,
-		delay: ROW_DELAY,
-		begin: function(elements) {
-			// $$row.removeClass('translateY-reset');
-			$$row.removeClass(EXPANDED_CLASS);
-			// $$row.css( { position: 'absolute' } );
-		},
-		complete: function(elements) {
-			// $$row.addClass('translateY-reset');
-		}
-	});
 }
 
 ColumnsTable.prototype._setupEventListeners = function() {
