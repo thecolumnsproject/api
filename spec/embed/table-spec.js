@@ -129,6 +129,44 @@ describe('Embeddable Table', function() {
 			embed._setupEventListeners();
 		});
 
+		describe('Opening an Existing Table', function() {
+			var layout = { model: {} };
+			var table = {
+				layout: layout
+			}
+
+			beforeEach(function() {
+				spyOn( embed, 'generateLayout' );
+				spyOn( embed, 'renderData' );
+				spyOn( embed, 'expand' );
+			});
+
+			it('should generate a new layout', function() {
+				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
+					table: table
+				});
+				
+				expect( embed.generateLayout ).toHaveBeenCalledWith( {}, false );
+			});
+
+			it('should render the table data', function() {
+				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
+					table: table
+				});
+					
+				expect( embed.renderData ).toHaveBeenCalledWith( table );
+
+			});
+
+			it('should expand', function() {
+				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
+					table: table
+				});
+
+				expect( embed.expand ).toHaveBeenCalled();
+			});
+		});
+
 		xit('should re-render when table details are udpated', function() {
 			// spyOn( this.embed, 'generateLayout' );
 			// spyOn( this.embed, 'renderData' );

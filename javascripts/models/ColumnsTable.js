@@ -145,7 +145,6 @@ ColumnsTable.prototype._setupHandlebars = function() {
 	// Handlebars.registerPartial('group', Handlebars.template( Templates['templates/embed-table/row-group.hbs']) );
 	// Handlebars.registerPartial('column', Templates['templates/embed-table/row-value.hbs']);
 	// Handlebars.registerPartial('footer', Templates['templates/embed-table/footer.hbs']);
-	console.log("Registering partials");
 	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
 	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
 
@@ -1201,6 +1200,7 @@ ColumnsTable.prototype.collapseRowAtIndex = function($$row, index, duration) {
 
 ColumnsTable.prototype._setupEventListeners = function() {
 	ColumnsEvent.on( 'Columns.Table.DidUploadWithSuccess', this._onTableDidUpload.bind( this ) );
+	ColumnsEvent.on( 'Columns.Table.DidOpenWithSuccess', this._onTableDidUpload.bind( this ) );
 	// ColumnsEvent.on( 'Columns.Layout.DidChange', table._onLayoutDidChange.bind( table ) );
 	// ColumnsEvent.on( 'Columns.EmbedDetailsView.DidUpdatePropertyWithValue', table._onDetailsDidChange.bind( table ) );
 	ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
@@ -1208,6 +1208,8 @@ ColumnsTable.prototype._setupEventListeners = function() {
 
 ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
 	var table = data.table;
+
+	console.log( data );
 
 	// Generate a layout
 	this.generateLayout( table.layout.model, false );

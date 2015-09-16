@@ -13293,7 +13293,6 @@ ColumnsTable.prototype._setupHandlebars = function() {
 	// Handlebars.registerPartial('group', Handlebars.template( Templates['templates/embed-table/row-group.hbs']) );
 	// Handlebars.registerPartial('column', Templates['templates/embed-table/row-value.hbs']);
 	// Handlebars.registerPartial('footer', Templates['templates/embed-table/footer.hbs']);
-	console.log("Registering partials");
 	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
 	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
 
@@ -14349,6 +14348,7 @@ ColumnsTable.prototype.collapseRowAtIndex = function($$row, index, duration) {
 
 ColumnsTable.prototype._setupEventListeners = function() {
 	ColumnsEvent.on( 'Columns.Table.DidUploadWithSuccess', this._onTableDidUpload.bind( this ) );
+	ColumnsEvent.on( 'Columns.Table.DidOpenWithSuccess', this._onTableDidUpload.bind( this ) );
 	// ColumnsEvent.on( 'Columns.Layout.DidChange', table._onLayoutDidChange.bind( table ) );
 	// ColumnsEvent.on( 'Columns.EmbedDetailsView.DidUpdatePropertyWithValue', table._onDetailsDidChange.bind( table ) );
 	ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
@@ -14356,6 +14356,8 @@ ColumnsTable.prototype._setupEventListeners = function() {
 
 ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
 	var table = data.table;
+
+	console.log( data );
 
 	// Generate a layout
 	this.generateLayout( table.layout.model, false );
@@ -14644,6 +14646,44 @@ describe('Embeddable Table', function() {
 		beforeEach(function() {			
 			embed.render();
 			embed._setupEventListeners();
+		});
+
+		describe('Opening an Existing Table', function() {
+			var layout = { model: {} };
+			var table = {
+				layout: layout
+			}
+
+			beforeEach(function() {
+				spyOn( embed, 'generateLayout' );
+				spyOn( embed, 'renderData' );
+				spyOn( embed, 'expand' );
+			});
+
+			it('should generate a new layout', function() {
+				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
+					table: table
+				});
+				
+				expect( embed.generateLayout ).toHaveBeenCalledWith( {}, false );
+			});
+
+			it('should render the table data', function() {
+				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
+					table: table
+				});
+					
+				expect( embed.renderData ).toHaveBeenCalledWith( table );
+
+			});
+
+			it('should expand', function() {
+				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
+					table: table
+				});
+
+				expect( embed.expand ).toHaveBeenCalled();
+			});
 		});
 
 		xit('should re-render when table details are udpated', function() {

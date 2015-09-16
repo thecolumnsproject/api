@@ -13120,9 +13120,10 @@ Handlebars.registerHelper('ifIsSingle', function(type, options) {
 
 module.exports = Handlebars;
 },{}],5:[function(require,module,exports){
-var Config = require('./embed-config.js');
-var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
-var Columnsbars = require('./embed-handlebars.js');
+var Config 			= require('./embed-config.js');
+var ColumnsTable 	= require('../javascripts/models/ColumnsTable.js');
+var ColumnsEvent 	= require('./models/ColumnsEvent.js');
+var Columnsbars 	= require('./embed-handlebars.js');
 // var Handlebars = require('../bower_components/handlebars/handlebars.runtime.js');
 // var Templates = require('../views/embeddable-templates.js')(Handlebars);
 
@@ -13181,16 +13182,19 @@ var Columnsbars = require('./embed-handlebars.js');
 			table.render();
 
 			// If we're in preview mode, make sure we listen for data update events
+			// and let the app know that we're ready
 			if ( !table.preview ) {
 				// Columns.Template.setupTableEventListeners(table.$$table);
 				table.fetchData();	
+			} else {
+				ColumnsEvent.send('ColumnsTableDidInitiate', {table: table});
 			}
 		}
 	}
 
 
 })();
-},{"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":3,"./embed-handlebars.js":4}],6:[function(require,module,exports){
+},{"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":3,"./embed-handlebars.js":4,"./models/ColumnsEvent.js":7}],6:[function(require,module,exports){
 module.exports = ColumnsAnalytics;
 
 function ColumnsAnalytics() {}
@@ -13390,7 +13394,6 @@ ColumnsTable.prototype._setupHandlebars = function() {
 	// Handlebars.registerPartial('group', Handlebars.template( Templates['templates/embed-table/row-group.hbs']) );
 	// Handlebars.registerPartial('column', Templates['templates/embed-table/row-value.hbs']);
 	// Handlebars.registerPartial('footer', Templates['templates/embed-table/footer.hbs']);
-	console.log("Registering partials");
 	Handlebars.registerPartial('layout', Columns.EmbeddableTemplates['views/embed-table/layout.hbs']);
 	Handlebars.registerPartial('style', Columns.EmbeddableTemplates['views/embed-table/style.hbs']);
 
@@ -14446,6 +14449,7 @@ ColumnsTable.prototype.collapseRowAtIndex = function($$row, index, duration) {
 
 ColumnsTable.prototype._setupEventListeners = function() {
 	ColumnsEvent.on( 'Columns.Table.DidUploadWithSuccess', this._onTableDidUpload.bind( this ) );
+	ColumnsEvent.on( 'Columns.Table.DidOpenWithSuccess', this._onTableDidUpload.bind( this ) );
 	// ColumnsEvent.on( 'Columns.Layout.DidChange', table._onLayoutDidChange.bind( table ) );
 	// ColumnsEvent.on( 'Columns.EmbedDetailsView.DidUpdatePropertyWithValue', table._onDetailsDidChange.bind( table ) );
 	ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
@@ -14453,6 +14457,8 @@ ColumnsTable.prototype._setupEventListeners = function() {
 
 ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
 	var table = data.table;
+
+	console.log( data );
 
 	// Generate a layout
 	this.generateLayout( table.layout.model, false );

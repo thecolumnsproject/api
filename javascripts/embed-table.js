@@ -1,6 +1,7 @@
-var Config = require('./embed-config.js');
-var ColumnsTable = require('../javascripts/models/ColumnsTable.js');
-var Columnsbars = require('./embed-handlebars.js');
+var Config 			= require('./embed-config.js');
+var ColumnsTable 	= require('../javascripts/models/ColumnsTable.js');
+var ColumnsEvent 	= require('./models/ColumnsEvent.js');
+var Columnsbars 	= require('./embed-handlebars.js');
 // var Handlebars = require('../bower_components/handlebars/handlebars.runtime.js');
 // var Templates = require('../views/embeddable-templates.js')(Handlebars);
 
@@ -59,9 +60,12 @@ var Columnsbars = require('./embed-handlebars.js');
 			table.render();
 
 			// If we're in preview mode, make sure we listen for data update events
+			// and let the app know that we're ready
 			if ( !table.preview ) {
 				// Columns.Template.setupTableEventListeners(table.$$table);
 				table.fetchData();	
+			} else {
+				ColumnsEvent.send('ColumnsTableDidInitiate', {table: table});
 			}
 		}
 	}
