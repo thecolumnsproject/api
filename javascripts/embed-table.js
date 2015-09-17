@@ -1,3 +1,4 @@
+var $$ 				= require('../bower_components/jquery/dist/jquery.js');
 var Config 			= require('./embed-config.js');
 var ColumnsTable 	= require('../javascripts/models/ColumnsTable.js');
 var ColumnsEvent 	= require('./models/ColumnsEvent.js');
@@ -33,7 +34,8 @@ var Columnsbars 	= require('./embed-handlebars.js');
 		if(!Columns.tables) { Columns.tables = []; };
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
+		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
+		$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;

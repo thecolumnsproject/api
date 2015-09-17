@@ -1237,8 +1237,8 @@ ColumnsTable.prototype.send = function( props ) {
 	}
 
 	// Send a mixpanel event
-	if ( window.mixpanel ) {
-		// mixpanel.track( props.description, mixpanelObj );
+	if ( window.mixpanel.the_columns_project ) {
+		window.mixpanel.the_columns_project.track( props.description, mixpanelObj );
 	}
 
 };

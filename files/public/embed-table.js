@@ -898,7 +898,7 @@ this["Columns"] = this["Columns"] || {};
 this["Columns"]["EmbeddableTemplates"] = this["Columns"]["EmbeddableTemplates"] || {};
 
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/analytics.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<!-- Google Analytics -->\n<script>\n  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n  })(window,document,'script','//www.google-analytics.com/analytics.js','gaColumnz');\n\n  gaColumnz('create', 'UA-58560399-2', 'auto');\n  gaColumnz('send', 'pageview');\n\n</script>\n<!-- End Google Analytics -->";
+    return "<!-- Google Analytics -->\n<script>\n  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n  })(window,document,'script','//www.google-analytics.com/analytics.js','gaColumnz');\n\n  gaColumnz('create', 'UA-58560399-2', 'auto');\n  gaColumnz('send', 'pageview');\n\n</script>\n<!-- End Google Analytics -->\n\n<!-- start Mixpanel --><script type=\"text/javascript\">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(\".\");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;\"undefined\"!==typeof d?c=b[d]=[]:d=\"mixpanel\";c.people=c.people||[];c.toString=function(b){var a=\"mixpanel\";\"mixpanel\"!==d&&(a+=\".\"+d);b||(a+=\" (stub)\");return a};c.people.toString=function(){return c.toString(1)+\".people (stub)\"};i=\"disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user\".split(\" \");\nfor(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement(\"script\");a.type=\"text/javascript\";a.async=!0;a.src=\"undefined\"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:\"file:\"===e.location.protocol&&\"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js\".match(/^\\/\\//)?\"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js\":\"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js\";f=e.getElementsByTagName(\"script\")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);\nmixpanel.init(\"b62bdcf865c77c2462e8db299437ad6c\", \"the_columns_project\");</script><!-- end Mixpanel -->\n\n";
 },"useData":true});
 
 this["Columns"]["EmbeddableTemplates"]["views/embed-table/body.hbs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -14192,6 +14192,7 @@ Handlebars.registerHelper('ifIsSingle', function(type, options) {
 
 module.exports = Handlebars;
 },{}],5:[function(require,module,exports){
+var $$ 				= require('../bower_components/jquery/dist/jquery.js');
 var Config 			= require('./embed-config.js');
 var ColumnsTable 	= require('../javascripts/models/ColumnsTable.js');
 var ColumnsEvent 	= require('./models/ColumnsEvent.js');
@@ -14227,7 +14228,8 @@ var Columnsbars 	= require('./embed-handlebars.js');
 		if(!Columns.tables) { Columns.tables = []; };
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
+		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
+		$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;
@@ -14266,7 +14268,7 @@ var Columnsbars 	= require('./embed-handlebars.js');
 
 
 })();
-},{"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":3,"./embed-handlebars.js":4,"./models/ColumnsEvent.js":7}],6:[function(require,module,exports){
+},{"../bower_components/jquery/dist/jquery.js":1,"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":3,"./embed-handlebars.js":4,"./models/ColumnsEvent.js":7}],6:[function(require,module,exports){
 module.exports = ColumnsAnalytics;
 
 function ColumnsAnalytics() {}
@@ -15558,8 +15560,8 @@ ColumnsTable.prototype.send = function( props ) {
 	}
 
 	// Send a mixpanel event
-	if ( window.mixpanel ) {
-		// mixpanel.track( props.description, mixpanelObj );
+	if ( window.mixpanel.the_columns_project ) {
+		window.mixpanel.the_columns_project.track( props.description, mixpanelObj );
 	}
 
 };

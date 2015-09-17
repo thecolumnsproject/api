@@ -13120,6 +13120,7 @@ Handlebars.registerHelper('ifIsSingle', function(type, options) {
 
 module.exports = Handlebars;
 },{}],5:[function(require,module,exports){
+var $$ 				= require('../bower_components/jquery/dist/jquery.js');
 var Config 			= require('./embed-config.js');
 var ColumnsTable 	= require('../javascripts/models/ColumnsTable.js');
 var ColumnsEvent 	= require('./models/ColumnsEvent.js');
@@ -13155,7 +13156,8 @@ var Columnsbars 	= require('./embed-handlebars.js');
 		if(!Columns.tables) { Columns.tables = []; };
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
+		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
+		$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;
@@ -13194,7 +13196,7 @@ var Columnsbars 	= require('./embed-handlebars.js');
 
 
 })();
-},{"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":3,"./embed-handlebars.js":4,"./models/ColumnsEvent.js":7}],6:[function(require,module,exports){
+},{"../bower_components/jquery/dist/jquery.js":1,"../javascripts/models/ColumnsTable.js":8,"./embed-config.js":3,"./embed-handlebars.js":4,"./models/ColumnsEvent.js":7}],6:[function(require,module,exports){
 module.exports = ColumnsAnalytics;
 
 function ColumnsAnalytics() {}
@@ -14486,8 +14488,8 @@ ColumnsTable.prototype.send = function( props ) {
 	}
 
 	// Send a mixpanel event
-	if ( window.mixpanel ) {
-		// mixpanel.track( props.description, mixpanelObj );
+	if ( window.mixpanel.the_columns_project ) {
+		window.mixpanel.the_columns_project.track( props.description, mixpanelObj );
 	}
 
 };
