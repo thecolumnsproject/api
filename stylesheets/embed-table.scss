@@ -79,6 +79,7 @@ $columns-table-accent-color: 	#69A368;
 	@include display(flex);
 
 	// height: 60px;
+	min-height: 48px;
 	box-sizing: border-box;
 	width: 100%;
 	background: #fff;
