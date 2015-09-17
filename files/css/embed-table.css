@@ -870,16 +870,6 @@
   transition: opacity 0s;
   opacity: 0; }
 
-.columns-table-expanding .columns-table-row {
-  display: -webkit-box;
-  display: -moz-box;
-  display: box;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: flex;
-  /* Make sure all columns are visible in expanding mode */ }
-
 .columns-table-expanding .columns-table-footer {
   opacity: 0; }
 

@@ -359,7 +359,7 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-expanding .columns-table-row {
-	@include display(flex); /* Make sure all columns are visible in expanding mode */
+	// @include display(flex); /* Make sure all columns are visible in expanding mode */
 }
 
 .columns-table-expanding .columns-table-footer {
