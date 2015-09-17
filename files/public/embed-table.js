@@ -14344,24 +14344,6 @@ var Config = require('../embed-config.js'),
 	// Handlebars = require('../../bower_components/handlebars/handlebars.runtime.js'),
 	// Columns.EmbeddableTemplates = require('../../views/embeddable-templates.js')(Handlebars);
 
-// Set up templates
-
-// var Embeddlebars = Handlebars.noConflict();
-
-// Make sure our version of jquery isn't polluting the namespace
-// if ( window.jQuery ) {
-// 	$$ = window.jQuery.noConflict(true);	
-// } else {
-// 	$$ = $;
-// }
-
-// Table Expansion
-// -------------------
-
-// Table should respond to the user's drag
-// and progressively open as it is pulled away
-// from its original location on the page
-
 // Animation Constants
 var ANIMATION_DURATION = 250;
 
@@ -14561,8 +14543,16 @@ ColumnsTable.prototype.renderLargeFormFactorExpandedTable = function() {
 	return panel();
 };
 
+ColumnsTable.prototype.isInsideFrame = function() {
+	try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+
 ColumnsTable.prototype.isLargeFormFactor = function() {
-	if ( this.preview || this.sample ) {
+	if ( this.preview || this.sample || this.isInsideFrame() ) {
 		return false;
 	} else {
 		return $$(window).width() > MAX_SMARTPHONE_SCREEN_WIDTH;
