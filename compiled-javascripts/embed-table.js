@@ -13508,7 +13508,7 @@ ColumnsTable.prototype.getOffsetLeft = function() {
 // Smartphones: it should be the full width of the screen and left-aligned
 ColumnsTable.prototype.position = function() {
 	var properties = {
-		'width': this.$$container.innerWidth()
+		'width': this.$$container.width()
 	}
 
 	// Only move the table if it's not aligned with the left side of the screen
