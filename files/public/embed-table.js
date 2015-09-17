@@ -14163,7 +14163,8 @@ module.exports = {
 	root_path: ROOT_PATH,
 	embed_path: EMBED_PATH,
 	css_path: CSS_PATH,
-	img_path: IMG_PATH
+	img_path: IMG_PATH,
+	env: 'development'
 };
 },{}],4:[function(require,module,exports){
 // Setup necessary handlebars templates and helpers
@@ -14229,7 +14230,9 @@ var Columnsbars 	= require('./embed-handlebars.js');
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
+		if ( Config.env === 'production' ) {
+			$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
+		}
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;

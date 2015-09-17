@@ -13091,7 +13091,8 @@ module.exports = {
 	root_path: ROOT_PATH,
 	embed_path: EMBED_PATH,
 	css_path: CSS_PATH,
-	img_path: IMG_PATH
+	img_path: IMG_PATH,
+	env: '{{environment}}'
 };
 },{}],4:[function(require,module,exports){
 module.exports = ColumnsAnalytics;

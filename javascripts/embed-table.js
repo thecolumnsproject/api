@@ -35,7 +35,9 @@ var Columnsbars 	= require('./embed-handlebars.js');
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
+		if ( Config.env === 'production' ) {
+			$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']() );
+		}
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;

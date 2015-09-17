@@ -101,6 +101,15 @@ module.exports = function(grunt) {
 							return 'http://127.0.0.1:8080'
 						}
 					}
+				}, {
+					from: '{{environment}}',
+					to: function(matchedWord) {
+						if ( process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging' ) {
+							return process.env.NODE_ENV;
+						} else {
+							return 'development'
+						}
+					}
 				}]
 			},
 			columns_font: {
