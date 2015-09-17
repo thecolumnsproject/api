@@ -14387,6 +14387,7 @@ ColumnsTable.prototype.send = function( props ) {
 
 	// Send a mixpanel event
 	if ( window.mixpanel && window.mixpanel.the_columns_project ) {
+		console.log('Sending event: ' + props.description );
 		window.mixpanel.the_columns_project.track( props.description, mixpanelObj );
 	}
 
