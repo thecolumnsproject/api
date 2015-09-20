@@ -25,6 +25,10 @@ section.share-page-header {
 	}
 }
 
+.share-page-actions {
+	margin-bottom: $spacing*4;
+}
+
 .share-page-actions-social {
 	@include display(flex);
 	padding: $spacing*4 0;

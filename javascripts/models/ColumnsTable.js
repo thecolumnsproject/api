@@ -179,7 +179,7 @@ ColumnsTable.prototype.render = function() {
 			"z-index": (highestZIndex('*') + 1)
 		});
 		$$('body').append( this.$$panel );
-	} else if( this.preview || this.sample ) {
+	} else if( this.shouldForceMobile() ) {
 		this.$$container = this.$$table.parent();
 	} else {
 		this.$$container = $$(window);
@@ -224,15 +224,19 @@ ColumnsTable.prototype.isInsideFrame = function() {
 }
 
 ColumnsTable.prototype.isLargeFormFactor = function() {
-	if ( this.preview || this.sample || this.isInsideFrame() ) {
+	if ( this.isInsideFrame() || this.shouldForceMobile() ) {
 		return false;
 	} else {
 		return $$(window).width() > MAX_SMARTPHONE_SCREEN_WIDTH;
 	}
 };
 
+ColumnsTable.prototype.shouldForceMobile = function() {
+	return this.preview || ( this.sample && $$(window).width() > MAX_SMARTPHONE_SCREEN_WIDTH );
+};
+
 ColumnsTable.prototype.getOffsetTop = function() {
-	if ( this.isLargeFormFactor() || this.preview || this.sample ) {
+	if ( this.isLargeFormFactor() || this.shouldForceMobile() ) {
 		return this.$$table.position().top; 
 		// return this.$$container.scrollTop();
 	} else {
@@ -245,7 +249,7 @@ ColumnsTable.prototype.getOffsetTop = function() {
 ColumnsTable.prototype.getOffsetLeft = function() {
 	if (this.isLargeFormFactor()) {
 		return 0;
-	} else if ( this.preview || this.sample ) {
+	} else if ( this.shouldForceMobile() ) {
 		return this.$$table.position().left;
 	} else {
 		return this.$$table.offset().left;
@@ -256,7 +260,7 @@ ColumnsTable.prototype.getOffsetLeft = function() {
 // Smartphones: it should be the full width of the screen and left-aligned
 ColumnsTable.prototype.position = function() {
 	var properties = {
-		'width': this.$$container.width()
+		'width': this.shouldForceMobile() ? this.$$container.outerWidth() : this.$$container.width()
 	}
 
 	// Only move the table if it's not aligned with the left side of the screen
@@ -457,7 +461,7 @@ ColumnsTable.prototype.renderData = function(data) {
 	this.setupEvents();
 
 	// Announce that the table has rendered data
-	if (this.preview || this.sample ) {
+	if ( this.preview || this.sample ) {
 		// $(document).trigger('ColumnsTableDidRenderData', {table: this});
 		ColumnsEvent.send('ColumnsTableDidRenderData', {table: this});
 	}
@@ -679,7 +683,7 @@ ColumnsTable.prototype.setupEvents = function() {
 	// });
 
 	// Notify the preview template when the table scrolls
-	if (this.preview || this.sample ) {
+	if ( this.preview || this.sample ) {
 		this.$$table.find('.columns-table-container').on('scroll', function(e) {
 			// $(document).trigger('ColumnsTableDidScroll', {table: _this, originalEvent: e});
 			ColumnsEvent.send('ColumnsTableDidScroll', {table: _this, originalEvent: e});
@@ -741,7 +745,7 @@ ColumnsTable.prototype.expand = function() {
 	
 	var _this = this;
 
-	if (this.preview || this.sample ) {
+	if ( this.preview || this.sample ) {
 		ColumnsEvent.send('ColumnsTableWillExpand', {table: this});
 	}
 
@@ -766,7 +770,7 @@ ColumnsTable.prototype.expand = function() {
 	// add a placeholder
 	// and make sure we're the highest z-index in the land
 	var offsetTop;
-	if ( this.preview || this.forceMobile ) {
+	if ( this.shouldForceMobile() ) {
 		offsetTop = this.getOffsetTop() + this.$$container.scrollTop();
 	} else {
 		// offsetTop = parseInt($$.Velocity.hook($$table, "translateY"));
@@ -800,7 +804,7 @@ ColumnsTable.prototype.expand = function() {
 		placeholder.style.height = $$table.outerHeight( true ) + 'px';
 		placeholder.style.width = $$table.outerWidth() + 'px';
 
-		if ( this.preview || this.sample ) {
+		if ( this.shouldForceMobile() ) {
 			$$table.appendTo( this.$$container );
 			this.$$container.addClass( EXPANDED_CLASS );
 		} else {
@@ -829,7 +833,7 @@ ColumnsTable.prototype.expand = function() {
 		props["width"] = this.$$panel.find( TABLE_PANEL_SELECTOR ).width();
 	}
 
-	if (this.preview || this.forceMobile ) {
+	if ( this.shouldForceMobile() ) {
 		props["translateY"] = -this.getOffsetTop();
 	}
 
@@ -850,7 +854,7 @@ ColumnsTable.prototype.expand = function() {
 			$$('body').addClass( EXPANDED_CLASS );
 		}.bind( this ), 0);
 
-		if (_this.preview || this.sample ) {
+		if ( this.preview || this.sample ) {
 			ColumnsEvent.send('ColumnsTableDidExpand', {table: _this});
 		}
 
@@ -889,7 +893,7 @@ ColumnsTable.prototype.expandBackground = function($$bg, $$rows, $$header, $$foo
 		// bgOffsetLeft = $$(window).width() - this.$$panel.find( TABLE_PANEL_SELECTOR ).width();
 		bgHeight = this.$$panel.find( TABLE_PANEL_SELECTOR ).height();
 
-	} else if ( this.preview || this.sample ) {
+	} else if ( this.shouldForceMobile() ) {
 
 		this.originalBackground['positionY'] = $$bg.position().top;
 		bgOffsetTop = 0;
@@ -1012,7 +1016,7 @@ ColumnsTable.prototype.collapse = function() {
 	$$rows = $$table.find('.columns-table-row'),
 	$$header = $$table.find('.columns-table-header');
 
-	if (this.preview || this.sample ) {
+	if ( this.preview || this.sample ) {
 		ColumnsEvent.send('ColumnsTableWillCollapse', {table: this});
 	}
 
@@ -1049,7 +1053,7 @@ ColumnsTable.prototype.collapse = function() {
 			$$('body').removeClass( COLLAPSING_CLASS );	
 		}.bind( this ), 0);
 
-		if (_this.preview || this.sample ) {
+		if ( this.preview || this.sample ) {
 			// $(document).trigger('ColumnsTableDidCollapse', {table: _this});
 			ColumnsEvent.send('ColumnsTableDidCollapse', {table: _this});
 		}
@@ -1063,7 +1067,7 @@ ColumnsTable.prototype.collapse = function() {
 	$$('body').removeClass( EXPANDED_CLASS );
 
 	// var props = {};
-	if (this.preview || this.forceMobile ) {
+	if ( this.shouldForceMobile() ) {
 		// props["translateY"] = 0;
 		Velocity($$table.get(0), {
 			translateY: 0

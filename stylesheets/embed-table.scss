@@ -280,11 +280,10 @@ $columns-table-accent-color: 	#69A368;
 .columns-table-footer-icon {
 	color: $gray-light;
 	font-size: 16px;
-
-	margin-right: $spacing / 2;
 }
 
 .columns-table-footer-icon.columns-logo {
+	margin-right: $spacing / 2;
 	// margin-bottom: 8px;
 }
 
@@ -531,7 +530,7 @@ $columns-table-accent-color: 	#69A368;
 	@include flex-direction(column);
 }
 
-.columns-table-expanded .columns-table-footer-icon {
+.columns-table-expanded .columns-table-footer-icon.columns-logo {
 	color: $primary-color;
 	font-size: 16px;
 

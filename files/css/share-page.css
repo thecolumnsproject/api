@@ -301,6 +301,9 @@ section.share-page-header {
     font-size: 1.5rem;
     margin-bottom: 4px; }
 
+.share-page-actions {
+  margin-bottom: 32px; }
+
 .share-page-actions-social {
   display: -webkit-box;
   display: -moz-box;
