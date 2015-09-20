@@ -1,8 +1,8 @@
 /* Grays */
 @font-face {
   font-family: "columns-project";
-  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?504f4f11935527e9aed9d517aea323d2");
-  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("http://127.0.0.1:8080/fonts/columns-project.woff?504f4f11935527e9aed9d517aea323d2") format("woff"), url("http://127.0.0.1:8080/fonts/columns-project.ttf?504f4f11935527e9aed9d517aea323d2") format("truetype");
+  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?530e8a2446a59a0c6bc78e1f2403a61e");
+  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("http://127.0.0.1:8080/fonts/columns-project.woff?530e8a2446a59a0c6bc78e1f2403a61e") format("woff"), url("http://127.0.0.1:8080/fonts/columns-project.ttf?530e8a2446a59a0c6bc78e1f2403a61e") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="clmnz-icon-"]:before,
@@ -183,8 +183,8 @@
 /* Grays */
 @font-face {
   font-family: "columns-project";
-  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?504f4f11935527e9aed9d517aea323d2");
-  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("http://127.0.0.1:8080/fonts/columns-project.woff?504f4f11935527e9aed9d517aea323d2") format("woff"), url("http://127.0.0.1:8080/fonts/columns-project.ttf?504f4f11935527e9aed9d517aea323d2") format("truetype");
+  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?530e8a2446a59a0c6bc78e1f2403a61e");
+  src: url("http://127.0.0.1:8080/fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("http://127.0.0.1:8080/fonts/columns-project.woff?530e8a2446a59a0c6bc78e1f2403a61e") format("woff"), url("http://127.0.0.1:8080/fonts/columns-project.ttf?530e8a2446a59a0c6bc78e1f2403a61e") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="clmnz-icon-"]:before,
@@ -832,14 +832,16 @@
   font-weight: 500;
   letter-spacing: 0.5px;
   background-color: #3E97BD;
-  height: 36px;
+  border: 1px solid #3E97BD;
+  height: 34px;
   display: inline-block;
   padding: 0 16px;
-  line-height: 36px;
+  line-height: 35px;
   border-radius: 18px;
   cursor: pointer; }
   .columns-table-expand-button:active {
-    background-color: #255a70; }
+    background-color: #255a70;
+    border-color: #255a70; }
 
 .columns-table-footer-credit {
   margin-top: 16px; }
