@@ -267,14 +267,16 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-footer-credit {
-	@include display(flex);
-	@include align-items(center);
-
 	margin-top: $spacing*2;
 }
 
 .hosted-page .columns-table-footer-credit {
 	display: none;
+}
+
+.columns-table-footer-credit a {
+	@include display(flex);
+	@include align-items(center);
 }
 
 .columns-table-footer-icon {
@@ -522,11 +524,15 @@ $columns-table-accent-color: 	#69A368;
 	pointer-events: auto;
 }
 
-.hosted-page.columns-table-expanded .columns-table-footer-credit {
-	@include display(flex);
+.columns-table-expanded .columns-table-footer {
+	padding-bottom: $spacing * 4;
 }
 
-.columns-table-expanded .columns-table-footer-credit {
+.hosted-page.columns-table-expanded .columns-table-footer-credit {
+	display: block;
+}
+
+.columns-table-expanded .columns-table-footer-credit a {
 	@include flex-direction(column);
 }
 
