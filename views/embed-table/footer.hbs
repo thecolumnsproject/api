@@ -1,20 +1,26 @@
 <div class="columns-table-footer">
-	<span class="columns-table-source">
-		{{#if source}}
-			<i class="columns-table-footer-icon columns-verified-source-icon clmnz-icon-circle-check-open"></i>
-			{{#if source_url}}
-				<a href="{{source_url}}" class="" target="_blank">{{source}}</a>
-			{{else}}
-				{{source}}
-			{{/if}}
-		{{else}}
-			{{#if source_url}}
+	<div class="columns-table-footer-details">
+		<span class="columns-table-source">
+			{{#if source}}
 				<i class="columns-table-footer-icon columns-verified-source-icon clmnz-icon-circle-check-open"></i>
-				<a href="{{source_url}}" class="" target="_blank">{{source_url}}</a>
+				{{#if source_url}}
+					<a href="{{source_url}}" class="" target="_blank">{{source}}</a>
+				{{else}}
+					{{source}}
+				{{/if}}
+			{{else}}
+				{{#if source_url}}
+					<i class="columns-table-footer-icon columns-verified-source-icon clmnz-icon-circle-check-open"></i>
+					<a href="{{source_url}}" class="" target="_blank">{{source_url}}</a>
+				{{/if}}
 			{{/if}}
-		{{/if}}
-	</span>
-	<span class="columns-table-items-count">{{item_count}} Items</span>
-	<i class="columns-table-footer-icon columns-logo clmnz-icon-columns"></i>
-	<span class="columns-table-expand-button">Expand</span>
+		</span>
+		<span class="columns-table-items-count">{{item_count}} Items</span>
+	</div>
+	<div class="columns-table-footer-actions">
+		<span class="columns-table-expand-button">See all the data</span>
+	</div>
+	<div class="columns-table-footer-credit">
+		<i class="columns-table-footer-icon columns-logo clmnz-icon-columns"></i><a href="{{home_path}}" target="_blank">The Columns Project</a>
+	</div>
 </div>

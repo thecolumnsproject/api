@@ -1,5 +1,6 @@
 var API_HOST = '{{api_host}}',
 	ROOT_PATH = '{{root_path}}',
+	HOME_PATH = '{{home_path}}',
 	EMBED_PATH = ROOT_PATH + '/public/embed-table.js',
 	CSS_PATH = ROOT_PATH + '/css/embed-table.css',
 	IMG_PATH = ROOT_PATH + '/images/';
@@ -7,6 +8,7 @@ var API_HOST = '{{api_host}}',
 module.exports = {
 	api_host: API_HOST,
 	root_path: ROOT_PATH,
+	home_path: HOME_PATH,
 	embed_path: EMBED_PATH,
 	css_path: CSS_PATH,
 	img_path: IMG_PATH,

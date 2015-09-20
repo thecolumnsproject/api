@@ -13082,6 +13082,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 },{}],3:[function(require,module,exports){
 var API_HOST = 'http://127.0.0.1:8080',
 	ROOT_PATH = 'http://127.0.0.1:8080',
+	HOME_PATH = 'http://127.0.0.1',
 	EMBED_PATH = ROOT_PATH + '/public/embed-table.js',
 	CSS_PATH = ROOT_PATH + '/css/embed-table.css',
 	IMG_PATH = ROOT_PATH + '/images/';
@@ -13089,6 +13090,7 @@ var API_HOST = 'http://127.0.0.1:8080',
 module.exports = {
 	api_host: API_HOST,
 	root_path: ROOT_PATH,
+	home_path: HOME_PATH,
 	embed_path: EMBED_PATH,
 	css_path: CSS_PATH,
 	img_path: IMG_PATH,
@@ -13158,14 +13160,14 @@ var Columnsbars 	= require('./embed-handlebars.js');
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		if ( Config.env === 'production' ) {
+		// if ( Config.env === 'production' ) {
 			$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics/google.hbs']() );
 			if ( window.mixpanel ) {
 				mixpanel.init("b62bdcf865c77c2462e8db299437ad6c", {}, "the_columns_project");
 			} else {
 				$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics/mixpanel.hbs']() );
 			}
-		}
+		// }
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;
@@ -13291,6 +13293,7 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	LOADING_CLASS = 'loading',
 	ERROR_CLASS = 'error',
 	ANIMATING_CLASS = 'velocity-animating',
+	HOSTED_PAGE_CLASS = 'hosted-page',
 	$TABLE;
 	// $$CONTAINER = $$(window);
 
@@ -13333,6 +13336,7 @@ function ColumnsTable(script) {
 	// Determine whether or not we're in preview mode
 	this.preview = $$(script).data('preview');
 	this.forceMobile = $$(script).data('force-mobile');
+	this.hostedPage = $$(script).data('hosted-page');
 	this.sample = $$(script).data('sample');
 
 	// Remember the table instance once it's been inserted into the DOM
@@ -13441,6 +13445,11 @@ ColumnsTable.prototype.render = function() {
 	} else {
 		this.$$container = $$(window);
 		this.$$table.addClass('small-form-factor');
+	}
+
+	// Add a special class if we're inside a columns hosted page
+	if ( this.hostedPage ) {
+		this.$$table.addClass( HOSTED_PAGE_CLASS );
 	}
 
 	// Position table correctly given the size of the screen
@@ -13618,13 +13627,15 @@ ColumnsTable.prototype.renderData = function(data) {
 		this.updateComponent($$footer, {
 			source: data.source,
 			source_url: data.source_url,
-			item_count: data.num_rows || data.data.length
+			item_count: data.num_rows || data.data.length,
+			home_path: Config.home_path
 		}, footer);
 	} else {
 		$$tableBody.after(footer({
 			source: data.source,
 			source_url: data.source_url,
-			item_count: data.num_rows || data.data.length
+			item_count: data.num_rows || data.data.length,
+			home_path: Config.home_path
 		}));
 	}
 
@@ -13772,6 +13783,10 @@ ColumnsTable.prototype.backgroundHeight = function() {
 
 ColumnsTable.prototype.headerHeight = function() {
 	return this.$$table.find( TABLE_HEADER_SELECTOR ).outerHeight();
+}
+
+ColumnsTable.prototype.footerHeight = function() {
+	return this.$$table.find( TABLE_FOOTER_SELECTOR ).outerHeight();
 }
 
 ColumnsTable.prototype.updateComponent = function($$component, data, template) {
@@ -13942,6 +13957,24 @@ ColumnsTable.prototype.setupEvents = function() {
 		// If not, download more rows first
 		
 	// });
+
+	// Track taps on source link
+	$$( TABLE_FOOTER_SELECTOR ).find('.columns-table-source a').on('click', function() {
+		this.send({
+			category: 'link',
+			action: 'click',
+			label: 'source'
+		});
+	}.bind( this ));
+
+	// Track taps on columns project link
+	$$( TABLE_FOOTER_SELECTOR ).find('.columns-table-footer-credit a').on('click', function() {
+		this.send({
+			category: 'link',
+			action: 'click',
+			label: 'columns project'
+		});
+	}.bind( this ));
 };
 
 ColumnsTable.prototype.setLoading = function(loading) {
@@ -13972,6 +14005,15 @@ ColumnsTable.prototype.expand = function() {
 	if (this.preview || this.sample ) {
 		ColumnsEvent.send('ColumnsTableWillExpand', {table: this});
 	}
+
+	this.originalSizes = {
+		footer: {
+			height: this.footerHeight()
+		},
+		header: {
+			height: this.headerHeight()
+		}
+	};
 
 	var $$table = this.$$table;
 	$$bg = $$table.find('.columns-table-container'),
@@ -14240,7 +14282,7 @@ ColumnsTable.prototype.collapse = function() {
 		this.collapseBody($$body);
 		this.collapseRows($$rows);
 	} else {
-		$$bg.css({ "height": this.backgroundHeight() + 60 + this.headerHeight() });
+		$$bg.css({ "height": this.backgroundHeight() + 60 + this.originalSizes.header.height + this.originalSizes.footer.height });
 		Velocity( $$('html'), {
 			width: "+=" + this.$$panel.find( TABLE_PANEL_SELECTOR ).width() + "px"
 		}, {
@@ -14326,7 +14368,7 @@ ColumnsTable.prototype.collapseBackground = function($$bg) {
 
 		// Return to small state
 		// height: _this.originalBackground.height,
-		height: _this.backgroundHeight() + 60 + _this.headerHeight(),
+		height: _this.backgroundHeight() + 60 + _this.originalSizes.header.height + _this.originalSizes.footer.height,
 		// height: 'auto',
 
 		// Move back to original position
@@ -14487,7 +14529,6 @@ ColumnsTable.prototype.send = function( props ) {
 
 	// Send a mixpanel event
 	if ( window.mixpanel && window.mixpanel.the_columns_project ) {
-		console.log('Sending event: ' + props.description );
 		window.mixpanel.the_columns_project.track( props.description, mixpanelObj );
 	}
 

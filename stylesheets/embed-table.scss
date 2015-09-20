@@ -199,7 +199,7 @@ $columns-table-accent-color: 	#69A368;
 
 .columns-table-footer {
 	@include display(flex);
-	@include justify-content(flex-end);
+	@include flex-direction(column);
 	@include align-items(center);
 	position: relative;
 	padding: 0 4px;
@@ -215,6 +215,17 @@ $columns-table-accent-color: 	#69A368;
 	@include transition(opacity 0.15s);
 }
 
+.columns-table-footer-details {
+	@include display(flex);
+	@include justify-content(flex-end);
+	@include align-items(center);
+	width: 100%;
+}
+
+.columns-table-footer-actions {
+	margin-top: $spacing*2;
+}
+
 .columns-table-source {
 	margin-right: auto;
 	@include display(flex);
@@ -226,19 +237,55 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-expand-button {
-	color: $primary-color;
+	color: #fff;
 	text-transform: uppercase;
-	margin-left: 12px;
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 0.5px;
+    background-color: $primary-color;
+    height: 36px;
+    display: inline-block;
+    padding: 0 16px;
+    line-height: 36px;
+    border-radius: 18px;
+
+	// Float on top of the stack of rows
+	// position: absolute;
+ //    left: 50%;
+ //    margin-left: -70px;
+ //    top: 50%;
+ //    margin-top: -18px;
+ //    box-shadow: 0px 0px 8px rgba(0,0,0,0.4);
+ //    background-color: fade-out($primary-color, .06);
+ //    border: 1px solid rgba(0,0,0,0.08);
+ //    z-index: 1;
+
+    &:active {
+		background-color: darken($primary-color, 20%);
+		// background-color: transparent;
+    }
+}
+
+.columns-table-footer-credit {
+	@include display(flex);
+	@include align-items(center);
+
+	margin-top: $spacing*2;
+}
+
+.hosted-page .columns-table-footer-credit {
+	display: none;
 }
 
 .columns-table-footer-icon {
-	// color: $gray-light;
-	color: $primary-color;
+	color: $gray-light;
 	font-size: 16px;
+
+	margin-right: $spacing / 2;
 }
 
 .columns-table-footer-icon.columns-logo {
-	margin-left: 12px;
+	// margin-bottom: 8px;
 }
 
 .columns-table-footer-icon.columns-verified-source-icon {
@@ -474,6 +521,22 @@ $columns-table-accent-color: 	#69A368;
 .columns-table-expanded .columns-table-header {
 	opacity: 1;
 	pointer-events: auto;
+}
+
+.hosted-page.columns-table-expanded .columns-table-footer-credit {
+	@include display(flex);
+}
+
+.columns-table-expanded .columns-table-footer-credit {
+	@include flex-direction(column);
+}
+
+.columns-table-expanded .columns-table-footer-icon {
+	color: $primary-color;
+	font-size: 16px;
+
+	// margin-top: $spacing*2;
+	margin-right: 0;
 }
 
 .columns-table-expanded .columns-table-expand-button {

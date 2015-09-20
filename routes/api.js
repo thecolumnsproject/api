@@ -23,7 +23,8 @@ router.get('/', function(req, res) {
 router.get('/embed-table/:id', function( req, res ) {
 	res.render( 'embed-table', {
 		embed_host: config.embed.host,
-		embed_id: req.params.id || 1
+		embed_id: req.params.id || 1,
+		home_host: config.app.host
 	});
 });
 

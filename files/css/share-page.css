@@ -301,6 +301,20 @@ section.share-page-header {
     font-size: 1.5rem;
     margin-bottom: 4px; }
 
+.share-page-actions-social {
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08); }
+
+.columns-button {
+  margin-left: 0; }
+
 .share-page-action-button {
   display: -webkit-box;
   display: -moz-box;
@@ -327,19 +341,33 @@ section.share-page-header {
   -o-justify-content: center;
   justify-content: center;
   -ms-flex-pack: center;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  box-orient: vertical;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  box-direction: normal;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-direction: column;
   position: relative;
   padding-left: 40px;
   padding-right: 40px;
-  width: 200px;
+  font-size: 0.625em;
+  line-height: 1.2em;
   margin: auto;
-  margin-top: 32px; }
+  border: none;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0px; }
+  .share-page-action-button:last-child {
+    border-right: none; }
   .share-page-action-button i {
-    position: absolute;
-    left: 16px; }
+    margin-bottom: 8px; }
     .share-page-action-button i:before {
       line-height: 24px; }
 
-.share-page-action-url {
+.share-page-action-create {
   display: -webkit-box;
   display: -moz-box;
   display: box;
@@ -366,24 +394,18 @@ section.share-page-header {
   -o-align-items: center;
   align-items: center;
   -ms-flex-align: center;
-  width: 200px;
   margin: auto;
-  margin-top: 32px; }
-  .share-page-action-url .share-page-url-label {
+  margin-top: 64px; }
+  .share-page-action-create .share-page-create-label {
     text-transform: uppercase;
     text-align: center;
     letter-spacing: 0.5px;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.36);
     font-size: 0.625em; }
-  .share-page-action-url .share-page-url {
-    margin-top: 8px;
-    margin-bottom: 32px;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    padding: 16px;
-    font-size: 0.8em;
-    color: rgba(0, 0, 0, 0.87); }
+  .share-page-action-create .share-page-create {
+    margin-top: 16px;
+    margin-bottom: 32px; }
 
 .share-page-action-link {
   text-transform: uppercase;
@@ -415,6 +437,10 @@ section.share-page-header {
     width: 400px;
     margin: auto;
     margin-top: 32px; }
+
+  .share-page-actions {
+    width: 400px;
+    margin: auto; }
 
   .share-page-error-message {
     width: 400px;

@@ -35,14 +35,14 @@ var Columnsbars 	= require('./embed-handlebars.js');
 
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
 		// document.getElementsByTagName('head')[0].innerHTML += Columns.EmbeddableTemplates['views/embed-table/analytics.hbs']();
-		if ( Config.env === 'production' ) {
+		// if ( Config.env === 'production' ) {
 			$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics/google.hbs']() );
 			if ( window.mixpanel ) {
 				mixpanel.init("b62bdcf865c77c2462e8db299437ad6c", {}, "the_columns_project");
 			} else {
 				$$('head').append( Columns.EmbeddableTemplates['views/embed-table/analytics/mixpanel.hbs']() );
 			}
-		}
+		// }
 
 		// Make sure we don't do this setup again
 		Columns.hasFinishedSetup = true;

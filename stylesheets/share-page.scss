@@ -25,24 +25,48 @@ section.share-page-header {
 	}
 }
 
+.share-page-actions-social {
+	@include display(flex);
+	padding: $spacing*4 0;
+	border-bottom: 1px solid $border-color;
+	
+}
+
 $button-icon-size: $spacing*3;
+
+.columns-button {
+	margin-left: 0;
+}
 
 .share-page-action-button {
 	@include display(flex);
 	@include align-items(center);
 	@include justify-content(center);
+	@include flex-direction(column);
 	position: relative;
 
 	padding-left: $button-icon-size + $spacing*2;
 	padding-right: $button-icon-size + $spacing*2;
 
-	width: 200px;
+	font-size: 0.625em;
+	line-height: 1.2em;
+
+	// width: 200px;
 	margin: auto;
-	margin-top: $spacing*4;
+	// margin-top: $spacing*4;
+
+	border: none;
+	border-right: 1px solid $border-color;
+	border-radius: 0px;
+
+	&:last-child {
+		border-right: none;
+	}
 
 	i {
-		position: absolute;
-		left: $spacing*2;
+		// position: absolute;
+		// left: $spacing*2;
+		margin-bottom: $spacing;
 
 		&:before {
 			line-height: $button-icon-size;
@@ -50,17 +74,17 @@ $button-icon-size: $spacing*3;
 	}
 }
 
-.share-page-action-url {
+.share-page-action-create {
 
 	@include display(flex);
 	@include flex-direction(column);
 	@include align-items(center);
 
-	width: 200px;
+	// width: 200px;
 	margin: auto;
-	margin-top: $spacing*4;
+	margin-top: $spacing*8;
 
-	.share-page-url-label {
+	.share-page-create-label {
 		text-transform: uppercase;
 		text-align: center;
 		letter-spacing: 0.5px;
@@ -69,15 +93,16 @@ $button-icon-size: $spacing*3;
 		font-size: 0.625em;
 	}
 
-	.share-page-url {
-		margin-top: $spacing;
+	.share-page-create {
+		// margin-top: $spacing;
+		margin-top: $spacing*2;
 		margin-bottom: $spacing*4;
-		border-top: 1px solid $border-color;
-		border-bottom: 1px solid $border-color;
-		padding: $spacing*2;
+		// border-top: 1px solid $border-color;
+		// border-bottom: 1px solid $border-color;
+		// padding: $spacing*2;
 	
-		font-size: 0.8em;
-		color: rgba(0,0,0,0.87);
+		// font-size: 0.8em;
+		// color: rgba(0,0,0,0.87);
 	}
 }
 
@@ -118,6 +143,11 @@ $button-icon-size: $spacing*3;
 		width: 400px;
 		margin: auto;
 		margin-top: $spacing*4;
+	}
+
+	.share-page-actions {
+		width: 400px;
+		margin: auto;
 	}
 
 	.share-page-error-message {

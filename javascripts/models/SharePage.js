@@ -15,7 +15,6 @@ function SharePage() {
 SharePage.prototype._setupEvents = function() {
 
 	$('.share-page-action-button.tweet').on( 'click', function() {
-		console.log('here');
 		ColumnsAnalytics.send({
 			category: 'button',
 			action: 'click',
@@ -28,6 +27,14 @@ SharePage.prototype._setupEvents = function() {
 			category: 'button',
 			action: 'click',
 			label: 'email'
+		});
+	});
+
+	$('.share-page-create').on('click', function() {
+		ColumnsAnalytics.send({
+			category: 'button',
+			action: 'click',
+			label: 'create table'
 		});
 	});
 

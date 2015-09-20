@@ -102,6 +102,18 @@ module.exports = function(grunt) {
 						}
 					}
 				}, {
+					from: '{{home_path}}',
+					to: function(matchedWord) {
+						if (process.env.NODE_ENV == 'production') {
+							return 'http://thecolumnsproject.com';
+						} else if ( process.env.NODE_ENV == 'staging' ) {
+							console.log( matchedWord + ': ' + process.env.NODE_ENV );
+							return 'http://stg.thecolumnsproject.com';
+						} else {
+							return 'http://127.0.0.1'
+						}
+					}
+				}, {
 					from: '{{environment}}',
 					to: function(matchedWord) {
 						if ( process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging' ) {

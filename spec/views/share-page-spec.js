@@ -43,5 +43,14 @@ describe('Share Page', function() {
 				label: 'email'
 			});
 		});
+
+		it('should send an event when the user taps the create table button', function() {
+			$('.share-page-create').trigger('click');
+			expect( ColumnsAnalytics.send ).toHaveBeenCalledWith({
+				category: 'button',
+				action: 'click',
+				label: 'create table'
+			});
+		});
 	});
 });
