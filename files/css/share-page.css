@@ -240,7 +240,7 @@ h2 {
   padding: 0 50px; }
 
 .button-small {
-  height: 32px;
+  height: 30px;
   line-height: 32px;
   border-radius: 17px;
   padding: 0 20px; }
@@ -302,7 +302,7 @@ section.share-page-header {
     margin-bottom: 4px; }
 
 .share-page-actions {
-  margin-bottom: 32px; }
+  padding-bottom: 32px; }
 
 .share-page-actions-social {
   display: -webkit-box;
@@ -359,6 +359,7 @@ section.share-page-header {
   padding-right: 40px;
   font-size: 0.625em;
   line-height: 1.2em;
+  height: auto;
   margin: auto;
   border: none;
   border-right: 1px solid rgba(0, 0, 0, 0.08);

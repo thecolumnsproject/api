@@ -23,8 +23,7 @@ router.get('/', function(req, res) {
 router.get('/embed-table/:id', function( req, res ) {
 	res.render( 'embed-table', {
 		embed_host: config.embed.host,
-		embed_id: req.params.id || 1,
-		home_host: config.app.host
+		embed_id: req.params.id || 1
 	});
 });
 
@@ -55,7 +54,8 @@ router.get('/:id', function( req, res ) {
 				embed_uri: encodeURIComponent( config.embed.host + '/' + req.params.id || 1 ),
 				tweet_body: encodeURIComponent( shareMessage.twitterMessage() ),
 				email_subject: shareMessage.emailMessage().subject,
-				email_body: shareMessage.emailMessage().body
+				email_body: shareMessage.emailMessage().body,
+				home_host: config.app.host
 			});
 		}
 	});

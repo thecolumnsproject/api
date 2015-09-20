@@ -26,14 +26,13 @@ section.share-page-header {
 }
 
 .share-page-actions {
-	margin-bottom: $spacing*4;
+	padding-bottom: $spacing*4;
 }
 
 .share-page-actions-social {
 	@include display(flex);
 	padding: $spacing*4 0;
 	border-bottom: 1px solid $border-color;
-	
 }
 
 $button-icon-size: $spacing*3;
@@ -56,6 +55,7 @@ $button-icon-size: $spacing*3;
 	line-height: 1.2em;
 
 	// width: 200px;
+	height: auto;
 	margin: auto;
 	// margin-top: $spacing*4;
 
