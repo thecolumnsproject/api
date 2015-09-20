@@ -14047,6 +14047,13 @@ ColumnsTable.prototype.expand = function() {
 		position: 'absolute',
 		'z-index': (highestZIndex('*') + 1)
 	};
+
+	// Replace the table with a same-height placeholder
+	var placeholder = document.createElement('div');
+	placeholder.className = PLACEHOLDER_CLASS;
+	placeholder.style.height = $$table.outerHeight( true ) + 'px';
+	placeholder.style.width = $$table.outerWidth() + 'px';
+	$$( this.script ).before(placeholder);
 	
 	if ( this.isLargeFormFactor() ) {
 
@@ -14059,12 +14066,6 @@ ColumnsTable.prototype.expand = function() {
 
 	} else {
 		
-		// Replace the table with a same-height placeholder
-		var placeholder = document.createElement('div');
-		placeholder.className = PLACEHOLDER_CLASS;
-		placeholder.style.height = $$table.outerHeight( true ) + 'px';
-		placeholder.style.width = $$table.outerWidth() + 'px';
-
 		if ( this.shouldForceMobile() ) {
 			$$table.appendTo( this.$$container );
 			this.$$container.addClass( EXPANDED_CLASS );
@@ -14074,7 +14075,6 @@ ColumnsTable.prototype.expand = function() {
 
 		$$table.addClass(RELOCATED_CLASS);
 		$$table.css(offsets);
-		$$( this.script ).before(placeholder);
 
 		this.expandBackground($$bg, $$rows, $$header, $$footer);
 		this.expandRows($$rows);

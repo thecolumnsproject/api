@@ -63,6 +63,30 @@ $columns-table-accent-color: 	#69A368;
 	@include transition(border-color $animation-duration);
 }
 
+.columns-table-placeholder {
+	width: 100%;
+	background: $gray-lightest;
+	border: 1px solid $gray-lighter;
+	border-radius: 2px;
+
+	position: relative;
+
+	&:after {
+		content: "\f104";
+		font-family: "columns-project";
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		font-size: 1.5em;
+		color: $gray-light;
+		@include display(flex);
+		@include justify-content(center);
+		@include align-items(center);
+	}
+}
+
 .columns-table {
 	position: relative;
 	min-height: $table-container-height - (2 * $table-container-padding);
@@ -207,9 +231,11 @@ $columns-table-accent-color: 	#69A368;
 	font-size: 10px;
 	color: $gray;
 
-	a {
-		text-decoration: none;
-		color: $gray;
+	a, a:visited {
+		// Make these important in order to override
+		// often strong original site styles
+		text-decoration: none !important;
+		color: $gray !important;
 	}
 
 	@include transition(opacity 0.15s);
