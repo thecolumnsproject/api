@@ -59,6 +59,7 @@ uploaded-data/
 
 # Generated files
 files/
+compiled-javascripts/
 
 # AWS info
 clmzkeypair.pem
