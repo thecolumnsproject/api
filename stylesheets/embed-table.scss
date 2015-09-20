@@ -96,6 +96,8 @@ $columns-table-accent-color: 	#69A368;
 	// Set initial z-index position so rows with negative z-indeces
 	// don't appear underneath the table itself
 	z-index: 0;
+
+	cursor: pointer;
 }
 
 .columns-table-row {
@@ -274,6 +276,8 @@ $columns-table-accent-color: 	#69A368;
     padding: 0 16px;
     line-height: 36px;
     border-radius: 18px;
+
+    cursor: pointer;
 
 	// Float on top of the stack of rows
 	// position: absolute;
