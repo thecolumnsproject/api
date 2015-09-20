@@ -55,7 +55,10 @@ uploaded-data/
 .elasticbeanstalk/
 
 # Generated SASS cache
-.sass-cache
+.sass-cache/
+
+# Generated files
+files/
 
 # AWS info
 clmzkeypair.pem
