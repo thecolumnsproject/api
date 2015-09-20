@@ -58,8 +58,8 @@ uploaded-data/
 .sass-cache/
 
 # Generated files
-files/
-compiled-javascripts/
+# files/
+# compiled-javascripts/
 
 # AWS info
 clmzkeypair.pem
