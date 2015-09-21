@@ -13157,6 +13157,7 @@ var Config = require('../embed-config.js'),
 	PreventGhostClick = require('../prevent-ghost-click.js'),
 	ColumnsEvent = require('./ColumnsEvent.js'),
 	ColumnsAnalytics = require('./ColumnsAnalytics.js');
+	ParseUri = require('../../vendor/javascripts/parseUri.js');
 	// Handlebars = require('../../bower_components/handlebars/handlebars.runtime.js'),
 	// Columns.EmbeddableTemplates = require('../../views/embeddable-templates.js')(Handlebars);
 
@@ -13478,6 +13479,17 @@ ColumnsTable.prototype.generateLayout = function(layout, reload) {
 	}
 };
 
+ColumnsTable.prototype.formatSourceUrl = function( url ) {
+	var parsedUrl = ParseUri( url );
+
+	// Check whether the url has a valid protocol
+	if ( !parsedUrl.protocol ) {
+		return 'http://' + url;
+	} else {
+		return url;
+	}
+};
+
 ColumnsTable.prototype.renderData = function(data) {
 	var _this = this;
 
@@ -13520,14 +13532,14 @@ ColumnsTable.prototype.renderData = function(data) {
 	if ($$footer.length > 0) {
 		this.updateComponent($$footer, {
 			source: data.source,
-			source_url: data.source_url,
+			source_url: this.formatSourceUrl( data.source_url ),
 			item_count: data.num_rows || data.data.length,
 			home_path: Config.home_path
 		}, footer);
 	} else {
 		$$tableBody.after(footer({
 			source: data.source,
-			source_url: data.source_url,
+			source_url: this.formatSourceUrl( data.source_url ),
 			item_count: data.num_rows || data.data.length,
 			home_path: Config.home_path
 		}));
@@ -14429,7 +14441,7 @@ ColumnsTable.prototype.send = function( props ) {
 };
 
 module.exports = ColumnsTable;
-},{"../../bower_components/jquery/dist/jquery.js":1,"../../bower_components/velocity/velocity.js":2,"../../vendor/javascripts/hammer.custom.js":9,"../embed-config.js":3,"../prevent-ghost-click.js":7,"./ColumnsAnalytics.js":4,"./ColumnsEvent.js":5}],7:[function(require,module,exports){
+},{"../../bower_components/jquery/dist/jquery.js":1,"../../bower_components/velocity/velocity.js":2,"../../vendor/javascripts/hammer.custom.js":9,"../../vendor/javascripts/parseUri.js":10,"../embed-config.js":3,"../prevent-ghost-click.js":7,"./ColumnsAnalytics.js":4,"./ColumnsEvent.js":5}],7:[function(require,module,exports){
 /**
  * Prevent click events after a touchend.
  * 
@@ -14632,6 +14644,21 @@ describe('Embeddable Table', function() {
 
 			});
 		})
+	});
+
+	describe('Formatting Data', function() {
+
+		describe('Formatting the Source Url', function() {
+
+			it('should preserve correctly formatted urls', function() {
+				expect( embed.formatSourceUrl("http://myurl.com") ).toBe("http://myurl.com");
+				expect( embed.formatSourceUrl("https://myurl.com") ).toBe("https://myurl.com");
+			});
+		
+			it('should add a protocol to urls without one', function() {
+				expect( embed.formatSourceUrl("myurl.com") ).toBe("http://myurl.com");
+			});
+		});
 	});
 
 	describe('Rendering a Row', function() {
@@ -17183,4 +17210,39 @@ if (typeof module != 'undefined' && module.exports) {
 
 })(window, document, 'Hammer');
 
+},{}],10:[function(require,module,exports){
+// parseUri 1.2.2
+// (c) Steven Levithan <stevenlevithan.com>
+// MIT License
+
+function parseUri (str) {
+	var	o   = parseUri.options,
+		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+		uri = {},
+		i   = 14;
+
+	while (i--) uri[o.key[i]] = m[i] || "";
+
+	uri[o.q.name] = {};
+	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+		if ($1) uri[o.q.name][$1] = $2;
+	});
+
+	return uri;
+};
+
+parseUri.options = {
+	strictMode: false,
+	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+	q:   {
+		name:   "queryKey",
+		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+	},
+	parser: {
+		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+	}
+};
+
+module.exports = parseUri;
 },{}]},{},[8]);

@@ -6,6 +6,7 @@ var Config = require('../embed-config.js'),
 	PreventGhostClick = require('../prevent-ghost-click.js'),
 	ColumnsEvent = require('./ColumnsEvent.js'),
 	ColumnsAnalytics = require('./ColumnsAnalytics.js');
+	ParseUri = require('../../vendor/javascripts/parseUri.js');
 	// Handlebars = require('../../bower_components/handlebars/handlebars.runtime.js'),
 	// Columns.EmbeddableTemplates = require('../../views/embeddable-templates.js')(Handlebars);
 
@@ -327,6 +328,17 @@ ColumnsTable.prototype.generateLayout = function(layout, reload) {
 	}
 };
 
+ColumnsTable.prototype.formatSourceUrl = function( url ) {
+	var parsedUrl = ParseUri( url );
+
+	// Check whether the url has a valid protocol
+	if ( !parsedUrl.protocol ) {
+		return 'http://' + url;
+	} else {
+		return url;
+	}
+};
+
 ColumnsTable.prototype.renderData = function(data) {
 	var _this = this;
 
@@ -369,14 +381,14 @@ ColumnsTable.prototype.renderData = function(data) {
 	if ($$footer.length > 0) {
 		this.updateComponent($$footer, {
 			source: data.source,
-			source_url: data.source_url,
+			source_url: this.formatSourceUrl( data.source_url ),
 			item_count: data.num_rows || data.data.length,
 			home_path: Config.home_path
 		}, footer);
 	} else {
 		$$tableBody.after(footer({
 			source: data.source,
-			source_url: data.source_url,
+			source_url: this.formatSourceUrl( data.source_url ),
 			item_count: data.num_rows || data.data.length,
 			home_path: Config.home_path
 		}));

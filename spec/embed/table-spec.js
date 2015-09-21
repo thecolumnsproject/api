@@ -105,6 +105,21 @@ describe('Embeddable Table', function() {
 		})
 	});
 
+	describe('Formatting Data', function() {
+
+		describe('Formatting the Source Url', function() {
+
+			it('should preserve correctly formatted urls', function() {
+				expect( embed.formatSourceUrl("http://myurl.com") ).toBe("http://myurl.com");
+				expect( embed.formatSourceUrl("https://myurl.com") ).toBe("https://myurl.com");
+			});
+		
+			it('should add a protocol to urls without one', function() {
+				expect( embed.formatSourceUrl("myurl.com") ).toBe("http://myurl.com");
+			});
+		});
+	});
+
 	describe('Rendering a Row', function() {
 		var layout = {
 			type: 'group',
