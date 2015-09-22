@@ -89,7 +89,10 @@ $columns-table-accent-color: 	#69A368;
 .columns-table {
 	position: relative;
 	min-height: $table-container-height - (2 * $table-container-padding);
-	border: 1px solid transparent;
+	border: 1px solid $gray-lighter;
+	border-bottom-color: transparent;
+
+	overflow: hidden;
 	// margin: 0;
 
 	// Set initial z-index position so rows with negative z-indeces
@@ -97,6 +100,18 @@ $columns-table-accent-color: 	#69A368;
 	z-index: 0;
 
 	cursor: pointer;
+
+	&:after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		background: linear-gradient( 0deg, $gray-lightest, rgba(255,255,255,0.0) );
+
+		@include transition(opacity $animation-duration);
+	}
 }
 
 .columns-table-row {
@@ -108,10 +123,11 @@ $columns-table-accent-color: 	#69A368;
 	box-sizing: border-box;
 	width: 100%;
 	background: #fff;
-	position: absolute;
-	top: $table-row-offset-top * 2;
+	// position: absolute;
+	// top: $table-row-offset-top * 2;
 	overflow: hidden;
 	border: 1px solid transparent;
+	border-bottom-color: $gray-lighter;
 	// @include transition(opacity 0.15s);
 	@include transition(box-shadow $animation-duration);
 	@include transition(opacity $animation-duration);
@@ -132,28 +148,28 @@ $columns-table-accent-color: 	#69A368;
  * as a preview of the full stack
  */
 
-@mixin table-row-top {
-	box-shadow: $table-row-box-shadow;
-	border-color: $gray-lighter;
-}
+// @mixin table-row-top {
+// 	box-shadow: $table-row-box-shadow;
+// 	border-color: $gray-lighter;
+// }
 
-.columns-table-row:nth-child(1) {
-	@include table-row-top;
-	// z-index: 3;
-	top: $table-row-offset-top * 0;
-}
+// .columns-table-row:nth-child(1) {
+// 	@include table-row-top;
+// 	// z-index: 3;
+// 	top: $table-row-offset-top * 0;
+// }
 
-.columns-table-row:nth-child(2) {
-	@include table-row-top;
-	// z-index: 2;
-	top: $table-row-offset-top * 1;
-}
+// .columns-table-row:nth-child(2) {
+// 	@include table-row-top;
+// 	// z-index: 2;
+// 	top: $table-row-offset-top * 1;
+// }
 
-.columns-table-row:nth-child(3) {
-	@include table-row-top;
-	// z-index: 1;
-	// top: $table-row-offset-top * 2;
-}
+// .columns-table-row:nth-child(3) {
+// 	@include table-row-top;
+// 	// z-index: 1;
+// 	// top: $table-row-offset-top * 2;
+// }
 
 .columns-table-header {
 	@include display(flex);
@@ -443,6 +459,12 @@ $columns-table-accent-color: 	#69A368;
  	opacity: 0;
 }
 
+.columns-table-expanding .columns-table {
+	&:after {
+		opacity: 0;
+	}
+}
+
 .columns-table-expanding .columns-table-row {
 	// @include display(flex); /* Make sure all columns are visible in expanding mode */
 }
@@ -532,6 +554,11 @@ $columns-table-accent-color: 	#69A368;
 	border-color: $gray-lighter;
 
 	@include transform(translateY(0px) !important);
+
+	&:after {
+		opacity: 0;
+		pointer-events: none;
+	}
 }
 
 .columns-table-expanded .columns-table-loading {

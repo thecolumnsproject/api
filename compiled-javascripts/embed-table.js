@@ -13796,8 +13796,10 @@ ColumnsTable.prototype.tallestRowHeight = function() {
 
 ColumnsTable.prototype.backgroundHeight = function() {
 	var numRows = this.$$table.find(TABLE_ROW_SELECTOR).length;
-	var offsetHeight = numRows > 3 ? ROW_OFFSET * 2 : ROW_OFFSET * (numRows - 1);
-	return offsetHeight + this.tallestRowHeight();
+	// var offsetHeight = numRows > 3 ? ROW_OFFSET * 2 : ROW_OFFSET * (numRows - 1);
+	// return offsetHeight + this.tallestRowHeight();
+
+	return numRows > 1 ? this.tallestRowHeight() * 2 : this.tallestRowHeight() * (numRows);
 };
 
 ColumnsTable.prototype.headerHeight = function() {
@@ -14092,7 +14094,7 @@ ColumnsTable.prototype.expand = function() {
 		$$table.css(offsets);
 
 		this.expandBackground($$bg, $$rows, $$header, $$footer);
-		this.expandRows($$rows);
+		// this.expandRows($$rows);
 		this.expandBody($$body);
 	}
 
@@ -14199,7 +14201,7 @@ ColumnsTable.prototype.expandBody = function($$body) {
 
 	var _this = this;
 	// Calculate the new table size and position
-	var tableOffsetTop = 40;
+	var tableOffsetTop = 12;
 
 	// Move the table down a few extra pixels to account for the template if we're in preview mode
 	var paddingTop = 0;
@@ -14212,6 +14214,7 @@ ColumnsTable.prototype.expandBody = function($$body) {
 	// $$body.velocity({
 		// height: tableHeight, /* Grow to encompass all of the rows */
 		translateY: tableOffsetTop + paddingTop, /* Move down a few pixels to account for the header */
+		height: this.$$table.find('.columns-table-row').length * this.tallestRowHeight(), /* Grow to the height of all of the rows */
 		'padding-top': paddingTop /* Move down a few more pixels to account for the template row in preview mode */
 	}, {
 		duration: ANIMATION_DURATION,
@@ -14245,19 +14248,19 @@ ColumnsTable.prototype.expandRowAtIndex = function($$row, index, duration) {
 		
 	} else {
 		var rowHeight = $$row.outerHeight();
-		var offsetY = (index * rowHeight) - this.headerHeight();
-		switch (index) {
-			case 0:
-			break;
-			case 1:
-			offsetY -= ROW_OFFSET;
-			break;
-			case 2:
-			offsetY -= ROW_OFFSET * 2;
-			break;
-			default:
-			offsetY -= ROW_OFFSET * 2;
-		}
+		var offsetY = (index * rowHeight)/* - this.headerHeight()*/;
+		// switch (index) {
+		// 	case 0:
+		// 	break;
+		// 	case 1:
+		// 	offsetY -= ROW_OFFSET;
+		// 	break;
+		// 	case 2:
+		// 	offsetY -= ROW_OFFSET * 2;
+		// 	break;
+		// 	default:
+		// 	offsetY -= ROW_OFFSET * 2;
+		// }
 
 		Velocity($$row.get(0), {
 			translateY: offsetY /* Move each row down into its natural position */
