@@ -354,6 +354,10 @@ section.share-page-header {
   -moz-flex-direction: column;
   flex-direction: column;
   -ms-flex-direction: column;
+  -webkit-flex-grow: 1;
+  -moz-flex-grow: 1;
+  flex-grow: 1;
+  -ms-flex-positive: 1;
   position: relative;
   padding-left: 40px;
   padding-right: 40px;

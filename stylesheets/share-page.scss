@@ -46,6 +46,7 @@ $button-icon-size: $spacing*3;
 	@include align-items(center);
 	@include justify-content(center);
 	@include flex-direction(column);
+	@include flex-grow(1);
 	position: relative;
 
 	padding-left: $button-icon-size + $spacing*2;
