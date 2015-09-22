@@ -13685,8 +13685,11 @@ ColumnsTable.prototype.renderData = function(data) {
 	}
 
 	// Reset rows to equal the new rows we just added
+	// And move down to the correct position
 	$$rows = this.$$table.find(TABLE_ROW_SELECTOR);
-	$$rows.css({height: this.tallestRowHeight()});
+	$$rows.css({
+		height: this.tallestRowHeight()
+	});
 
 	// Set any dynamic sizing or positioning values
 	// and animate the various components in

@@ -4,7 +4,6 @@
 @import 'keyframes';
 @import 'utils';
 @import 'bower_components/bourbon/app/assets/stylesheets/bourbon';
-@import 'embed-table-large-ff';
 
 $table-container-height:		100px;
 $table-container-padding: 		20px;
@@ -267,6 +266,7 @@ $columns-table-accent-color: 	#69A368;
 .columns-table-expand-button {
 	color: #fff;
 	text-transform: uppercase;
+	text-align: center;
 	font-size: 12px;
 	font-weight: 500;
 	letter-spacing: 0.5px;
@@ -290,6 +290,11 @@ $columns-table-accent-color: 	#69A368;
  //    background-color: fade-out($primary-color, .06);
  //    border: 1px solid rgba(0,0,0,0.08);
  //    z-index: 1;
+
+ 	&:hover {
+ 		background-color: darken($primary-color, 10%);
+		border-color: darken($primary-color, 10%);
+ 	}
 
     &:active {
 		background-color: darken($primary-color, 20%);
@@ -636,3 +641,7 @@ $columns-table-accent-color: 	#69A368;
 		@include align-items(flex-end);
 	}
 }
+
+
+// Import large form factor styling
+@import 'embed-table-large-ff';

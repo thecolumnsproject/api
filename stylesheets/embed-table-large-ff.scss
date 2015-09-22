@@ -15,6 +15,14 @@
 	body.columns-table-expanded:not(.columns-table-widget) {
 		overflow: scroll;
 		-webkit-overflow-scrolling: touch;
+	}
+
+	.columns-table-expand-button {
+		// Make the expand button slightly bigger on large ff
+		height: 42px;
+	    line-height: 41px;
+	    border-radius: 22px;
+	    min-width: 320px;
 	}	
 }
 
