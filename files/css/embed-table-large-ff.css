@@ -194,7 +194,8 @@
     height: 42px;
     line-height: 41px;
     border-radius: 22px;
-    min-width: 320px; } }
+    min-width: 240px;
+    max-width: 320px; } }
 .large-form-factor .columns-table-container {
   border-left: 1px solid #ebebeb;
   border-right: 1px solid #ebebeb;
