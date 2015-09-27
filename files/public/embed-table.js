@@ -14387,7 +14387,8 @@ var ROW_OFFSET = 5,
 // UI Management Classes
 var TABLE_SELECTOR = '.columns-table-widget',
 	TABLE_BODY_SELECTOR = '.columns-table',
-	TABLE_ROW_SELECTOR = '.columns-table-row',
+	TABLE_ROW_CLASS = 'columns-table-row',
+	TABLE_ROW_SELECTOR = '.' + TABLE_ROW_CLASS,
 	TABLE_HEADER_SELECTOR = '.columns-table-header',
 	TABLE_FOOTER_SELECTOR = '.columns-table-footer',
 	TABLE_SHIELD_SELECTOR = '.columns-table-shield',
@@ -15077,7 +15078,7 @@ ColumnsTable.prototype.setupEvents = function() {
 ColumnsTable.prototype._onRowTap = function( event ) {
 	var index,
 		data,
-		$$row = $$( event.target ).hasClass( TABLE_ROW_SELECTOR ) ?
+		$$row = $$( event.target ).hasClass( TABLE_ROW_CLASS ) ?
 				$$( event.target ) :
 				$$( event.target ).parents( TABLE_ROW_SELECTOR );
 

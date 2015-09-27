@@ -13173,7 +13173,8 @@ var ROW_OFFSET = 5,
 // UI Management Classes
 var TABLE_SELECTOR = '.columns-table-widget',
 	TABLE_BODY_SELECTOR = '.columns-table',
-	TABLE_ROW_SELECTOR = '.columns-table-row',
+	TABLE_ROW_CLASS = 'columns-table-row',
+	TABLE_ROW_SELECTOR = '.' + TABLE_ROW_CLASS,
 	TABLE_HEADER_SELECTOR = '.columns-table-header',
 	TABLE_FOOTER_SELECTOR = '.columns-table-footer',
 	TABLE_SHIELD_SELECTOR = '.columns-table-shield',
@@ -13863,7 +13864,7 @@ ColumnsTable.prototype.setupEvents = function() {
 ColumnsTable.prototype._onRowTap = function( event ) {
 	var index,
 		data,
-		$$row = $$( event.target ).hasClass( TABLE_ROW_SELECTOR ) ?
+		$$row = $$( event.target ).hasClass( TABLE_ROW_CLASS ) ?
 				$$( event.target ) :
 				$$( event.target ).parents( TABLE_ROW_SELECTOR );
 
@@ -15071,7 +15072,7 @@ describe('Embeddable Table', function() {
 			appendLoadFixtures('embed-table-row-selected.html');
 			var $row = $('.columns-table-row');
 			embed._onRowTap({
-				currentTarget: $('.columns-table-row').get( 0 )
+				target: $('.columns-table-row').get( 0 )
 			});
 			
 			expect( $('.columns-table-row.selected').length ).toBe( 1 );
@@ -15083,7 +15084,7 @@ describe('Embeddable Table', function() {
 			embed.detailView = new ColumnsTableDetailView( embed.data.data[0] );
 
 			embed._onRowTap({
-				currentTarget: $('.columns-table-row').get( 0 )
+				target: $('.columns-table-row').get( 0 )
 			});
 
 			expect( embed.detailView.update ).toHaveBeenCalled();
@@ -15092,7 +15093,7 @@ describe('Embeddable Table', function() {
 
 		it('should create a detail view with the correct data', function() {
 			embed._onRowTap({
-				currentTarget: $('.columns-table-row').get( 0 )
+				target: $('.columns-table-row').get( 0 )
 			});
 			expect( embed.detailView.data ).toEqual({
 				"one": "rata",
@@ -15103,7 +15104,7 @@ describe('Embeddable Table', function() {
 
 		it('should append and show the detail view', function() {
 			embed._onRowTap({
-				currentTarget: $('.columns-table-row').get( 0 )
+				target: $('.columns-table-row').get( 0 )
 			});
 			expect( embed.$$table.find('.columns-table-detail-view').length ).toBe( 1 );
 			expect( ColumnsTableDetailView.prototype.open ).toHaveBeenCalled();
