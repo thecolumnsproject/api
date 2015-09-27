@@ -89,8 +89,8 @@ $columns-table-accent-color: 	#69A368;
 .columns-table {
 	position: relative;
 	min-height: $table-container-height - (2 * $table-container-padding);
-	border: 1px solid $gray-lighter;
-	border-bottom-color: transparent;
+	// border: 1px solid $gray-lighter;
+	// border-bottom-color: transparent;
 
 	overflow: hidden;
 	// margin: 0;
@@ -126,8 +126,8 @@ $columns-table-accent-color: 	#69A368;
 	// position: absolute;
 	// top: $table-row-offset-top * 2;
 	overflow: hidden;
-	border: 1px solid transparent;
-	border-bottom-color: $gray-lighter;
+	border: 1px solid $border-color;
+	border-bottom: none;
 	// @include transition(opacity 0.15s);
 	@include transition(box-shadow $animation-duration);
 	@include transition(opacity $animation-duration);
@@ -136,6 +136,10 @@ $columns-table-accent-color: 	#69A368;
 	// Make sure that just the very first row grows
 	> .row-group {
 		@include flex-grow(1);
+	}
+
+	&:last-child {
+		border-bottom: 1px solid $border-color;
 	}
 	
 	// Don't show any rows past the 10th while the table is collapsed
@@ -584,12 +588,12 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-expanded .columns-table-row:last-child {
-	border-bottom: none;
+	// border-bottom: none;
 }
 
 .columns-table-expanded .columns-table-row {
-	border-color: transparent; /* Remove the table-row-top borders */
-	border-bottom-color: $gray-lighter;
+	// border-color: transparent; /* Remove the table-row-top borders */
+	// border-bottom-color: $gray-lighter;
 
 	box-shadow: none; /* Remove the table-row-top box shadow */
 	top: 0px; /* Remove the table-top-row layout spacing */
