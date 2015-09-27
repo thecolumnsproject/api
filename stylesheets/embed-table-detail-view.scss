@@ -1,0 +1,106 @@
+@import 'variables';
+@import 'columns-project';
+@import 'keyframes';
+@import 'utils';
+@import 'bower_components/bourbon/app/assets/stylesheets/bourbon';
+
+$detail-view-margin-left: 		$spacing*2;
+
+.columns-table-detail-view {
+	position: fixed;
+	top:0;
+	right: 0;
+	// margin-left: $detail-view-margin-left;
+
+	// Make full height of table
+	// and the full width minus a peek area
+	height: 100%;
+	// @include calc(width, '100% - #{$detail-view-margin-left}');
+	width: 60%;
+
+	background: $gray-lightest;
+	box-shadow: -2px 0px 16px rgba(0,0,0,0.2);
+
+	// Hide by default
+	@include transform(translateX(100%));
+	@include transition(transform $animation-duration);
+
+}
+
+.columns-table-detail-view.open {
+	@include transform(translateX(0));
+}
+
+$header-height: 60px;
+.columns-table-detail-view-header {
+	height: $header-height;
+	border-bottom: 1px solid $border-color;
+
+	@include display(flex);
+	@include justify-content(center);
+	@include align-items(center);
+}
+
+$close-button-size: $spacing*4;
+.columns-table-detail-view-close-button {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	height:$close-button-size;
+	width:$close-button-size;
+
+	margin: ($header-height - $close-button-size) / 2 $spacing;
+
+	border-radius: 50%;
+
+	@include display(flex);
+	@include justify-content(center);
+	@include align-items(center);
+
+	color: $primary-color;
+
+	cursor: pointer;
+
+	&:focus, &:active {
+		background: linear-gradient( 0deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.04) 100% );
+	}
+}
+
+.columns-table-detail-view-title {
+	font-size: 18px;
+	color: rgba(0,0,0,0.87);
+}
+
+.columns-table-detail-view-rows {
+	margin: $spacing*2;
+}
+
+.columns-table-detail-view-row {
+	background: #fff;
+	border: 1px solid $border-color;
+	border-bottom: none;
+
+	padding: $spacing*2;
+
+	&:last-child {
+		border-bottom: 1px solid $border-color;
+	}
+
+	@include display(flex);
+	@include flex-direction(column);
+}
+
+.columns-table-detail-view-row-label {
+	font-size: 10px;
+	font-weight: 600;
+	color: rgba(0,0,0,0.4);
+	text-transform: uppercase;
+
+	margin-bottom: $spacing / 2;
+}
+
+.columns-table-detail-view-row-value {
+	color: rgba(0,0,0,0.87);
+	font-size: 16px;
+}

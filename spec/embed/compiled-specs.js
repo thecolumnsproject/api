@@ -13156,7 +13156,9 @@ var Config = require('../embed-config.js'),
 	Hammer = require('../../vendor/javascripts/hammer.custom.js'),
 	PreventGhostClick = require('../prevent-ghost-click.js'),
 	ColumnsEvent = require('./ColumnsEvent.js'),
+	ColumnsTableEvent = require('./ColumnsTableEvent.js'),
 	ColumnsAnalytics = require('./ColumnsAnalytics.js');
+	ColumnsTableDetailView = require('./ColumnsTableDetailView.js');
 	ParseUri = require('../../vendor/javascripts/parseUri.js');
 	// Handlebars = require('../../bower_components/handlebars/handlebars.runtime.js'),
 	// Columns.EmbeddableTemplates = require('../../views/embeddable-templates.js')(Handlebars);
@@ -13185,6 +13187,7 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	ERROR_CLASS = 'error',
 	ANIMATING_CLASS = 'velocity-animating',
 	HOSTED_PAGE_CLASS = 'hosted-page',
+	SELECTED_ROW_CLASS = 'selected',
 	$TABLE;
 	// $$CONTAINER = $$(window);
 
@@ -13256,9 +13259,7 @@ function ColumnsTable(script) {
 	this.data;
 	this.layout;
 
-	if ( this.preview ) {
-		this._setupEventListeners();
-	}
+	this._setupEventListeners();
 
 	// Create a unique handlebars environment
 	// this.columnsbars = Handlebars.noConflict();
@@ -13504,6 +13505,8 @@ ColumnsTable.prototype.renderData = function(data) {
 		this.data = data;
 	}
 
+	console.log( this.data );
+
 	// var numRows = data.data.length;
 
 	// Generate table layouts with data
@@ -13639,11 +13642,17 @@ ColumnsTable.prototype.renderData = function(data) {
 };
 
 ColumnsTable.prototype.renderRow = function( data, index, layout ) {
-	var $$rowLayout = $$( Columns.EmbeddableTemplates['views/embed-table/row-layout.hbs']() );
+	var $$rowLayout = $$( Columns.EmbeddableTemplates['views/embed-table/row-layout.hbs']({
+		index: index
+	}) );
 
 	// Make sure the row is properly z-indexed
 	// Lower rows should be z-indexed below higher rows
 	$$rowLayout.css( { "z-index": -index } );
+
+	// Activate row tap events
+	var detailMc = new Hammer( $$rowLayout.get( 0 ) );
+	detailMc.on('tap', this._onRowTap.bind( this ) );
 
 	return $$rowLayout.append( this.renderRowComponent( data, layout ) );
 };
@@ -13733,12 +13742,6 @@ ColumnsTable.prototype.setupEvents = function() {
 			}
 		}
 	}.bind( this ));
-	// this.$$table.find(".columns-table").hammer(/*{domEvents: true}*/).bind('tap', function(e) {
-	// 	var $$table = $$(this);
-	// 	if (!_this.$$table.hasClass(EXPANDED_CLASS) && !$$table.hasClass(ANIMATING_CLASS)) {
-	// 		_this.expand();
-	// 	}
-	// });
 
 	var expandMc = new Hammer(this.$$table.find(".columns-table-expand-button").get(0));
 	expandMc.on('tap', function(e) {
@@ -13762,12 +13765,6 @@ ColumnsTable.prototype.setupEvents = function() {
 			}
 		}
 	}.bind( this ));
-	// this.$$table.find(".columns-table-expand-button").hammer(/*{domEvents: true}*/).bind('tap', function(e) {
-	// 	var $$table = $$(this);
-	// 	if (!_this.$$table.hasClass(EXPANDED_CLASS) && !$$table.hasClass(ANIMATING_CLASS)) {
-	// 		_this.expand();
-	// 	}
-	// });
 
 	var errorMc = new Hammer(this.$$table.find(".columns-table-error").get(0));
 	errorMc.on('tap', function(e) {
@@ -13791,19 +13788,6 @@ ColumnsTable.prototype.setupEvents = function() {
 			}
 		}
 	}.bind( this ));
-	// this.$$table.find(".columns-table-error").hammer(/*{domEvents: true}*/).bind('tap', function(e) {
-	// 	var $$table = $$(this);
-	// 	if (_this.$$table.hasClass(ERROR_CLASS)) {
-	// 		_this.fetchData();
-	// 	}
-	// });
-
-	// $(".columns-table").click(function(e) {
-	// 	$table = $(this);
-	// 	if (!$table.hasClass(EXPANDED_CLASS) && !$table.hasClass(ANIMATING_CLASS)) {
-	// 		expandTable($table);
-	// 	}
-	// });
 
 	var closeMc = new Hammer(this.$$table.find(".columns-table-close-button").get(0));
 	closeMc.on('tap', function(e) {
@@ -13831,24 +13815,12 @@ ColumnsTable.prototype.setupEvents = function() {
 			// e.preventDefault();
 		}
 	}.bind( this ));
-	// this.$$table.find(".columns-table-close-button").hammer(/*{domEvents: true}*/).bind('tap', function(e) {
-	// 	var $$table = _this.$$table.find('.columns-table');
-	// 	if (_this.$$table.hasClass(EXPANDED_CLASS) && !$$table.hasClass(ANIMATING_CLASS)) {
-	// 		_this.collapse();
 
-	// 		// Prevent the dom from doing any other conflicting stuff
-	// 		e.stopPropagation();
-	// 		e.preventDefault();
-	// 	}
-	// });
+	// Respond to taps on individual rows
+	// var detailMc = new Hammer( this.$$table.find('.columns-table-row').get( 0 ) );
+	// detailMc.on('tap', this._onRowTap.bind( this ) );
 
-	// $(".columns-table-close-button").click(function(e) {
-	// 	var $parent = $(this).parents('.columns-table-widget');
-	// 	var $table = $parent.find('.columns-table');
-	// 	if ($table.hasClass(EXPANDED_CLASS) && !$table.hasClass(ANIMATING_CLASS)) {
-	// 		collapseTable($table);
-	// 	}
-	// });
+	// this.$$table.find('.columns-table-row').on('touchend', this._onRowTap.bind( this ));
 
 	// Notify the preview template when the table scrolls
 	if ( this.preview || this.sample ) {
@@ -13886,6 +13858,52 @@ ColumnsTable.prototype.setupEvents = function() {
 			label: 'columns project'
 		});
 	}.bind( this ));
+};
+
+ColumnsTable.prototype._onRowTap = function( event ) {
+	var index,
+		data,
+		$$row = $$( event.target ).hasClass( TABLE_ROW_SELECTOR ) ?
+				$$( event.target ) :
+				$$( event.target ).parents( TABLE_ROW_SELECTOR );
+
+	// Deselect any selected rows
+	// and select this one
+	$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );
+	$$row.addClass( SELECTED_ROW_CLASS );
+
+	// Figure out which row index was tapped
+	index = $$row.data('index');	
+
+	// Get the data corresponding to that row
+	data = this.data.data[ index ];
+
+	// Create or update a detail view with that data
+	if ( this.detailView ) {
+		this.detailView.update( data );
+	} else {
+		this.detailView = new ColumnsTableDetailView( data );
+
+		// Append the detail view to the table
+		this.$$table.append( this.detailView.render() );
+	}
+
+	// Make sure it's the top-most view in the table
+	this.detailView.$$detailView.css({
+		"z-index": (highestZIndex('*') + 1),
+		"height": $$(window).height()
+	});
+
+	// Show the detail view
+	this.detailView.open();
+};
+
+ColumnsTable.prototype._onDetailViewClose = function( event ) {
+
+	// Deselect any selected rows after a delay for the close animation
+	setTimeout(function() {
+		$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );	
+	}, ANIMATION_DURATION );
 };
 
 ColumnsTable.prototype.setLoading = function(loading) {
@@ -14189,6 +14207,9 @@ ColumnsTable.prototype.collapse = function() {
 		ColumnsEvent.send('ColumnsTableWillCollapse', {table: this});
 	}
 
+	// Deselect any selected rows
+	$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );
+
 	if ( !this.isLargeFormFactor() ) {
 		this.collapseBackground($$bg);
 		this.collapseBody($$body);
@@ -14375,11 +14396,16 @@ ColumnsTable.prototype.collapseRowAtIndex = function($$row, index, duration) {
 }
 
 ColumnsTable.prototype._setupEventListeners = function() {
-	ColumnsEvent.on( 'Columns.Table.DidUploadWithSuccess', this._onTableDidUpload.bind( this ) );
-	ColumnsEvent.on( 'Columns.Table.DidOpenWithSuccess', this._onTableDidUpload.bind( this ) );
-	// ColumnsEvent.on( 'Columns.Layout.DidChange', table._onLayoutDidChange.bind( table ) );
-	// ColumnsEvent.on( 'Columns.EmbedDetailsView.DidUpdatePropertyWithValue', table._onDetailsDidChange.bind( table ) );
-	ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
+
+	if ( this.preview ) {
+		ColumnsEvent.on( 'Columns.Table.DidUploadWithSuccess', this._onTableDidUpload.bind( this ) );
+		ColumnsEvent.on( 'Columns.Table.DidOpenWithSuccess', this._onTableDidUpload.bind( this ) );
+		// ColumnsEvent.on( 'Columns.Layout.DidChange', table._onLayoutDidChange.bind( table ) );
+		// ColumnsEvent.on( 'Columns.EmbedDetailsView.DidUpdatePropertyWithValue', table._onDetailsDidChange.bind( table ) );
+		ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
+	}
+
+	ColumnsTableEvent.on('ColumnsTableDetailViewDidClose', this._onDetailViewClose.bind( this ));
 };
 
 ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
@@ -14447,7 +14473,159 @@ ColumnsTable.prototype.send = function( props ) {
 };
 
 module.exports = ColumnsTable;
-},{"../../bower_components/jquery/dist/jquery.js":1,"../../bower_components/velocity/velocity.js":2,"../../vendor/javascripts/hammer.custom.js":9,"../../vendor/javascripts/parseUri.js":10,"../embed-config.js":3,"../prevent-ghost-click.js":7,"./ColumnsAnalytics.js":4,"./ColumnsEvent.js":5}],7:[function(require,module,exports){
+},{"../../bower_components/jquery/dist/jquery.js":1,"../../bower_components/velocity/velocity.js":2,"../../vendor/javascripts/hammer.custom.js":14,"../../vendor/javascripts/parseUri.js":15,"../embed-config.js":3,"../prevent-ghost-click.js":10,"./ColumnsAnalytics.js":4,"./ColumnsEvent.js":5,"./ColumnsTableDetailView.js":7,"./ColumnsTableEvent.js":8}],7:[function(require,module,exports){
+var $$			 		= require('../../bower_components/jquery/dist/jquery.js');
+var Utils		 		= require('./Utils.js');
+var ColumnsTableEvent 	= require("./ColumnsTableEvent.js");
+var Hammer 				= require('../../vendor/javascripts/hammer.custom.js');
+var TEMPLATE 	 		= Columns.EmbeddableTemplates['views/embed-table/detail-view.hbs'];
+
+var CLOSE_BUTTON_SELECTOR = '.columns-table-detail-view-close-button',
+	OPEN_CLASS = 'open';
+
+function ColumnsTableDetailView( data ) {
+
+	// Check if this is an object,
+	// according to the method here:
+	// http://stackoverflow.com/a/14706877
+	this.data;
+	if( data === Object( data ) ) {
+		this.data = data;
+	}
+
+	this._setupHandlebars();
+
+}
+
+ColumnsTableDetailView.prototype.render = function() {
+
+	this.$$detailView = $$( TEMPLATE({
+		data: this.data
+	}));
+
+	this._setupEvents();
+
+	return this.$$detailView;
+
+};
+
+ColumnsTableDetailView.prototype.update = function( data ) {
+	var $$oldView, $$newView, oldClass;
+
+	// Check if this is an object,
+	// according to the method here:
+	// http://stackoverflow.com/a/14706877
+	if( data !== Object( data ) ) {
+		return;
+	}
+	
+	this.data = data;
+
+	// Update the view with the new data
+	// or just render it for the first time
+	if ( this.$$detailView ) {
+
+		// Make a copy of the current view
+		$$oldView = $$( this.$$detailView.get( 0 ) );
+		oldClass = this.$$detailView.attr('class');
+
+		// Update the content
+		$$newView = this.render();
+		$$newView.addClass( oldClass );
+		$$oldView.replaceWith( $$newView );
+
+	} else {
+		this.render();
+	}
+
+	return this.$$detailView;
+};
+
+ColumnsTableDetailView.prototype.open = function() {
+	this.$$detailView.addClass( OPEN_CLASS );
+};
+
+ColumnsTableDetailView.prototype.close = function() {
+	this.$$detailView.removeClass( OPEN_CLASS );
+
+	ColumnsTableEvent.send('ColumnsTableDetailViewDidClose', {
+		detailView: this
+	});
+};
+
+ColumnsTableDetailView.prototype.remove = function() {
+	this.$$detailView.remove();
+};
+
+ColumnsTableDetailView.prototype._setupEvents = function() {
+	var closeMc = new Hammer( this.$$detailView.find( CLOSE_BUTTON_SELECTOR ).get( 0 ) );
+	closeMc.on('tap', this.close.bind( this ) );
+};
+
+ColumnsTableDetailView.prototype._setupHandlebars = function() {
+	Handlebars.registerHelper('formatTitle', function(title, options) {
+		return Utils.formatTitle( title );
+	}.bind( this ));
+};
+
+module.exports = ColumnsTableDetailView;
+},{"../../bower_components/jquery/dist/jquery.js":1,"../../vendor/javascripts/hammer.custom.js":14,"./ColumnsTableEvent.js":8,"./Utils.js":9}],8:[function(require,module,exports){
+var $$ = require('../../bower_components/jquery/dist/jquery.js');
+
+function ColumnsTableEvent () {
+
+}
+
+ColumnsTableEvent.send = function( type, data ) {
+	$$(document).trigger( type, data );
+};
+
+ColumnsTableEvent.on = function( type, callback ) {
+	$$(document).on( type, callback );
+};
+
+ColumnsTableEvent.off = function( type, callback ) {
+	$$(document).off( type, callback );
+};
+
+ColumnsTableEvent.offAll = function() {
+	$$(document).off();
+};
+
+module.exports = ColumnsTableEvent;
+},{"../../bower_components/jquery/dist/jquery.js":1}],9:[function(require,module,exports){
+// Utility methods
+// ------------------------------
+
+module.exports = {
+	highestZIndex: function (elem) {
+		var elems = document.getElementsByTagName(elem);
+		var highest = 0;
+		for (var i = 0; i < elems.length; i++)
+		{
+			var zindex=document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index");
+			zindex = parseInt(zindex);
+			if ((zindex > highest) && !isNaN(zindex))
+			{
+				highest = zindex;
+			}
+		}
+		return highest;
+	},
+
+	formatTitle: function( title ) {
+		// Return an uppercase version of the title
+		// with spaces instead of underscores
+		if ( !title ) {
+			return '_';
+		} else if ( title === '_' ) {
+			return title;
+		} else {
+			return title.toLowerCase().replace( /_/g, ' ' ).replace(/\b./g, function(m){ return m.toUpperCase(); });
+		}
+	}
+};
+},{}],10:[function(require,module,exports){
 /**
  * Prevent click events after a touchend.
  * 
@@ -14544,23 +14722,148 @@ module.exports = ColumnsTable;
     };
 
 })(window, document, 'PreventGhostClick');
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
+var TableDetailView = require("../../javascripts/models/ColumnsTableDetailView.js");
+var ColumnsTableEvent = require("../../javascripts/models/ColumnsTableEvent.js");
 
-// var API_HOST = '{{api_host}}';
-// var ROOT_PATH = '{{root_path}}';
-// var EMBED_PATH = ROOT_PATH + '/public/embed-table.js';
-// var CSS_PATH = ROOT_PATH + '/css/embed-table.css';
-// var IMG_PATH = ROOT_PATH + '/images/';
+jasmine.getFixtures().fixturesPath = 'spec/embed/fixtures';
 
-// var Velocity = require('../../bower_components/velocity/velocity.js');
-// var Hammer = require('../../vendor/hammer.js');
-// var PreventGhostClick = require('../../vendor/prevent-ghost-click.js');
+describe('Columns Table Detail Page', function() {
+	var detailView;
+	var data = {
+		"one": "data",
+		"two": "datum",
+		"three": "datom"
+	};
 
-// $$ = $;
-// var Columnsbars = require('../../javascripts/embed-handlebars.js'),
-var ColumnsEvent = require('../../javascripts/models/ColumnsEvent.js');
-// var Table 		 = require('../../javascripts/models/Table.js');
-var ColumnsTable = require('../../javascripts/models/ColumnsTable.js');
+	beforeEach(function() {
+		detailView = new TableDetailView( data );
+	});
+
+	describe('Initialization', function() {
+
+		it('should initialize without an initialization object', function() {
+			detailView = new TableDetailView();
+			expect( detailView.data ).toBeUndefined();
+		});
+
+		it('should initialize with an object', function() {
+			expect( detailView.data ).toEqual( data )
+		});
+	});
+
+	describe('Updating', function() {
+
+		it('should reset its data', function() {
+			detailView.update({
+				"one": "rata",
+				"two": "ratum",
+				"three": "ratom"
+			});
+			expect( detailView.data ).toEqual({
+				"one": "rata",
+				"two": "ratum",
+				"three": "ratom"
+			});
+		});
+
+		it('should re-render with the new data', function() {
+			detailView.update({
+				"one": "rata",
+				"two": "ratum",
+				"three": "ratom"
+			});
+			expect( detailView.$$detailView ).toContainText("rata");
+		});
+
+		it('should maintain open state', function() {
+			loadFixtures("embed-table-detail-view-open.html");
+			detailView.$$detailView = $('.columns-table-detail-view');
+			detailView.update();
+			expect( detailView.$$detailView ).toHaveClass("open");
+		});
+	});
+
+	describe('Rendering', function() {
+		var $detailView;
+
+		beforeEach(function() {
+			loadFixtures("embed-table.html");
+			$detailView = detailView.render();
+		});
+
+		it('should render with the correct template', function() {
+			expect( $detailView ).toHaveClass("columns-table-detail-view");
+		});
+
+		it('should have a row for each data item', function() {
+			expect( $detailView.find(".columns-table-detail-view-row").length ).toBe( 3 );
+		});
+
+		xit('should attach to the correct part of the table', function() {
+			expect( $detailView.parent() ).toHaveClass("columns-table-widget");
+		});
+	});
+
+	xdescribe('Showing', function() {
+
+		it('should slide on screen', function() {
+
+		});
+
+		it('should notify the table that it is showing', function() {
+
+		});
+	});
+
+	describe('Closing', function() {
+
+		beforeEach(function() {
+			detailView.render();
+			detailView.open();
+		});
+
+		it('should slide off screen', function() {
+			expect( detailView ).not.toHaveClass('open');
+		});
+
+		it('should notify the table that it is hidden', function() {
+			spyOn( ColumnsTableEvent, 'send' );
+			detailView.close();
+			expect( ColumnsTableEvent.send ).toHaveBeenCalledWith('ColumnsTableDetailViewDidClose', {
+				detailView: detailView
+			});
+		});
+	});
+
+	describe('Removing', function() {
+
+		beforeEach(function() {
+			$detailView = detailView.render();
+			spyOn( detailView.$$detailView, 'remove' );
+		});
+
+		it('should remove itself from the DOM', function() {
+			detailView.remove();
+			expect( detailView.$$detailView.remove ).toHaveBeenCalled();
+		});
+	});
+
+	describe('Sending Events', function() {
+
+		it('should send an event when it shows', function() {
+
+		});
+
+		it('should send an event when it hides', function() {
+
+		});
+	});
+});
+},{"../../javascripts/models/ColumnsTableDetailView.js":7,"../../javascripts/models/ColumnsTableEvent.js":8}],12:[function(require,module,exports){
+var ColumnsEvent 			= require('../../javascripts/models/ColumnsEvent.js');
+var ColumnsTable 			= require('../../javascripts/models/ColumnsTable.js');
+var ColumnsTableDetailView 	= require('../../javascripts/models/ColumnsTableDetailView.js');
 
 jasmine.getFixtures().fixturesPath = 'spec/embed/fixtures';
 
@@ -14687,6 +14990,7 @@ describe('Embeddable Table', function() {
 	describe('Listening to Editor Events', function() {
 
 		beforeEach(function() {			
+			embed.preview = true;
 			embed.render();
 			embed._setupEventListeners();
 		});
@@ -14739,8 +15043,89 @@ describe('Embeddable Table', function() {
 			expect( embed.$$table.find('.columns-table-title') ).toHaveText('My Table');
 		});
 	});
+
+	describe('Tapping on a Row', function() {
+
+		beforeEach(function() {
+			loadFixtures('embed-table-row.html');
+			embed.render();
+			embed.data = {
+				data: [{
+					"one": "data",
+					"two": "datum",
+					"three": "datom"
+				}, {
+					"one": "rata",
+					"two": "ratum",
+					"three": "ratom"
+				}, {
+					"one": "bata",
+					"two": "batum",
+					"three": "batom"
+				}]
+			};
+			spyOn( ColumnsTableDetailView.prototype, "open" );
+		});
+
+		it('should select the row and deselect all others', function() {
+			appendLoadFixtures('embed-table-row-selected.html');
+			var $row = $('.columns-table-row');
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+			
+			expect( $('.columns-table-row.selected').length ).toBe( 1 );
+			expect( $('.columns-table-row.selected').data("index") ).toBe( 1 );
+		});
+
+		it('should update an existing detail view', function() {
+			spyOn( ColumnsTableDetailView.prototype, "update").and.callThrough();
+			embed.detailView = new ColumnsTableDetailView( embed.data.data[0] );
+
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+
+			expect( embed.detailView.update ).toHaveBeenCalled();
+
+		});
+
+		it('should create a detail view with the correct data', function() {
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+			expect( embed.detailView.data ).toEqual({
+				"one": "rata",
+				"two": "ratum",
+				"three": "ratom"
+			});
+		});
+
+		it('should append and show the detail view', function() {
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+			expect( embed.$$table.find('.columns-table-detail-view').length ).toBe( 1 );
+			expect( ColumnsTableDetailView.prototype.open ).toHaveBeenCalled();
+		});
+	});
 });
-},{"../../javascripts/models/ColumnsEvent.js":5,"../../javascripts/models/ColumnsTable.js":6}],9:[function(require,module,exports){
+},{"../../javascripts/models/ColumnsEvent.js":5,"../../javascripts/models/ColumnsTable.js":6,"../../javascripts/models/ColumnsTableDetailView.js":7}],13:[function(require,module,exports){
+var Utils = require('../../javascripts/models/Utils.js');
+
+describe('Utilities', function() {
+	describe('Title Formatting', function() {
+
+		it('should uppercase titles and replace underscores with spaces', function() {
+			expect( Utils.formatTitle("my_column") ).toBe("My Column");
+		});
+
+		it('should return a single unscore as is', function() {
+			expect( Utils.formatTitle("_") ).toBe("_");
+		});
+	});
+});
+},{"../../javascripts/models/Utils.js":9}],14:[function(require,module,exports){
 
 // ------------------------------------------------
 // DO NOT UPGRADE!
@@ -17216,7 +17601,7 @@ if (typeof module != 'undefined' && module.exports) {
 
 })(window, document, 'Hammer');
 
-},{}],10:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 // parseUri 1.2.2
 // (c) Steven Levithan <stevenlevithan.com>
 // MIT License
@@ -17251,4 +17636,4 @@ parseUri.options = {
 };
 
 module.exports = parseUri;
-},{}]},{},[8]);
+},{}]},{},[11,12,13]);

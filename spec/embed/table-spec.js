@@ -1,19 +1,6 @@
-
-// var API_HOST = '{{api_host}}';
-// var ROOT_PATH = '{{root_path}}';
-// var EMBED_PATH = ROOT_PATH + '/public/embed-table.js';
-// var CSS_PATH = ROOT_PATH + '/css/embed-table.css';
-// var IMG_PATH = ROOT_PATH + '/images/';
-
-// var Velocity = require('../../bower_components/velocity/velocity.js');
-// var Hammer = require('../../vendor/hammer.js');
-// var PreventGhostClick = require('../../vendor/prevent-ghost-click.js');
-
-// $$ = $;
-// var Columnsbars = require('../../javascripts/embed-handlebars.js'),
-var ColumnsEvent = require('../../javascripts/models/ColumnsEvent.js');
-// var Table 		 = require('../../javascripts/models/Table.js');
-var ColumnsTable = require('../../javascripts/models/ColumnsTable.js');
+var ColumnsEvent 			= require('../../javascripts/models/ColumnsEvent.js');
+var ColumnsTable 			= require('../../javascripts/models/ColumnsTable.js');
+var ColumnsTableDetailView 	= require('../../javascripts/models/ColumnsTableDetailView.js');
 
 jasmine.getFixtures().fixturesPath = 'spec/embed/fixtures';
 
@@ -140,6 +127,7 @@ describe('Embeddable Table', function() {
 	describe('Listening to Editor Events', function() {
 
 		beforeEach(function() {			
+			embed.preview = true;
 			embed.render();
 			embed._setupEventListeners();
 		});
@@ -190,6 +178,72 @@ describe('Embeddable Table', function() {
 			});
 
 			expect( embed.$$table.find('.columns-table-title') ).toHaveText('My Table');
+		});
+	});
+
+	describe('Tapping on a Row', function() {
+
+		beforeEach(function() {
+			loadFixtures('embed-table-row.html');
+			embed.render();
+			embed.data = {
+				data: [{
+					"one": "data",
+					"two": "datum",
+					"three": "datom"
+				}, {
+					"one": "rata",
+					"two": "ratum",
+					"three": "ratom"
+				}, {
+					"one": "bata",
+					"two": "batum",
+					"three": "batom"
+				}]
+			};
+			spyOn( ColumnsTableDetailView.prototype, "open" );
+		});
+
+		it('should select the row and deselect all others', function() {
+			appendLoadFixtures('embed-table-row-selected.html');
+			var $row = $('.columns-table-row');
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+			
+			expect( $('.columns-table-row.selected').length ).toBe( 1 );
+			expect( $('.columns-table-row.selected').data("index") ).toBe( 1 );
+		});
+
+		it('should update an existing detail view', function() {
+			spyOn( ColumnsTableDetailView.prototype, "update").and.callThrough();
+			embed.detailView = new ColumnsTableDetailView( embed.data.data[0] );
+
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+
+			expect( embed.detailView.update ).toHaveBeenCalled();
+
+		});
+
+		it('should create a detail view with the correct data', function() {
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+			expect( embed.detailView.data ).toEqual({
+				"one": "rata",
+				"two": "ratum",
+				"three": "ratom"
+			});
+		});
+
+		it('should append and show the detail view', function() {
+			embed._onRowTap({
+				currentTarget: $('.columns-table-row').get( 0 )
+			});
+			expect( embed.$$table.find('.columns-table-detail-view').length ).toBe( 1 );
+			expect( ColumnsTableDetailView.prototype.open ).toHaveBeenCalled();
 		});
 	});
 });

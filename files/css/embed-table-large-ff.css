@@ -1,8 +1,8 @@
 /* Grays */
 @font-face {
   font-family: "columns-project";
-  src: url("../fonts/columns-project.eot?530e8a2446a59a0c6bc78e1f2403a61e");
-  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?530e8a2446a59a0c6bc78e1f2403a61e") format("woff"), url("../fonts/columns-project.ttf?530e8a2446a59a0c6bc78e1f2403a61e") format("truetype");
+  src: url("../fonts/columns-project.eot?34151453de61afbf0f26e2ad2975c8dc");
+  src: url("../fonts/columns-project.eot?#iefix") format("embedded-opentype"), url("../fonts/columns-project.woff?34151453de61afbf0f26e2ad2975c8dc") format("woff"), url("../fonts/columns-project.ttf?34151453de61afbf0f26e2ad2975c8dc") format("truetype");
   font-weight: normal;
   font-style: normal; }
 [class^="clmnz-icon-"]:before,
@@ -43,6 +43,9 @@
 
 .clmnz-icon-twitter:before {
   content: "\f108"; }
+
+.clmnz-icon-x:before {
+  content: "\f109"; }
 
 @-webkit-keyframes pop-in {
   0% {

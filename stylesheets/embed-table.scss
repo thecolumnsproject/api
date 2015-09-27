@@ -142,6 +142,18 @@ $columns-table-accent-color: 	#69A368;
 	&:nth-child(n+10) {
 		display: none;
 	}
+
+	&:hover {
+		background: linear-gradient( 0deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.02) 100% );
+	}
+
+	&:active {
+		background: linear-gradient( 0deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.04) 100% );
+	}
+}
+
+.columns-table-row.selected {
+	background: linear-gradient( 0deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.04) 100% );
 }
 
 /* The top three rows should show
@@ -499,6 +511,10 @@ $columns-table-accent-color: 	#69A368;
 	}	
 // }
 
+// .columns-table-expanded.columns-table-widget {
+// 	top:0 !important;
+// }
+
 .columns-table-expanded .columns-table-container {
 	// transform: translateY(0px); /* Remove the expansion animation transform */
 	top: 0;
@@ -674,3 +690,4 @@ $columns-table-accent-color: 	#69A368;
 
 // Import large form factor styling
 @import 'embed-table-large-ff';
+@import 'embed-table-detail-view';

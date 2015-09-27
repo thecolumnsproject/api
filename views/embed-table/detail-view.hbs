@@ -1,0 +1,20 @@
+<div class="columns-table-detail-view">
+	<div class="columns-table-detail-view-header">
+		<div class="columns-table-detail-view-close-button">
+			<i class="clmnz-icon-x"></i>
+		</div>
+		<div class="columns-table-detail-view-title">
+			Details
+		</div>
+	</div>
+	<div class="columns-table-detail-view-rows">
+		{{#each data}}
+			{{#if this}}
+				<div class="columns-table-detail-view-row">
+					<label for="columns-table-detail-view-row-value" class="columns-table-detail-view-row-label">{{#formatTitle @key}}{{/formatTitle}}</label>
+					<span class="columns-table-detail-view-row-value">{{this}}</span>
+				</div>
+			{{/if}}
+	{{/each}}
+	</div>
+</div>
