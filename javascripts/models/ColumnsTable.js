@@ -333,6 +333,11 @@ ColumnsTable.prototype.generateLayout = function(layout, reload) {
 ColumnsTable.prototype.formatSourceUrl = function( url ) {
 	var parsedUrl = ParseUri( url );
 
+	// Check whether the url is empty
+	if ( url === "" ) {
+		return url;
+	}
+
 	// Check whether the url has a valid protocol
 	if ( !parsedUrl.protocol ) {
 		return 'http://' + url;

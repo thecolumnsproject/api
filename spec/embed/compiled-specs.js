@@ -13484,6 +13484,11 @@ ColumnsTable.prototype.generateLayout = function(layout, reload) {
 ColumnsTable.prototype.formatSourceUrl = function( url ) {
 	var parsedUrl = ParseUri( url );
 
+	// Check whether the url is empty
+	if ( url === "" ) {
+		return url;
+	}
+
 	// Check whether the url has a valid protocol
 	if ( !parsedUrl.protocol ) {
 		return 'http://' + url;
@@ -14968,6 +14973,10 @@ describe('Embeddable Table', function() {
 			it('should add a protocol to urls without one', function() {
 				expect( embed.formatSourceUrl("myurl.com") ).toBe("http://myurl.com");
 			});
+
+			it('should leave empty urls alone', function() {
+				expect( embed.formatSourceUrl("") ).toBe("");
+			})
 		});
 	});
 

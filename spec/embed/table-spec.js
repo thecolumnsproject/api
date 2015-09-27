@@ -104,6 +104,10 @@ describe('Embeddable Table', function() {
 			it('should add a protocol to urls without one', function() {
 				expect( embed.formatSourceUrl("myurl.com") ).toBe("http://myurl.com");
 			});
+
+			it('should leave empty urls alone', function() {
+				expect( embed.formatSourceUrl("") ).toBe("");
+			})
 		});
 	});
 
