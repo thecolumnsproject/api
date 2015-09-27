@@ -15110,8 +15110,7 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 
 	// Make sure it's the top-most view in the table
 	this.detailView.$$detailView.css({
-		"z-index": (highestZIndex('*') + 1),
-		"height": $$(window).height()
+		"z-index": (highestZIndex('*') + 1)
 	});
 
 	// Show the detail view
