@@ -7,14 +7,16 @@
 			Details
 		</div>
 	</div>
-	<div class="columns-table-detail-view-rows">
-		{{#each data}}
-			{{#if this}}
-				<div class="columns-table-detail-view-row">
-					<label for="columns-table-detail-view-row-value" class="columns-table-detail-view-row-label">{{#formatTitle @key}}{{/formatTitle}}</label>
-					<span class="columns-table-detail-view-row-value">{{this}}</span>
-				</div>
-			{{/if}}
-	{{/each}}
+	<div class="columns-table-detail-view-rows-container">
+		<div class="columns-table-detail-view-rows">
+			{{#each data}}
+				{{#if this}}
+					<div class="columns-table-detail-view-row">
+						<label for="columns-table-detail-view-row-value" class="columns-table-detail-view-row-label">{{#formatTitle @key}}{{/formatTitle}}</label>
+						<span class="columns-table-detail-view-row-value">{{this}}</span>
+					</div>
+				{{/if}}
+			{{/each}}
+		</div>
 	</div>
 </div>

@@ -34,6 +34,11 @@ $detail-view-margin-left: 		$spacing*2;
 $header-height: 60px;
 .columns-table-detail-view-header {
 	height: $header-height;
+	width: 100%;
+	position: absolute;
+	top: 0; 
+	left: 0;
+	background: $gray-lightest;
 	border-bottom: 1px solid $border-color;
 
 	@include display(flex);
@@ -70,6 +75,13 @@ $close-button-size: $spacing*4;
 .columns-table-detail-view-title {
 	font-size: 18px;
 	color: rgba(0,0,0,0.87);
+}
+
+.columns-table-detail-view-rows-container {
+	height: 100%;
+	padding: $header-height 0 $spacing*2 0;
+	box-sizing: border-box;
+	overflow: scroll;
 }
 
 .columns-table-detail-view-rows {
