@@ -40,6 +40,7 @@ $header-height: 60px;
 	left: 0;
 	background: $gray-lightest;
 	border-bottom: 1px solid $border-color;
+	z-index: 1;
 
 	@include display(flex);
 	@include justify-content(center);
@@ -105,7 +106,7 @@ $close-button-size: $spacing*4;
 
 .columns-table-detail-view-row-label {
 	font-size: 10px;
-	font-weight: 600;
+	font-weight: 500;
 	color: rgba(0,0,0,0.4);
 	text-transform: uppercase;
 
