@@ -85,7 +85,17 @@ ColumnsTableDetailView.prototype.remove = function() {
 
 ColumnsTableDetailView.prototype._setupEvents = function() {
 	var closeMc = new Hammer( this.$$detailView.find( CLOSE_BUTTON_SELECTOR ).get( 0 ) );
-	closeMc.on('tap', this.close.bind( this ) );
+	closeMc.on('tap', function() {
+
+		this.table.send({
+			category: 'table',
+			action: 'detail close',
+			label: 'button'
+		})
+
+		this.close();
+	}.bind( this ));
+
 };
 
 ColumnsTableDetailView.prototype._setupHandlebars = function() {

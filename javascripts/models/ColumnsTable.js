@@ -729,6 +729,13 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 	if ( index === this.selectedRowIndex ) {
 		this.selectedRowIndex = null;
 		this.detailView.close();
+
+		this.send({
+			category: 'table',
+			action: 'row tap',
+			label: 'close'
+		});
+
 		return;
 	}
 
@@ -759,13 +766,18 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 
 	// Show the detail view
 	this.detailView.open();
+
+	this.send({
+		category: 'table',
+		action: 'row tap',
+		label: 'open'
+	});
 };
 
 ColumnsTable.prototype.onColumnsTableDetailViewDidClose = function( event ) {
 
 	// Deselect any selected rows after a delay for the close animation
 	setTimeout(function() {
-		console.log('here');
 		$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );	
 	}, ANIMATION_DURATION );
 };
