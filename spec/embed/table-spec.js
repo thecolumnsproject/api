@@ -215,8 +215,23 @@ describe('Embeddable Table', function() {
 				target: $('.columns-table-row').get( 0 )
 			});
 			
+			expect( embed.selectedRowIndex ).toBe( 0 );
 			expect( $('.columns-table-row.selected').length ).toBe( 1 );
-			expect( $('.columns-table-row.selected').data("index") ).toBe( 1 );
+			expect( $('.columns-table-row.selected').data("index") ).toBe( 0 );
+		});
+
+		it('should deselect a row and close the detail page when the open row is tapped again', function() {
+			spyOn( ColumnsTableDetailView.prototype, "close" );
+			embed.detailView = new ColumnsTableDetailView();
+			embed.selectedRowIndex = 1;
+			appendLoadFixtures('embed-table-row-selected.html');
+			embed._onRowTap({
+				target: $('.columns-table-row').get( 1 )
+			});
+
+			expect( embed.selectedRowIndex ).toBeNull();
+			expect( ColumnsTableDetailView.prototype.close ).toHaveBeenCalled();
+
 		});
 
 		it('should update an existing detail view', function() {
@@ -236,9 +251,9 @@ describe('Embeddable Table', function() {
 				target: $('.columns-table-row').get( 0 )
 			});
 			expect( embed.detailView.data ).toEqual({
-				"one": "rata",
-				"two": "ratum",
-				"three": "ratom"
+				"one": "data",
+				"two": "datum",
+				"three": "datom"
 			});
 		});
 

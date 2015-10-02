@@ -13873,13 +13873,22 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 				$$( event.target ) :
 				$$( event.target ).parents( TABLE_ROW_SELECTOR );
 
+	// Figure out which row index was tapped
+	index = $$row.data('index');
+
+	// Check that this row isn't already selected
+	if ( index === this.selectedRowIndex ) {
+		this.selectedRowIndex = null;
+		this.detailView.close();
+		return;
+	}
+
+	this.selectedRowIndex = index;	
+
 	// Deselect any selected rows
 	// and select this one
 	$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );
 	$$row.addClass( SELECTED_ROW_CLASS );
-
-	// Figure out which row index was tapped
-	index = $$row.data('index');	
 
 	// Get the data corresponding to that row
 	data = this.data.data[ index ];
@@ -14733,6 +14742,7 @@ module.exports = {
 },{}],11:[function(require,module,exports){
 var TableDetailView = require("../../javascripts/models/ColumnsTableDetailView.js");
 var ColumnsTableEvent = require("../../javascripts/models/ColumnsTableEvent.js");
+var ColumnsTable = require('../../javascripts/models/ColumnsTable.js');
 
 jasmine.getFixtures().fixturesPath = 'spec/embed/fixtures';
 
@@ -14743,9 +14753,10 @@ describe('Columns Table Detail Page', function() {
 		"two": "datum",
 		"three": "datom"
 	};
+	var table = new ColumnsTable();
 
 	beforeEach(function() {
-		detailView = new TableDetailView( data );
+		detailView = new TableDetailView( table, data );
 	});
 
 	describe('Initialization', function() {
@@ -14756,6 +14767,7 @@ describe('Columns Table Detail Page', function() {
 		});
 
 		it('should initialize with an object', function() {
+			expect( detailView.table ).toEqual( table )
 			expect( detailView.data ).toEqual( data )
 		});
 	});
@@ -14838,7 +14850,7 @@ describe('Columns Table Detail Page', function() {
 		it('should notify the table that it is hidden', function() {
 			spyOn( ColumnsTableEvent, 'send' );
 			detailView.close();
-			expect( ColumnsTableEvent.send ).toHaveBeenCalledWith('ColumnsTableDetailViewDidClose', {
+			expect( ColumnsTableEvent.send ).toHaveBeenCalledWith( table, 'ColumnsTableDetailViewDidClose', {
 				detailView: detailView
 			});
 		});
@@ -14868,7 +14880,7 @@ describe('Columns Table Detail Page', function() {
 		});
 	});
 });
-},{"../../javascripts/models/ColumnsTableDetailView.js":7,"../../javascripts/models/ColumnsTableEvent.js":8}],12:[function(require,module,exports){
+},{"../../javascripts/models/ColumnsTable.js":6,"../../javascripts/models/ColumnsTableDetailView.js":7,"../../javascripts/models/ColumnsTableEvent.js":8}],12:[function(require,module,exports){
 var ColumnsEvent 			= require('../../javascripts/models/ColumnsEvent.js');
 var ColumnsTable 			= require('../../javascripts/models/ColumnsTable.js');
 var ColumnsTableDetailView 	= require('../../javascripts/models/ColumnsTableDetailView.js');
@@ -15086,8 +15098,23 @@ describe('Embeddable Table', function() {
 				target: $('.columns-table-row').get( 0 )
 			});
 			
+			expect( embed.selectedRowIndex ).toBe( 0 );
 			expect( $('.columns-table-row.selected').length ).toBe( 1 );
-			expect( $('.columns-table-row.selected').data("index") ).toBe( 1 );
+			expect( $('.columns-table-row.selected').data("index") ).toBe( 0 );
+		});
+
+		it('should deselect a row and close the detail page when the open row is tapped again', function() {
+			spyOn( ColumnsTableDetailView.prototype, "close" );
+			embed.detailView = new ColumnsTableDetailView();
+			embed.selectedRowIndex = 1;
+			appendLoadFixtures('embed-table-row-selected.html');
+			embed._onRowTap({
+				target: $('.columns-table-row').get( 1 )
+			});
+
+			expect( embed.selectedRowIndex ).toBeNull();
+			expect( ColumnsTableDetailView.prototype.close ).toHaveBeenCalled();
+
 		});
 
 		it('should update an existing detail view', function() {
@@ -15107,9 +15134,9 @@ describe('Embeddable Table', function() {
 				target: $('.columns-table-row').get( 0 )
 			});
 			expect( embed.detailView.data ).toEqual({
-				"one": "rata",
-				"two": "ratum",
-				"three": "ratom"
+				"one": "data",
+				"two": "datum",
+				"three": "datom"
 			});
 		});
 

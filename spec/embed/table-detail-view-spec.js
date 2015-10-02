@@ -1,5 +1,6 @@
 var TableDetailView = require("../../javascripts/models/ColumnsTableDetailView.js");
 var ColumnsTableEvent = require("../../javascripts/models/ColumnsTableEvent.js");
+var ColumnsTable = require('../../javascripts/models/ColumnsTable.js');
 
 jasmine.getFixtures().fixturesPath = 'spec/embed/fixtures';
 
@@ -10,9 +11,10 @@ describe('Columns Table Detail Page', function() {
 		"two": "datum",
 		"three": "datom"
 	};
+	var table = new ColumnsTable();
 
 	beforeEach(function() {
-		detailView = new TableDetailView( data );
+		detailView = new TableDetailView( table, data );
 	});
 
 	describe('Initialization', function() {
@@ -23,6 +25,7 @@ describe('Columns Table Detail Page', function() {
 		});
 
 		it('should initialize with an object', function() {
+			expect( detailView.table ).toEqual( table )
 			expect( detailView.data ).toEqual( data )
 		});
 	});
@@ -105,7 +108,7 @@ describe('Columns Table Detail Page', function() {
 		it('should notify the table that it is hidden', function() {
 			spyOn( ColumnsTableEvent, 'send' );
 			detailView.close();
-			expect( ColumnsTableEvent.send ).toHaveBeenCalledWith('ColumnsTableDetailViewDidClose', {
+			expect( ColumnsTableEvent.send ).toHaveBeenCalledWith( table, 'ColumnsTableDetailViewDidClose', {
 				detailView: detailView
 			});
 		});

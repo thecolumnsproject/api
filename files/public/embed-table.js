@@ -15087,13 +15087,22 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 				$$( event.target ) :
 				$$( event.target ).parents( TABLE_ROW_SELECTOR );
 
+	// Figure out which row index was tapped
+	index = $$row.data('index');
+
+	// Check that this row isn't already selected
+	if ( index === this.selectedRowIndex ) {
+		this.selectedRowIndex = null;
+		this.detailView.close();
+		return;
+	}
+
+	this.selectedRowIndex = index;	
+
 	// Deselect any selected rows
 	// and select this one
 	$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );
 	$$row.addClass( SELECTED_ROW_CLASS );
-
-	// Figure out which row index was tapped
-	index = $$row.data('index');	
 
 	// Get the data corresponding to that row
 	data = this.data.data[ index ];
