@@ -13998,7 +13998,7 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 	if ( this.detailView ) {
 		this.detailView.update( data );
 	} else {
-		this.detailView = new ColumnsTableDetailView( data );
+		this.detailView = new ColumnsTableDetailView( this, data );
 
 		// Append the detail view to the table
 		this.$$table.append( this.detailView.render() );
@@ -14013,10 +14013,11 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 	this.detailView.open();
 };
 
-ColumnsTable.prototype._onDetailViewClose = function( event ) {
+ColumnsTable.prototype.onColumnsTableDetailViewDidClose = function( event ) {
 
 	// Deselect any selected rows after a delay for the close animation
 	setTimeout(function() {
+		console.log('here');
 		$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );	
 	}, ANIMATION_DURATION );
 };
@@ -14520,7 +14521,7 @@ ColumnsTable.prototype._setupEventListeners = function() {
 		ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
 	}
 
-	ColumnsTableEvent.on('ColumnsTableDetailViewDidClose', this._onDetailViewClose.bind( this ));
+	// ColumnsTableEvent.on( this, 'ColumnsTableDetailViewDidClose', this._onDetailViewClose.bind( this ));
 };
 
 ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
@@ -14598,7 +14599,9 @@ var TEMPLATE 	 		= Columns.EmbeddableTemplates['views/embed-table/detail-view.hb
 var CLOSE_BUTTON_SELECTOR = '.columns-table-detail-view-close-button',
 	OPEN_CLASS = 'open';
 
-function ColumnsTableDetailView( data ) {
+function ColumnsTableDetailView( table, data ) {
+
+	this.table = table;
 
 	// Check if this is an object,
 	// according to the method here:
@@ -14663,7 +14666,7 @@ ColumnsTableDetailView.prototype.open = function() {
 ColumnsTableDetailView.prototype.close = function() {
 	this.$$detailView.removeClass( OPEN_CLASS );
 
-	ColumnsTableEvent.send('ColumnsTableDetailViewDidClose', {
+	ColumnsTableEvent.send( this.table, 'ColumnsTableDetailViewDidClose', {
 		detailView: this
 	});
 };
@@ -14685,21 +14688,21 @@ ColumnsTableDetailView.prototype._setupHandlebars = function() {
 
 module.exports = ColumnsTableDetailView;
 },{"../../bower_components/jquery/dist/jquery.js":1,"../../vendor/javascripts/hammer.custom.js":13,"./ColumnsTableEvent.js":10,"./Utils.js":11}],10:[function(require,module,exports){
-var $$ = require('../../bower_components/jquery/dist/jquery.js');
+var $$ = require('../../bower_components/jquery/dist/jquery.js').noConflict();
 
 function ColumnsTableEvent () {
 
 }
 
-ColumnsTableEvent.send = function( type, data ) {
-	$$(document).trigger( type, data );
+ColumnsTableEvent.send = function( object, type, data ) {
+	$$(object).trigger( type, data );
 };
 
-ColumnsTableEvent.on = function( type, callback ) {
-	$$(document).on( type, callback );
+ColumnsTableEvent.on = function( object, type, callback ) {
+	$$(object).on( type, callback );
 };
 
-ColumnsTableEvent.off = function( type, callback ) {
+ColumnsTableEvent.off = function( $$table, type, callback ) {
 	$$(document).off( type, callback );
 };
 

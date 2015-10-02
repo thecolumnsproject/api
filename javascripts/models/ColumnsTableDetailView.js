@@ -7,7 +7,9 @@ var TEMPLATE 	 		= Columns.EmbeddableTemplates['views/embed-table/detail-view.hb
 var CLOSE_BUTTON_SELECTOR = '.columns-table-detail-view-close-button',
 	OPEN_CLASS = 'open';
 
-function ColumnsTableDetailView( data ) {
+function ColumnsTableDetailView( table, data ) {
+
+	this.table = table;
 
 	// Check if this is an object,
 	// according to the method here:
@@ -72,7 +74,7 @@ ColumnsTableDetailView.prototype.open = function() {
 ColumnsTableDetailView.prototype.close = function() {
 	this.$$detailView.removeClass( OPEN_CLASS );
 
-	ColumnsTableEvent.send('ColumnsTableDetailViewDidClose', {
+	ColumnsTableEvent.send( this.table, 'ColumnsTableDetailViewDidClose', {
 		detailView: this
 	});
 };

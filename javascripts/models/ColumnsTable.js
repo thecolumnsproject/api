@@ -737,7 +737,7 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 	if ( this.detailView ) {
 		this.detailView.update( data );
 	} else {
-		this.detailView = new ColumnsTableDetailView( data );
+		this.detailView = new ColumnsTableDetailView( this, data );
 
 		// Append the detail view to the table
 		this.$$table.append( this.detailView.render() );
@@ -752,10 +752,11 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 	this.detailView.open();
 };
 
-ColumnsTable.prototype._onDetailViewClose = function( event ) {
+ColumnsTable.prototype.onColumnsTableDetailViewDidClose = function( event ) {
 
 	// Deselect any selected rows after a delay for the close animation
 	setTimeout(function() {
+		console.log('here');
 		$$( TABLE_ROW_SELECTOR ).removeClass( SELECTED_ROW_CLASS );	
 	}, ANIMATION_DURATION );
 };
@@ -1259,7 +1260,7 @@ ColumnsTable.prototype._setupEventListeners = function() {
 		ColumnsEvent.on( 'Columns.Table.DidChange', this._onTableDidChange.bind( this ) );
 	}
 
-	ColumnsTableEvent.on('ColumnsTableDetailViewDidClose', this._onDetailViewClose.bind( this ));
+	// ColumnsTableEvent.on( this, 'ColumnsTableDetailViewDidClose', this._onDetailViewClose.bind( this ));
 };
 
 ColumnsTable.prototype._onTableDidUpload = function( event, data ) {

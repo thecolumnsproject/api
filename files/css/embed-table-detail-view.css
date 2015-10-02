@@ -215,6 +215,7 @@
   left: 0;
   background: #fafafa;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 1;
   display: -webkit-box;
   display: -moz-box;
   display: box;
@@ -319,7 +320,7 @@
 
 .columns-table-detail-view-row-label {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   color: rgba(0, 0, 0, 0.4);
   text-transform: uppercase;
   margin-bottom: 4px; }
