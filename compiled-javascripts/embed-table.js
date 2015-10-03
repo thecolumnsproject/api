@@ -13770,6 +13770,18 @@ ColumnsTable.prototype.renderRow = function( data, index, layout ) {
 	var detailMc = new Hammer( $$rowLayout.get( 0 ) );
 	detailMc.on('tap', this._onRowTap.bind( this ) );
 
+	var activeStateDelay;
+	$$rowLayout.on('touchstart', function() {
+		activeStateDelay = setTimeout(function() {
+			$$rowLayout.addClass('active');
+		}, 200);			
+	}.bind( this ));
+
+	$$rowLayout.on('touchend', function() {
+		$$rowLayout.removeClass('active');
+		clearTimeout( activeStateDelay );
+	}.bind( this ));
+
 	return $$rowLayout.append( this.renderRowComponent( data, layout ) );
 };
 
