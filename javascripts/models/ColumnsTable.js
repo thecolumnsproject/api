@@ -767,6 +767,17 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 	// Show the detail view
 	this.detailView.open();
 
+	if ( this.preview ) {
+		ColumnsEvent.send('ColumnsTableDetailViewDidOpen', { table: this });
+
+		// Move the table up to replace the hidden template
+		Velocity( this.$$table.find( TABLE_BODY_SELECTOR).get( 0 ), {
+			paddingTop: 0
+		}, {
+			duration: ANIMATION_DURATION
+		});
+	}
+
 	this.send({
 		category: 'table',
 		action: 'row tap',
@@ -775,6 +786,17 @@ ColumnsTable.prototype._onRowTap = function( event ) {
 };
 
 ColumnsTable.prototype.onColumnsTableDetailViewDidClose = function( event ) {
+
+	if ( this.preview ) {
+		ColumnsEvent.send('ColumnsTableDetailViewDidClose', { table: this });
+
+		// Move the table back down into position
+		Velocity( this.$$table.find( TABLE_BODY_SELECTOR).get( 0 ), {
+			paddingTop: this.tallestRowHeight()
+		}, {
+			duration: ANIMATION_DURATION
+		});
+	}
 
 	// Deselect any selected rows after a delay for the close animation
 	setTimeout(function() {
