@@ -20,10 +20,19 @@ router.get('/', function(req, res) {
 });
 
 // Testing embeddable table
+router.get('/test-table/:id', function( req, res ) {
+	res.render( 'test-table', {
+		embed_host: config.embed.host,
+		embed_id: req.params.id || 1
+	});
+});
+
+// Route for getting just the embed script for a particular table
+// This is useful when the embed needs to be served via an iframe
 router.get('/embed-table/:id', function( req, res ) {
 	res.render( 'embed-table', {
 		embed_host: config.embed.host,
-		embed_id: req.params.id || 1
+		embed_id: req.params.id
 	});
 });
 

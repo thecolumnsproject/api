@@ -42,6 +42,10 @@ $columns-table-accent-color: 	#69A368;
  	@include transition(height $animation-duration);
 }
 
+// .framed.columns-table-widget {
+// 	border: 1px solid $border-color;
+// }
+
 .columns-table-wrapper {
 	@include calc(width, '100% - #{$table-container-padding} * 2');
 	// height: 95px;
@@ -248,6 +252,10 @@ $columns-table-accent-color: 	#69A368;
 	color: $primary-color;
 	border-left: 1px solid $gray-lighter;
 	padding-right: 0;
+}
+
+.auto-expand .columns-table-close-button {
+	display: none;
 }
 
 .columns-table-header-icon {
@@ -529,6 +537,10 @@ $columns-table-accent-color: 	#69A368;
 
 	@include transform(translateY(0px) !important);
 }
+
+// .framed.columns-table-expanded .columns-table-container {
+// 	border: 1px solid $border-color;
+// }
 
 .columns-table-expanded.small-form-factor .columns-table-container {
 	position: fixed;

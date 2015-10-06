@@ -13182,6 +13182,8 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	PLACEHOLDER_CLASS = 'columns-table-placeholder',
 	EXPANDED_CLASS = 'columns-table-expanded',
 	EXPANDING_CLASS = 'columns-table-expanding',
+	AUTO_EXPAND_CLASS = 'auto-expand',
+	INSIDE_FRAME_CLASS = 'framed',
 	COLLAPSING_CLASS = 'columns-table-collapsing',
 	RELOCATED_CLASS = 'columns-table-relocated',
 	LOADING_CLASS = 'loading',
@@ -13233,6 +13235,7 @@ function ColumnsTable(script) {
 	this.forceMobile = $$(script).data('force-mobile');
 	this.hostedPage = $$(script).data('hosted-page');
 	this.sample = $$(script).data('sample');
+	this.autoExpand = $$(script).data('expand');
 
 	// Remember the table instance once it's been inserted into the DOM
 	// as well as its jquery counterpart
@@ -13338,6 +13341,16 @@ ColumnsTable.prototype.render = function() {
 	} else {
 		this.$$container = $$(window);
 		this.$$table.addClass('small-form-factor');
+	}
+
+	// Add a special class if we should auto-expand the table
+	if ( this.autoExpand ) {
+		this.$$table.addClass( AUTO_EXPAND_CLASS );
+	}
+
+	// Add a special class if we're inside an iframe
+	if ( this.isInsideFrame() ) {
+		this.$$table.addClass( INSIDE_FRAME_CLASS );
 	}
 
 	// Add a special class if we're inside a columns hosted page
@@ -13645,6 +13658,11 @@ ColumnsTable.prototype.renderData = function(data) {
 	setTimeout(function() {
 		_this.setLoading(false);
 	}, 100);
+
+	// Automatically expand the table if we're inside an iframe
+	if ( this.autoExpand || this.isInsideFrame() ) {
+		this.expand();
+	}
 };
 
 ColumnsTable.prototype.renderRow = function( data, index, layout ) {

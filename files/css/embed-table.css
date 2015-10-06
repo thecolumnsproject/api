@@ -483,6 +483,9 @@
   border-left: 1px solid #ebebeb;
   padding-right: 0; }
 
+.auto-expand .columns-table-close-button {
+  display: none; }
+
 .columns-table-header-icon {
   font-size: 18px; }
 
