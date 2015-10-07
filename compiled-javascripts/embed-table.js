@@ -13301,10 +13301,13 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	ANIMATING_CLASS = 'velocity-animating',
 	HOSTED_PAGE_CLASS = 'hosted-page',
 	SELECTED_ROW_CLASS = 'selected',
+	HEADER_CLOSE_BUTTON_CLASS = 'columns-table-close-button',
+	HEADER_CLOSE_BUTTON_SELECTOR = '.' + HEADER_CLOSE_BUTTON_CLASS,
 	$TABLE;
 	// $$CONTAINER = $$(window);
 
-var MAX_SMARTPHONE_SCREEN_WIDTH = 568;
+var MAX_SMARTPHONE_SCREEN_WIDTH = 568,
+	FRAMED_TABLE_HEIGHT = 400;
 
 // Utility methods
 // ------------------------------
@@ -13652,12 +13655,14 @@ ColumnsTable.prototype.renderData = function(data) {
 	if ($$header.length > 0) {
 		this.updateComponent($$header, {
 			title: data.title,
-			sort_by_column: data.sort_by_column
+			sort_by_column: data.sort_by_column,
+			in_frame: this.isInsideFrame()
 		}, header);
 	} else {
 		$$tableBody.before(header({
 			title: data.title,
-			sort_by_column: data.sort_by_column
+			sort_by_column: data.sort_by_column,
+			in_frame: this.isInsideFrame()
 		}));
 	}
 
@@ -13771,7 +13776,7 @@ ColumnsTable.prototype.renderData = function(data) {
 
 	// Automatically expand the table if we're inside an iframe
 	if ( this.autoExpand || this.isInsideFrame() ) {
-		this.expand();
+		// this.expand();
 	}
 };
 
@@ -13840,6 +13845,15 @@ ColumnsTable.prototype.tallestRowHeight = function() {
 };
 
 ColumnsTable.prototype.backgroundHeight = function() {
+
+	// Simply make the table a fixed height when inside a frame
+	if ( this.isInsideFrame() ) {
+
+		return  this.originalSizes ?
+				FRAMED_TABLE_HEIGHT - this.originalSizes.header.height - this.originalSizes.footer.height - 60:
+				FRAMED_TABLE_HEIGHT - this.headerHeight() - this.footerHeight() - 60;
+	}
+
 	var numRows = this.$$table.find(TABLE_ROW_SELECTOR).length;
 	// var offsetHeight = numRows > 3 ? ROW_OFFSET * 2 : ROW_OFFSET * (numRows - 1);
 	// return offsetHeight + this.tallestRowHeight();

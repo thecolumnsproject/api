@@ -66,6 +66,11 @@ $columns-table-accent-color: 	#69A368;
 	@include transition(border-color $animation-duration);
 }
 
+.framed .columns-table-container {
+	border-top: 0;
+	border-bottom: 0;
+}
+
 .columns-table-placeholder {
 	width: 100%;
 	background: $gray-lightest;
@@ -204,6 +209,10 @@ $columns-table-accent-color: 	#69A368;
 	@include transition(border-color $animation-duration);
 }
 
+.framed .columns-table-header {
+	border-top: 0;
+}
+
 .columns-table-header-name {
 	@include display(flex);
 	@include flex-direction(column);
@@ -254,9 +263,9 @@ $columns-table-accent-color: 	#69A368;
 	padding-right: 0;
 }
 
-.auto-expand .columns-table-close-button {
-	display: none;
-}
+// .auto-expand .columns-table-close-button {
+// 	display: none;
+// }
 
 .columns-table-header-icon {
 	font-size: 18px;

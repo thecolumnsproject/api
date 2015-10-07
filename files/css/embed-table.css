@@ -247,6 +247,10 @@
   -moz-transition: border-color 0.25s;
   transition: border-color 0.25s; }
 
+.framed .columns-table-container {
+  border-top: 0;
+  border-bottom: 0; }
+
 .columns-table-placeholder {
   width: 100%;
   background: #fafafa;
@@ -381,6 +385,9 @@
   -moz-transition: border-color 0.25s;
   transition: border-color 0.25s; }
 
+.framed .columns-table-header {
+  border-top: 0; }
+
 .columns-table-header-name {
   display: -webkit-box;
   display: -moz-box;
@@ -482,9 +489,6 @@
   color: #3E97BD;
   border-left: 1px solid #ebebeb;
   padding-right: 0; }
-
-.auto-expand .columns-table-close-button {
-  display: none; }
 
 .columns-table-header-icon {
   font-size: 18px; }

@@ -7,6 +7,12 @@
 		{{!-- <button class="columns-table-header-button columns-table-filters-button">
 			<i class="columns-table-header-icon icon-equalizer"></i>
 		</button> --}}
-		<button class="columns-table-header-button columns-table-close-button">Close</button>
+		<button class="columns-table-header-button columns-table-close-button">
+			{{#if in_frame}}
+				Done
+			{{else}}
+				Close
+			{{/if}}
+		</button>
 	</div>
 </div>
