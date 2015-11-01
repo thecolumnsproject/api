@@ -376,7 +376,6 @@
   -o-align-items: center;
   align-items: center;
   -ms-flex-align: center;
-  height: 30px;
   width: 100%;
   margin-bottom: 20px;
   border-bottom: 1px solid transparent;
@@ -428,7 +427,8 @@
 .columns-table-title {
   color: #3a3a3a;
   font-size: 18px;
-  font-weight: bold; }
+  font-weight: bold;
+  text-align: left; }
 
 .columns-table-subtitle {
   color: #ababab;
@@ -468,7 +468,8 @@
   -moz-transition: opacity 0.25s;
   transition: opacity 0.25s;
   opacity: 0;
-  pointer-events: none; }
+  pointer-events: none;
+  margin-left: 16px; }
 
 .columns-table-header-button {
   height: 30px;
@@ -807,7 +808,6 @@
   position: absolute; }
 
 .columns-table-expanded .columns-table {
-  margin-top: 60px;
   height: auto !important;
   /* Override the custom height given on load */
   border-color: #ebebeb;
@@ -1191,7 +1191,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 320px;
+  width: 400px;
   height: 100%;
   box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.2);
   background-color: #fafafa;

@@ -22,6 +22,7 @@ var ROW_OFFSET = 5,
 // UI Management Classes
 var TABLE_SELECTOR = '.columns-table-widget',
 	TABLE_BODY_SELECTOR = '.columns-table',
+	TABLE_BACKGROUND_SELECTOR = '.columns-table-container',
 	TABLE_ROW_CLASS = 'columns-table-row',
 	TABLE_ROW_SELECTOR = '.' + TABLE_ROW_CLASS,
 	TABLE_HEADER_SELECTOR = '.columns-table-header',
@@ -46,7 +47,11 @@ var TABLE_SELECTOR = '.columns-table-widget',
 	// $$CONTAINER = $$(window);
 
 var MAX_SMARTPHONE_SCREEN_WIDTH = 568,
-	FRAMED_TABLE_HEIGHT = 400;
+	FRAMED_TABLE_HEIGHT = 400,
+	HEADER_PADDING = 30,
+	TABLE_PADDING = 20,
+	TABLE_BORDER_WIDTH = 1,
+	TABLE_CUSHION = TABLE_PADDING * 2 + TABLE_BORDER_WIDTH * 2;
 
 // Utility methods
 // ------------------------------
@@ -386,6 +391,7 @@ ColumnsTable.prototype.renderData = function(data) {
 	var footer = Columns.EmbeddableTemplates['views/embed-table/footer.hbs'];
 
 	// Render table components with data
+	var $$tableBackground = this.$$table.find( TABLE_BACKGROUND_SELECTOR );
 	var $$tableBody = this.$$table.find(TABLE_BODY_SELECTOR);
 	var $$header = this.$$table.find(TABLE_HEADER_SELECTOR);
 	var $$footer = this.$$table.find(TABLE_FOOTER_SELECTOR);
@@ -444,10 +450,18 @@ ColumnsTable.prototype.renderData = function(data) {
 	// If we're in preview and the table is expanded,
 	// refresh the amount of padding we add to the top
 	// to account for the template
-	if (this.preview && this.$$table.hasClass(EXPANDED_CLASS)) {
-		$$tableBody.css({
-			paddingTop: this.tallestRowHeight()
-		});
+	// and the margin top to account for the header,
+	// in case it has been updated by the designer
+	if ( this.preview ) {
+		var props = {};
+
+		props['paddingTop'] = this.tallestRowHeight();
+
+		if ( this.$$table.hasClass(EXPANDED_CLASS) ) {
+			props['marginTop'] = this.headerHeight();
+		}
+
+		$$tableBody.css( props );
 	}
 
 	// Reset rows to equal the new rows we just added
@@ -468,6 +482,11 @@ ColumnsTable.prototype.renderData = function(data) {
 		Velocity($$tableBody.get(0), {
 		// $$tableBody.velocity({
 			height: tableHeight
+		}, {
+			duration: duration
+		});
+		Velocity( $$tableBackground.get( 0 ), {
+			height: this.collapsedBackgroundHeight()
 		}, {
 			duration: duration
 		});
@@ -494,6 +513,12 @@ ColumnsTable.prototype.renderData = function(data) {
 		Velocity($$tableBody.get(0), {
 		// $$tableBody.velocity({
 			height: tableHeight
+		}, {
+			duration: duration
+		});
+
+		Velocity( $$tableBackground.get( 0 ), {
+			height: this.collapsedBackgroundHeight()
 		}, {
 			duration: duration
 		});
@@ -589,23 +614,59 @@ ColumnsTable.prototype.backgroundHeight = function() {
 	if ( this.isInsideFrame() ) {
 
 		return  this.originalSizes ?
-				FRAMED_TABLE_HEIGHT - this.originalSizes.header.height - this.originalSizes.footer.height - 60:
-				FRAMED_TABLE_HEIGHT - this.headerHeight() - this.footerHeight() - 60;
+				FRAMED_TABLE_HEIGHT - TABLE_CUSHION - this.originalSizes.header.height - this.originalSizes.footer.height:
+				FRAMED_TABLE_HEIGHT - TABLE_CUSHION - this.headerHeight( true ) - this.footerHeight( true );
 	}
 
 	var numRows = this.$$table.find(TABLE_ROW_SELECTOR).length;
 	// var offsetHeight = numRows > 3 ? ROW_OFFSET * 2 : ROW_OFFSET * (numRows - 1);
 	// return offsetHeight + this.tallestRowHeight();
 
-	return numRows > 1 ? this.tallestRowHeight() * 2 : this.tallestRowHeight() * (numRows);
+	var height = numRows > 1 ?
+		this.tallestRowHeight() * 2 :
+		this.tallestRowHeight() * (numRows);
+
+	if ( this.preview ) {
+		height += this.tallestRowHeight();
+	}
+
+	return height;
 };
 
-ColumnsTable.prototype.headerHeight = function() {
-	return this.$$table.find( TABLE_HEADER_SELECTOR ).outerHeight();
+ColumnsTable.prototype.collapsedBackgroundHeight = function() {
+
+	console.log( "Background Height: " + this.backgroundHeight() );
+	console.log( "Preview Height: " + ( this.preview ? this.tallestRowHeight() : 0 ) );
+	console.log( "Header Height: " + this.collapsedHeaderHeight( true ) );
+	console.log( "Footer Height: " + ( this.originalSizes ? this.originalSizes.footer.height : this.footerHeight( true ) ) );
+
+	return this.backgroundHeight() +
+		   ( this.preview ? this.tallestRowHeight() : 0 )+
+		   this.collapsedHeaderHeight( true ) +
+		   ( this.originalSizes ? this.originalSizes.footer.height : this.footerHeight( true ) ) +
+		   TABLE_CUSHION;
+};
+
+ColumnsTable.prototype.collapsedHeaderHeight = function( withMargin ) {
+
+	return this.$$table.hasClass( EXPANDED_CLASS ) ?
+		   this.headerHeight( withMargin ) - HEADER_PADDING :
+		   this.headerHeight( withMargin );
+};
+
+ColumnsTable.prototype.collapsedFooterHeight = function( withMargin ) {
+
+	return this.$$table.hasClass( EXPANDED_CLASS ) ?
+		   this.headerHeight( withMargin ) + HEADER_PADDING :
+		   this.headerHeight( withMargin );
 }
 
-ColumnsTable.prototype.footerHeight = function() {
-	return this.$$table.find( TABLE_FOOTER_SELECTOR ).outerHeight();
+ColumnsTable.prototype.headerHeight = function( withMargin ) {
+	return this.$$table.find( TABLE_HEADER_SELECTOR ).outerHeight( withMargin ? true : false );
+}
+
+ColumnsTable.prototype.footerHeight = function( withMargin ) {
+	return this.$$table.find( TABLE_FOOTER_SELECTOR ).outerHeight( withMargin ? true : false );
 }
 
 ColumnsTable.prototype.updateComponent = function($$component, data, template) {
@@ -877,21 +938,24 @@ ColumnsTable.prototype.expand = function() {
 		ColumnsEvent.send('ColumnsTableWillExpand', {table: this});
 	}
 
-	this.originalSizes = {
-		footer: {
-			height: this.footerHeight()
-		},
-		header: {
-			height: this.headerHeight()
-		}
-	};
-
 	var $$table = this.$$table;
-	$$bg = $$table.find('.columns-table-container'),
+	$$bg = $$table.find( TABLE_BACKGROUND_SELECTOR ),
 	$$body = $$table.find(TABLE_BODY_SELECTOR);
 	$$rows = $$table.find('.columns-table-row'),
 	$$header = $$table.find('.columns-table-header');
 	$$footer = $$table.find('.columns-table-footer');
+
+	this.originalSizes = {
+		footer: {
+			height: this.footerHeight( true )
+		},
+		header: {
+			height: this.headerHeight( true )
+		},
+		table_container: {
+			height: $$bg.height()
+		}
+	};
 
 	// First move the table to the outermost part of the DOM
 	// while maintaining its visual position
@@ -968,6 +1032,10 @@ ColumnsTable.prototype.expand = function() {
 	var onExpanded = function() {
 		$$table.addClass(EXPANDED_CLASS);
 		$$table.removeClass(EXPANDING_CLASS);
+
+		// Move the table down the height of the header
+		// so that it doesn't slide underneath the repositioned header
+		this.$$table.find( TABLE_BODY_SELECTOR ).css({ 'margin-top': this.headerHeight() });
 
 		// On large for factor,
 		// move the table into the container only after the animation
@@ -1065,6 +1133,7 @@ ColumnsTable.prototype.expandBody = function($$body) {
 		// height: tableHeight, /* Grow to encompass all of the rows */
 		translateY: tableOffsetTop + paddingTop, /* Move down a few pixels to account for the header */
 		height: this.$$table.find('.columns-table-row').length * this.tallestRowHeight(), /* Grow to the height of all of the rows */
+		// 'margin-top': this.headerHeight(), /* Move down below the fixed header */
 		'padding-top': paddingTop /* Move down a few more pixels to account for the template row in preview mode */
 	}, {
 		duration: ANIMATION_DURATION,
@@ -1140,8 +1209,8 @@ ColumnsTable.prototype.expandRowAtIndex = function($$row, index, duration) {
 ColumnsTable.prototype.collapse = function() {
 	var _this = this;
 	var $$table = this.$$table;
-	$$body = $$table.find(TABLE_BODY_SELECTOR);
-	$$bg = $$table.find('.columns-table-container'),
+	$$body = $$table.find( TABLE_BODY_SELECTOR );
+	$$bg = $$table.find( TABLE_BACKGROUND_SELECTOR ),
 	$$rows = $$table.find('.columns-table-row'),
 	$$header = $$table.find('.columns-table-header');
 
@@ -1157,7 +1226,7 @@ ColumnsTable.prototype.collapse = function() {
 		this.collapseBody($$body);
 		this.collapseRows($$rows);
 	} else {
-		$$bg.css({ "height": this.backgroundHeight() + 60 + this.originalSizes.header.height + this.originalSizes.footer.height });
+		$$bg.css({ "height": this.collapsedBackgroundHeight() });
 		Velocity( $$('html'), {
 			width: "+=" + this.$$panel.find( TABLE_PANEL_SELECTOR ).width() + "px"
 		}, {
@@ -1168,6 +1237,10 @@ ColumnsTable.prototype.collapse = function() {
 	this.collapseHeader($$header);
 
 	var onCollapsed = function() {
+
+		// Remove heading-related margin from table
+		$$body.css({'margin-top': 0});
+
 		$$table.insertBefore( $$( this.script ) );
 		this.$$container.removeClass( EXPANDED_CLASS );
 		$$table.removeClass(EXPANDED_CLASS);
@@ -1235,15 +1308,15 @@ ColumnsTable.prototype.collapseHeader = function($$header) {
 
 ColumnsTable.prototype.collapseBackground = function($$bg) {
 
-	var _this = this;
-
 	// Calculate new background position
 	Velocity($$bg.get(0), {
 	// $$bg.velocity({
 
 		// Return to small state
 		// height: _this.originalBackground.height,
-		height: _this.backgroundHeight() + 60 + _this.originalSizes.header.height + _this.originalSizes.footer.height,
+		// height: _this.backgroundHeight() + TABLE_CUSHION + _this.originalSizes.header.height + _this.originalSizes.footer.height,
+		// height: this.originalSizes.table_container.height,
+		height: this.collapsedBackgroundHeight(),
 		// height: 'auto',
 
 		// Move back to original position
@@ -1272,8 +1345,10 @@ ColumnsTable.prototype.collapseBody = function($$body) {
 
 		// Move to top of container
 		translateY: 0,
+		// Remove any margin we added when the header was fixed to the top
+		// 'margin-top': 0,
 		// Remove any padding we added for the template row in preview mode
-		'padding-top': 0,
+		// 'padding-top': 0,
 		// Adjust height in case any rows have changed
 		height: _this.backgroundHeight()
 
@@ -1362,7 +1437,9 @@ ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
 	this.renderData( table );
 
 	// Expand yourself
-	this.expand();
+	setTimeout(function() {
+		this.expand();
+	}.bind( this ), 0);
 };
 
 // ColumnsTable.prototype._onTableDidChange = function( event, data ) {

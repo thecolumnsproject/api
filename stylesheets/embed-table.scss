@@ -200,7 +200,7 @@ $columns-table-accent-color: 	#69A368;
 	@include display(flex);
 	@include justify-content(space-between);
 	@include align-items(center);
-	height: $table-header-height;
+	// height: $table-header-height;
 	width: 100%;
 	margin-bottom: $table-container-padding;
 	border-bottom: 1px solid transparent;
@@ -224,6 +224,7 @@ $columns-table-accent-color: 	#69A368;
 	color: $gray-darkest;
 	font-size: 18px; 
 	font-weight: bold;
+	text-align: left;
 }
 
 .columns-table-subtitle {
@@ -241,6 +242,7 @@ $columns-table-accent-color: 	#69A368;
 
 	opacity: 0;
 	pointer-events: none;
+	margin-left: $spacing * 2;
 }
 
 .columns-table-header-button {
@@ -591,7 +593,7 @@ $columns-table-accent-color: 	#69A368;
 }
 
 .columns-table-expanded .columns-table {
-	margin-top: 60px;
+	// margin-top: 60px;
 	// transform: translateY(0px) !important; /* Remove the expansion animation transform */
 	height: auto !important; /* Override the custom height given on load */
 	border-color: $gray-lighter;

@@ -142,35 +142,41 @@ describe('Embeddable Table', function() {
 				layout: layout
 			}
 
-			beforeEach(function() {
+			beforeEach(function( done ) {
 				spyOn( embed, 'generateLayout' );
 				spyOn( embed, 'renderData' );
 				spyOn( embed, 'expand' );
+				done();
 			});
 
-			it('should generate a new layout', function() {
+			it('should generate a new layout', function( done ) {
 				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
 					table: table
 				});
 				
 				expect( embed.generateLayout ).toHaveBeenCalledWith( {}, false );
+				done();
 			});
 
-			it('should render the table data', function() {
+			it('should render the table data', function( done ) {
 				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
 					table: table
 				});
 					
 				expect( embed.renderData ).toHaveBeenCalledWith( table );
+				done();
 
 			});
 
-			it('should expand', function() {
+			it('should expand', function( done ) {
 				ColumnsEvent.send( 'Columns.Table.DidOpenWithSuccess', {
 					table: table
 				});
 
-				expect( embed.expand ).toHaveBeenCalled();
+				setTimeout(function() {
+					expect( embed.expand ).toHaveBeenCalled();
+					done();
+				}, 0)
 			});
 		});
 
