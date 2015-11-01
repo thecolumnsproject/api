@@ -485,11 +485,13 @@ ColumnsTable.prototype.renderData = function(data) {
 		}, {
 			duration: duration
 		});
-		Velocity( $$tableBackground.get( 0 ), {
-			height: this.collapsedBackgroundHeight()
-		}, {
-			duration: duration
-		});
+		if ( !this.$$table.hasClass(EXPANDED_CLASS) ) {
+			Velocity( $$tableBackground.get( 0 ), {
+				height: this.collapsedBackgroundHeight()
+			}, {
+				duration: duration
+			});
+		}
 		$$.each($$rows, function(index, row) {
 
 			// Only animate the two drooping rows
@@ -517,11 +519,13 @@ ColumnsTable.prototype.renderData = function(data) {
 			duration: duration
 		});
 
-		Velocity( $$tableBackground.get( 0 ), {
-			height: this.collapsedBackgroundHeight()
-		}, {
-			duration: duration
-		});
+		if ( !this.$$table.hasClass(EXPANDED_CLASS) ) {
+			Velocity( $$tableBackground.get( 0 ), {
+				height: this.collapsedBackgroundHeight()
+			}, {
+				duration: duration
+			});
+		}
 	}
 
 	// Set up DOM events on the table
