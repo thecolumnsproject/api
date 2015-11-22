@@ -15837,6 +15837,9 @@ ColumnsTable.prototype._onTableDidUpload = function( event, data ) {
 ColumnsTable.prototype._onTableDidChange = function( event, data ) {
 	var table = data.table;
 
+	// Exit if there isn't yet a layout
+	if ( !table.layout ) return;
+
 	// Generate a layout
 	this.generateLayout( table.layout.model, false );
 
