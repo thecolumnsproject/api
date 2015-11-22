@@ -218,6 +218,11 @@ $columns-table-accent-color: 	#69A368;
 	@include flex-direction(column);
 	@include justify-content(flex-start);
 	@include align-items(flex-start);
+
+	// Ensure that really long table names,
+	// which are a single word (such as file names with '_' between words)
+	// get cut off rather than pushing the table controls off screen
+	overflow-x: hidden;
 }
 
 .columns-table-title {
@@ -225,7 +230,6 @@ $columns-table-accent-color: 	#69A368;
 	font-size: 18px; 
 	font-weight: bold;
 	text-align: left;
-	word-break: break-all;
 }
 
 .columns-table-subtitle {
